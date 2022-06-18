@@ -8,6 +8,7 @@ on:
       - backend/**
       branches:
         - dev
+        - feat/backend-dev-ops
 
 env:
   AWS_REGION: us-east-1                  
