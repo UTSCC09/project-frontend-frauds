@@ -5,6 +5,8 @@ name: Deploy to Amazon ECS
 on:
   push:
     branches: [dev, feat/backend-dev-ops]
+    paths-ignore: 
+      - frontend/**
 
 jobs:
   # first stage
