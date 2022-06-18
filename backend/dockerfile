@@ -1,0 +1,20 @@
+# recommended practices: https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
+FROM node:lts-alpine@sha256:c785e617c8d7015190c0d41af52cc69be8a16e3d9eb7cb21f0bb58bcfca14d6b
+
+# setup app directory
+WORKDIR /usr/src/app
+
+# copy files to container
+COPY --chown=node:node . /usr/src/app
+
+# install node packages
+RUN npm install
+
+# run as node user
+USER node
+
+# expose container port
+EXPOSE 3000
+
+# start application
+CMD "npm" "start"
