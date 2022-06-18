@@ -6,13 +6,11 @@ on:
   push:
     paths:
       - backend/**
-      branches:
-        - dev
-        - feat/backend-dev-ops
+    branches: [dev, feat/backend-dev-ops]
 
 env:
-  AWS_REGION: us-east-1                  
-  ECR_REPOSITORY: dev_backend            
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: dev_backend
   AWS_ACCESS_KEY_ID: ${{ secrets.DEV_BACKEND_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_BACKEND_AWS_SECRET_ACCESS_KEY }}
 
