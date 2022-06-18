@@ -5,8 +5,6 @@ name: Deploy to Amazon ECS
 on:
   push:
     branches: [dev, feat/backend-dev-ops]
-    paths:
-      - backend/**
 
 env:
   AWS_REGION: us-east-1
