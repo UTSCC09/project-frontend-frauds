@@ -3,7 +3,7 @@ name: Deploy to DigitalOcean Droplet
 
 on:
   push:
-    branches: [master, feat/backend-dev-ops]
+    branches: [dev]
     paths-ignore:
       - frontend/**
 
