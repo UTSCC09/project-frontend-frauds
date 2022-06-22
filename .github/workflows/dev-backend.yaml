@@ -10,7 +10,7 @@ on:
 # environment variableS
 env:
   CONTAINER_REGISTRY: registry.digitalocean.com/air-toronto
-  IMAGE_NAME: DEV_BACKEND
+  IMAGE_NAME: dev_backend
 
 jobs:
   build_and_push:
