@@ -54,7 +54,8 @@ jobs:
             # Remove old container
             docker rm $IMAGE_NAME || true
             # Run a new container from a new image
-            docker run -d  \
-            -p 3000:3000
+            docker run \
+            --name $IMAGE_NAME \
+            -p 3000:3000 \
             --name $IMAGE_NAME  \
             $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
