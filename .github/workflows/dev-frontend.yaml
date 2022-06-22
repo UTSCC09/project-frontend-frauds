@@ -1,0 +1,63 @@
+# SOURCE: https://faun.pub/full-ci-cd-with-docker-github-actions-digitalocean-droplets-container-registry-db2938db8246
+name: Deploy to DigitalOcean Droplet
+
+on:
+  push:
+    branches: [dev, feat/dev-frontend-dev-ops]
+    paths-ignore:
+      - backend/**
+
+# environment variableS
+env:
+  CONTAINER_REGISTRY: registry.digitalocean.com/air-toronto
+  IMAGE_NAME: dev_frontend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      - name: Build container image
+        run: docker build -t $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA frontend/
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push  $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to Digital Ocean droplet via SSH
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DROPLET_DEV_FRONTEND_HOST }}
+          username: ${{ secrets.DROPLET_DEV_FRONTEND_USERNAME }}
+          key: ${{ secrets.DROPLET_DEV_FRONTEND_KEY }}
+          envs: IMAGE_NAME, CONTAINER_REGISTRY, {{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}, GITHUB_SHA
+          script: |
+            # Login to registry
+            docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+            # Stop running container
+            docker stop $IMAGE_NAME || true 
+            # Remove old container
+            docker rm $IMAGE_NAME || true
+            # Run a new container from a new image
+            docker run -d \
+            --name $IMAGE_NAME \
+            -p 8080:8080 \
+            --name $IMAGE_NAME  \
+            $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
+            # Delete Unused Data
+            docker system prune -f
