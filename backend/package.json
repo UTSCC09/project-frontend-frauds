@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for Air Toronto system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Frontend Frauds",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
