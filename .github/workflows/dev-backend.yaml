@@ -52,7 +52,7 @@ jobs:
             # Stop running container
             docker stop $IMAGE_NAME || true 
             # Remove old container
-            docker rm $IMAGE_NAME
+            docker rm $IMAGE_NAME || true
             # Run a new container from a new image
             docker run -d  \
             -p 3000:3000
