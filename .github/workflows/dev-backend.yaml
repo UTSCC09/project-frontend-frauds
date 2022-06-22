@@ -59,3 +59,5 @@ jobs:
             -p 3000:3000 \
             --name $IMAGE_NAME  \
             $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
+            # Delete Unused Data
+             docker system prune -f
