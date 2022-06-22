@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: dev_backend
 
 jobs:
-  build_and_push:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,7 +50,7 @@ jobs:
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running container
-            docker stop $IMAGE_NAME
+            docker stop $IMAGE_NAME || true 
             # Remove old container
             docker rm $IMAGE_NAME
             # Run a new container from a new image
