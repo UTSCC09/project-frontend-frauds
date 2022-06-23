@@ -18,16 +18,16 @@ Airline agencies, have special privileges, in which they can add flights to the 
 
 ### Required Elements
 - Vue Frontend
-- Deployed to Amazon Cloud Compute Instances (EC2) 
-- Workers that send emails after one hour of account registration
+- Deployed to DigitalOcean Linux VMs (Droplets) 
+- 
   
 ### Obtaining 1.0 CF
 - OAuth 2.0 Client
 - Webhooks for flight changes/alerts
-- TBD
+- Workers that send emails after one hour of account registration
 ### Exceeding 1.0 CF
 
-- Secure continuous deployment of docker containers to Amazon Cloud Compute Instances using Amazon Cloud Deploy and Github Actions
+- Secure continuous deployment of docker containers to DigitalOcean Droplets using Github Actions and SSHing into the linux containers
 
 ## Beta Version Features
 
@@ -35,9 +35,8 @@ Airline agencies, have special privileges, in which they can add flights to the 
 - OAuth2 integration
 - Account creation, log-in, log-out
 - Send welcome email one hour after account creation
-- Account management: profile pic, changing email, phone number, etc
-- Continuous deployment pipeline
-- Deployment to EC2 instances
+- Continuous deployment pipeline through Github Actions
+- Deployment to DigitalOcean Droplets
 ## Final Version Features
 
 - Allow customers to purchase flights
@@ -53,7 +52,6 @@ Airline agencies, have special privileges, in which they can add flights to the 
   
 ## Deployment
 
--  Amazon Elastic Container Registry (ECR) to store docker images
--  Amazon Elastic Compute Cloud (EC2) to run applications from ECR
--  Amazon Code Deploy to deploy docker image from ECR to EC2 instances
--  MongoDB Cloud Atlas instances for database storage
+-  DigitalOcean Container Registry to store docker images
+-  DigitalOcean Droplets to run applications on a Linux VM 
+-  MongoDB Cloud Atlas instances for NoSQL database
