@@ -7,7 +7,7 @@ Air Toronto
 
 - Payam Yektamaram (1005035622)
 - INSERT PERSON
-- INSERT PERSON
+- Hai Yang Gu (1004923265)
 ## Description of the Web Application
 
 A comprehensive web application that allows customers to book plane tickets to their destination of choice. Furthermore, customers can choose their plane seats using a visual set map of the plane and then pay through Stripe.
@@ -17,7 +17,7 @@ Airline agencies, have special privileges, in which they can add flights to the 
 ## Concepts Used for Challenge Factor (CF)
 
 ### Required Elements
-- **Frontend Framework:** Vue
+- **Frontend Framework:** Vue.js
 - **Non-CRUD Feature:** Generate and Email PDF Receipt with Booking Details
 - **VM Deployment:** DigitalOcean Linux VMs (Droplets) 
   
