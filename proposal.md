@@ -6,7 +6,7 @@ Air Toronto
 ## Team Members
 
 - Payam Yektamaram (1005035622)
-- INSERT PERSON
+- Ling Su (1005001597)
 - INSERT PERSON
 ## Description of the Web Application
 
