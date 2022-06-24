@@ -17,9 +17,9 @@ Airline agencies, have special privileges, in which they can add flights to the 
 ## Concepts Used for Challenge Factor (CF)
 
 ### Required Elements
-- Vue Frontend
-- Deployed to DigitalOcean Linux VMs (Droplets) 
-- 
+- **Frontend Framework:** Vue
+- **Non-CRUD Feature:** Generate and Email PDF Receipt with Booking Details
+- **VM Deployment:** DigitalOcean Linux VMs (Droplets) 
   
 ### Obtaining 1.0 CF
 - OAuth 2.0 Client
@@ -44,14 +44,16 @@ Airline agencies, have special privileges, in which they can add flights to the 
 - Allow customers to view their purchased tickets
 - Allow airline agencies to issue changes/alerts to their flights
 - Stripe integration for purchasing tickets
+- Generation of PDF invoice and send email after purchase
 ## Tech Stack
 
-- Vue (Frontend)
-- NodeJs with Express Server (Backend)
-- MongoDb (Database)
+- **Frontend:** Vue 3
+- **Backend:** NodeJS with Express Server
+- **Database:** MongoDB
   
 ## Deployment
 
 -  DigitalOcean Container Registry to store docker images
 -  DigitalOcean Droplets to run applications on a Linux VM 
 -  MongoDB Cloud Atlas instances for NoSQL database
+-  Github Actions workflow to manage and initiate deployments
