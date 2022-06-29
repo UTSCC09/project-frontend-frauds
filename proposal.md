@@ -11,9 +11,12 @@ Air Toronto
 
 ## Description of the Web Application
 
-A comprehensive web application that allows customers to book plane tickets to their destination of choice. Furthermore, customers can choose their plane seats using a visual set map of the plane and then pay through Stripe.
+A comprehensive web application that allows customers to book plane tickets to their destination of choice. Furthermore, customers can choose their plane seats using a visual seat map of the plane and then pay through Stripe.
+However, it is crucial to note that our application doesn't own and manage a fleet of airplanes but instead shows tickets that other airline agencies have to offer. So the website will be operating similarly to Expedia.ca.
 
-Airline agencies, have special privileges, in which they can add flights to the system so customers can purchase them. Furthermore, agencies can issue live updates about a  flight's status which will be broadcasted to the customers to inform them of the news.
+Therefore airline agencies/agents, have special privileges in which they can add flights to the system so customers can purchase them. Furthermore, agencies can issue live updates about a  flight's status which will be broadcasted to the customers to inform them of the news.
+
+Our app will also be utilizing public domain flight data by https://ourairports.com/ which will empower our app to validate flight routes and ensure flights are using the proper aircraft.
 
 ## Concepts Used for Challenge Factor (CF)
 
@@ -32,8 +35,8 @@ Airline agencies, have special privileges, in which they can add flights to the 
 
 ## Beta Version Features
 
-- Allowing airline agencies to add flights into the system
 - OAuth2 integration
+- Allowing airline agencies to add flights into the system
 - Account creation, log-in, log-out
 - Send welcome email one hour after account creation
 - Continuous deployment pipeline through Github Actions
@@ -56,5 +59,5 @@ Airline agencies, have special privileges, in which they can add flights to the 
 
 -  DigitalOcean Container Registry to store docker images
 -  DigitalOcean Droplets to run applications on a Linux VM 
--  MongoDB Cloud Atlas instances for NoSQL database
+-  MongoDB Docker Image run on a Linux VM
 -  Github Actions workflow to manage and initiate deployments
