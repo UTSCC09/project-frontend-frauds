@@ -1,11 +1,23 @@
 const express = require("express");
-const app = express();
-const PORT = process.env.PORT || 3000;
+const config = require("./app-config.js");
+const bodyParser = require("body-parser");
 
-app.get("/health", (req, res) => {
+// express apps
+const app = express();
+
+// middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(({ method, url, body }, _res, next) => {
+  console.log("[HTTP REQUEST]", method, url, body);
+  next();
+});
+
+app.get("/health", (_req, res) => {
   res.json({ message: "ok" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+// start server
+app.listen(config.SERVER_PORT, () => {
+  console.log(`Example app listening on port ${config.SERVER_PORT}`);
 });
