@@ -1,10 +1,7 @@
-const express = require("express");
+const app = require("./api");
 const config = require("./config");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
-// express apps
-const app = express();
 
 // middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -12,10 +9,6 @@ app.use(bodyParser.json());
 app.use(({ method, url, body }, _res, next) => {
   console.log("[HTTP REQUEST]", method, url, body);
   next();
-});
-
-app.get("/health", (_req, res) => {
-  res.json({ message: "ok" });
 });
 
 // start server
