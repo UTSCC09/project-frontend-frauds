@@ -29,6 +29,7 @@ Our app will also be utilizing public domain flight data by https://ourairports.
 - OAuth 2.0 Client
 - Webhooks for flight changes/alerts
 - Workers that send emails after one hour of account registration
+- End to end tested with Cypress
 ### Exceeding 1.0 CF
 
 - Secure continuous deployment of docker containers to DigitalOcean Droplets using Github Actions and SSHing into the linux containers
