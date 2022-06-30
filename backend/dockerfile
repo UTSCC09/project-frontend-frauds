@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node . /usr/src/app
 
 # install node packages
-RUN npm install
+RUN npm install --production
 
 # run as node user
 USER node
