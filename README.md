@@ -26,30 +26,34 @@ Our app will also be utilizing public domain flight data by https://ourairports.
 - **VM Deployment:** DigitalOcean Linux VMs (Droplets) 
   
 ### Obtaining 1.0 CF
-- OAuth 2.0 Client
-- Webhooks for flight changes/alerts
-- Workers that send emails after one hour of account registration
-- End to end tested with Cypress
+- **OAuth 2.0 Client:** Using Google as Oauth2.0 provider to access user's name and email
+- **Webhooks:** Broadcast webhooks to send notifications for flight changes/alerts
+- **Workers:**  Used to send emails after one hour of account registration welcoming the user
+- **End-to-End Testing:** Frontend end-to-end tested with Cypress
+
 ### Exceeding 1.0 CF
 
 - Secure continuous deployment of docker containers to DigitalOcean Droplets using Github Actions and SSHing into the linux containers
+- Nginx reverse proxy in front of both backend and frontend apps secured with HTTPs 
 
 ## Beta Version Features
 
 - OAuth2 integration
 - Allowing airline agencies to add flights into the system
 - Account creation, log-in, log-out
-- Send welcome email one hour after account creation
+- Send welcome email one hour after account creation using workers
 - Continuous deployment pipeline through Github Actions
 - Deployment to DigitalOcean Droplets
+  
 ## Final Version Features
 
 - Allow customers to purchase flights
 - Allow customers to choose their seats through a visual seat map
 - Allow customers to view their purchased tickets
-- Allow airline agencies to issue changes/alerts to their flights
+- Allow airline agencies to issue changes/alerts to their flights using webhooks
 - Stripe integration for purchasing tickets
 - Generation of PDF invoice and send email after purchase
+  
 ## Tech Stack
 
 - **Frontend:** Vue 3
@@ -60,5 +64,6 @@ Our app will also be utilizing public domain flight data by https://ourairports.
 
 -  DigitalOcean Container Registry to store docker images
 -  DigitalOcean Droplets to run applications on a Linux VM 
--  MongoDB Docker Image run on a Linux VM
+-  MongoDB Docker Image ran on a Linux VM
 -  Github Actions workflow to manage and initiate deployments
+-  Nginx as a reverse proxy and for HTTPs management
