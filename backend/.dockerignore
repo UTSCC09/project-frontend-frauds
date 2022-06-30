@@ -4,6 +4,5 @@ npm-debug.log
 Dockerfile
 .git
 .gitignore
-.env*
-!.env.project
-!.env.vault
+.env
+.env.me

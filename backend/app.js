@@ -1,6 +1,7 @@
 const express = require("express");
-const config = require("./app-config.js");
+const config = require("./config");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 // express apps
 const app = express();
@@ -18,6 +19,11 @@ app.get("/health", (_req, res) => {
 });
 
 // start server
-app.listen(config.SERVER_PORT, () => {
-  console.log(`Example app listening on port ${config.SERVER_PORT}`);
+app.listen(config.SERVER_PORT, async () => {
+  // connect to mongo db
+  await mongoose.connect(config.MONGO_DB_URI, {
+    dbName: config.MONGO_DB_DATABASE,
+  });
+
+  console.log(`Server listening on port ${config.SERVER_PORT}`);
 });
