@@ -5,7 +5,7 @@ import {
   Country,
   Plane,
   Route,
-} from "../../db/models/index.js";
+} from "../../models/index.js";
 
 const router = express.Router();
 
