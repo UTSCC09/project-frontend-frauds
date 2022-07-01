@@ -5,3 +5,6 @@ Dockerfile
 .git
 .gitignore
 .env
+.env*
+!.env.project
+!.env.vault
