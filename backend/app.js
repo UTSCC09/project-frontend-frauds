@@ -1,7 +1,7 @@
-const app = require("./api");
-const config = require("./config");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+import app from "./api/index.js";
+import config from "./config/index.js";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
 
 // middleware
 app.use(bodyParser.urlencoded({ extended: false }));
