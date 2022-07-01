@@ -1,14 +1,17 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
-const Country = new mongoose.Schema(
+const Plane = new Schema(
   {
     name: String,
-    isoCode: String,
-    dafifCode: String,
+    iata: String,
+    icao: String,
+    passengerCapacity: Number,
+    seats: [[]],
   },
   {
     statics: {
-      async pagination(page = 0, limit = 10) {
+      async paginate(page = 0, limit = 10) {
         const count = await this.estimatedDocumentCount({});
         const docs = await this.find({})
           .sort({ name: 1 })
@@ -21,4 +24,4 @@ const Country = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Country", Country);
+export default mongoose.model("Plane", Plane);

@@ -1,5 +1,7 @@
 // config env vars
-require("dotenv").config();
+import dotenv  from "dotenv"
+
+dotenv.config();
 
 // app configs
 const config = {};
@@ -15,4 +17,4 @@ config.MONGO_DB_PORT = process.env.MONGO_DB_PORT;
 config.MONGO_DB_URI = `mongodb://${config.MONGO_DB_USER}:${config.MONGO_DB_PASSWORD}@${config.MONGO_DB_HOST}:${config.MONGO_DB_PORT}`;
 
 // export app config
-module.exports = config;
+export default config;
