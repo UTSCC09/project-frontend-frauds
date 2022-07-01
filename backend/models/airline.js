@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const Airline = new Schema({
@@ -12,4 +12,4 @@ const Airline = new Schema({
   active: String,
 });
 
-exports.module = mongoose.model("Airline", Airline);
+module.exports = mongoose.model("Airline", Airline);

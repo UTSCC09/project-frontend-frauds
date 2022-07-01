@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const Route = new Schema({
@@ -16,4 +16,4 @@ const Route = new Schema({
   },
 });
 
-exports.module = mongoose.model("Route", Route);
+module.exports = mongoose.model("Route", Route);
