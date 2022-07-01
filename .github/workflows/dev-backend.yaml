@@ -45,7 +45,7 @@ jobs:
           host: ${{ secrets.DROPLET_DEV_BACKEND_HOST }}
           username: ${{ secrets.DROPLET_DEV_BACKEND_USERNAME }}
           key: ${{ secrets.DROPLET_DEV_BACKEND_KEY }}
-          envs: IMAGE_NAME, CONTAINER_REGISTRY, {{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}, GITHUB_SHA
+          envs: IMAGE_NAME, CONTAINER_REGISTRY, {{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}, GITHUB_SHA, {{ secrets.DOTENV_ME }}
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
@@ -57,7 +57,7 @@ jobs:
             docker run -d \
             --name $IMAGE_NAME \
             -p 3000:3000 \
-            --name $IMAGE_NAME  \
+            -e DOTENV_ME=${{ secrets.DOTENV_ME }}
             $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
             # Delete Unused Data
             docker system prune -f
