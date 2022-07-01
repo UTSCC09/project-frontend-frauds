@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const Plane = new Schema({
@@ -9,4 +9,4 @@ const Plane = new Schema({
   seats: [[]],
 });
 
-exports.module = mongoose.model("Plane", Plane);
+module.exports = mongoose.model("Plane", Plane);
