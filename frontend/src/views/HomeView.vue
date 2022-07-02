@@ -1,9 +1,9 @@
 <script setup>
-import TheWelcome from "@/components/TheWelcome.vue";
+import FlightSearch from "../components/FlightSearch.vue";
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <FlightSearch />
   </main>
 </template>
