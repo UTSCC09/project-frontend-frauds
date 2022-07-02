@@ -9,6 +9,7 @@ const form = reactive({
   arrivalAirport: "",
   departureDate: "",
   returnDate: "",
+  roundTrip: true,
 });
 
 const rules = reactive({
@@ -35,7 +36,7 @@ const rules = reactive({
   ],
   returnDate: [
     {
-      required: true,
+      required: form.roundTrip,
       message: "Please enter Return Date",
       trigger: "change",
     },
@@ -60,6 +61,14 @@ const onSubmit = async (formElement) => {
     label-width="130px"
     size="large"
   >
+    <el-form-item>
+      <el-switch
+        v-model="form.roundTrip"
+        class="mb-2"
+        active-text="Round Trip"
+        inactive-text="One Way"
+      />
+    </el-form-item>
     <el-form-item label="Leaving" prop="departureAirport">
       <el-autocomplete
         style="width: 100%"
@@ -84,7 +93,7 @@ const onSubmit = async (formElement) => {
         placeholder="Departure Date"
       />
     </el-form-item>
-    <el-form-item label="Return Date" prop="returnDate">
+    <el-form-item v-if="form.roundTrip" label="Return Date" prop="returnDate">
       <el-date-picker
         v-model="form.returnDate"
         type="date"

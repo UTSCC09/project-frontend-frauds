@@ -45,7 +45,7 @@ a,
   #app {
     display: flex;
     flex-direction: column;
-    gap: 10vh;
+    gap: 3rem;
   }
 }
 </style>
