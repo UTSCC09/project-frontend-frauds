@@ -32,7 +32,10 @@ const Airport = new Schema(
       async search(query, limit = 5) {
         const docs = await this.find(
           {
-            name: { $regex: `.*${query}.*`, $options: "i" },
+            $or: [
+              { name: { $regex: `.*${query}.*`, $options: "i" } },
+              { iata: { $regex: `.*${query}.*`, $options: "i" } },
+            ],
           },
           { airportId: 1, name: 1, city: 1, iata: 1 }
         ).limit(limit);
