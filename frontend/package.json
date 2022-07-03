@@ -8,6 +8,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
     "element-plus": "^2.2.8",
     "vue": "^3.2.37",
     "vue-router": "^4.0.16"

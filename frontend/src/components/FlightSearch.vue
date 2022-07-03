@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
+import { searchByName } from "../services/airlines.js";
 
 const formRef = ref(null);
 
@@ -50,6 +51,16 @@ const onSubmit = async (formElement) => {
     else console.log("error submit!", fields);
   });
 };
+
+const fetchSuggestions = async (query, cb) => {
+  const resp = await searchByName(query);
+  const results = resp.data.results.map(({ name, iata }) => {
+    return {
+      value: `${iata} - ${name}`,
+    };
+  });
+  cb(results);
+};
 </script>
 
 <template>
@@ -72,7 +83,8 @@ const onSubmit = async (formElement) => {
     <el-form-item label="Leaving" prop="departureAirport">
       <el-autocomplete
         style="width: 100%"
-        :fetch-suggestions="() => {}"
+        clearable
+        :fetch-suggestions="fetchSuggestions"
         v-model="form.departureAirport"
         placeholder="Departure Airport"
       />
@@ -80,7 +92,8 @@ const onSubmit = async (formElement) => {
     <el-form-item label="Arriving" prop="arrivalAirport">
       <el-autocomplete
         style="width: 100%"
-        :fetch-suggestions="() => {}"
+        clearable
+        :fetch-suggestions="fetchSuggestions"
         v-model="form.arrivalAirport"
         placeholder="Arrival Airport"
       />
