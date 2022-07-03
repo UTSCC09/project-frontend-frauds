@@ -29,6 +29,15 @@ const Airport = new Schema(
 
         return { count, docs };
       },
+      async search(query, limit = 5) {
+        const docs = await this.find(
+          {
+            name: { $regex: `.*${query}.*`, $options: "i" },
+          },
+          { airportId: 1, name: 1, city: 1, iata: 1 }
+        ).limit(limit);
+        return { results: docs };
+      },
     },
   }
 );
