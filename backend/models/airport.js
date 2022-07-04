@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import tokenize from "../utils/tokenize.js";
 
 const Airport = new Schema(
   {
@@ -29,17 +30,27 @@ const Airport = new Schema(
 
         return { count, docs };
       },
-      async search(query, limit = 5) {
+      async search(query, fields, limit = 5) {
+        const tokens = tokenize(query);
+
+        // regex's to conduct search
+        const searches = tokens.flatMap((token) => {
+          return fields.map((field) => {
+            return { [field]: { $regex: `.*${token}.*`, $options: "i" } };
+          });
+        });
+
+        // no searches to make
+        if (!searches.length) return { data: [] };
+
+        // search db
         const docs = await this.find(
-          {
-            $or: [
-              { name: { $regex: `.*${query}.*`, $options: "i" } },
-              { iata: { $regex: `.*${query}.*`, $options: "i" } },
-            ],
-          },
-          { airportId: 1, name: 1, city: 1, iata: 1 }
+          { $or: searches },
+          { airportId: 1, name: 1, iata: 1 }
         ).limit(limit);
-        return { results: docs };
+
+        // return results
+        return { data: docs };
       },
     },
   }
