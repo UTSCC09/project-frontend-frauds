@@ -8,8 +8,8 @@ const formRef = ref(null);
 const form = reactive({
   departureAirport: "",
   arrivalAirport: "",
-  departureDate: "",
-  returnDate: "",
+  departureDate: 0,
+  dateRange: [],
   roundTrip: true,
 });
 
@@ -35,10 +35,10 @@ const rules = reactive({
       trigger: "change",
     },
   ],
-  returnDate: [
+  dateRange: [
     {
       required: true,
-      message: "Please enter Return Date",
+      message: "Please provide Travel Dates",
       trigger: "change",
     },
   ],
@@ -98,7 +98,19 @@ const fetchSuggestions = async (query, cb) => {
         placeholder="Arrival Airport"
       />
     </el-form-item>
-    <el-form-item label="Departure Date" prop="departureDate">
+
+    <!-- conditional rendering of data picker -->
+    <el-form-item v-if="form.roundTrip" label="Travel Dates" prop="dateRange">
+      <el-date-picker
+        v-model="form.dateRange"
+        type="daterange"
+        range-separator="To"
+        start-placeholder="Departure date"
+        end-placeholder="Return date"
+        value-format="X"
+      />
+    </el-form-item>
+    <el-form-item v-else label="Departure Date" prop="departureDate">
       <el-date-picker
         v-model="form.departureDate"
         type="date"
@@ -106,22 +118,11 @@ const fetchSuggestions = async (query, cb) => {
         placeholder="Departure Date"
       />
     </el-form-item>
-    <el-form-item v-if="form.roundTrip" label="Return Date" prop="returnDate">
-      <el-date-picker
-        v-model="form.returnDate"
-        type="date"
-        value-format="X"
-        placeholder="Return Date"
-      />
-    </el-form-item>
+
     <el-form-item>
       <el-button type="primary" @click="onSubmit(formRef)">Search</el-button>
     </el-form-item>
   </el-form>
 </template>
 
-<style>
-.flight-search-form {
-  color: aliceblue;
-}
-</style>
+<style></style>
