@@ -1,10 +1,7 @@
-<script lang="ts" setup>
+<script setup>
 import { ref } from "vue";
 
 const activeIndex = ref("1");
-const handleSelect = (key, keyPath) => {
-  console.log(key, keyPath);
-};
 </script>
 
 <template>
@@ -14,10 +11,11 @@ const handleSelect = (key, keyPath) => {
     mode="horizontal"
     background-color="transparent"
     text-color="white"
+    router="true"
     @select="handleSelect"
   >
-    <el-menu-item index="1">Home</el-menu-item>
-    <el-menu-item index="2">Bookings</el-menu-item>
-    <el-menu-item index="3">Credits</el-menu-item>
+    <el-menu-item index="1" route="/">Home</el-menu-item>
+    <el-menu-item index="2" route="/bookings">Bookings</el-menu-item>
+    <el-menu-item index="3" route="/credits">Credits</el-menu-item>
   </el-menu>
 </template>

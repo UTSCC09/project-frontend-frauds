@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import { searchByName } from "../services/airlines.js";
+import { search } from "../services/airlines.js";
 
 const formRef = ref(null);
 
@@ -37,7 +37,7 @@ const rules = reactive({
   ],
   returnDate: [
     {
-      required: form.roundTrip,
+      required: true,
       message: "Please enter Return Date",
       trigger: "change",
     },
@@ -53,8 +53,8 @@ const onSubmit = async (formElement) => {
 };
 
 const fetchSuggestions = async (query, cb) => {
-  const resp = await searchByName(query);
-  const results = resp.data.results.map(({ name, iata }) => {
+  const resp = await search(query);
+  const results = resp.data.data.map(({ name, iata }) => {
     return {
       value: `${iata} - ${name}`,
     };
