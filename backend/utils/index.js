@@ -1,3 +1,4 @@
 import logger from "./logger.js";
+import tokenize from "./tokenize.js";
 
-export default logger;
+export { logger, tokenize };
