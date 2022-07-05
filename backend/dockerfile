@@ -14,4 +14,4 @@ RUN npm ci --production
 EXPOSE 3000
 
 # start application
-CMD npx --yes dotenv-vault@latest pull --dotenvMe $DOTENV_ME; npm start
+CMD npx --yes dotenv-vault@latest pull --dotenvMe $DOTENV_ME_BACKEND; npm start
