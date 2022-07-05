@@ -17,6 +17,7 @@ RUN npm ci
 COPY . .
 
 # build app for production with minification
+RUN npm run build
 
 EXPOSE 8080
-CMD npx --yes dotenv-vault@latest pull --dotenvMe $DOTENV_ME_FRONTEND; npm run dev
+CMD ["http-server", "dist"]
