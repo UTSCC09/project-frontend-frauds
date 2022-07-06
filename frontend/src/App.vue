@@ -4,8 +4,14 @@ import NavBar from "./components/NavBar.vue";
 </script>
 
 <template>
-  <NavBar />
-  <RouterView />
+  <el-container>
+    <el-header>
+      <NavBar />
+    </el-header>
+    <el-main>
+      <RouterView />
+    </el-main>
+  </el-container>
 </template>
 
 <style>
@@ -17,11 +23,6 @@ import NavBar from "./components/NavBar.vue";
   padding: 2rem;
   width: 60vw;
   font-weight: normal;
-}
-
-header {
-  line-height: 1.5;
-  max-height: 100vh;
 }
 
 a,

@@ -1,8 +1,10 @@
 import express from "express";
 import rootRoutes from "./routes/root.js";
 import airportRoutes from "./routes/airport.js";
+import airlineRoutes from "./routes/airline.js";
+import planeRoutes from "./routes/plane.js";
 import bodyParser from "body-parser";
-import {logger} from "../utils/index.js";
+import { logger } from "../utils/index.js";
 import cors from "cors";
 
 const app = express();
@@ -18,6 +20,8 @@ app.use(({ method, url, body }, _res, next) => {
 
 // register routes
 app.use("/api", rootRoutes);
+app.use("/api/planes", planeRoutes);
+app.use("/api/airlines", airlineRoutes);
 app.use("/api/airports", airportRoutes);
 
 export default app;
