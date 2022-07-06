@@ -57,7 +57,7 @@ jobs:
             docker run -d \
             --name $IMAGE_NAME \
             -p 3000:3000 \
-            -e DOTENV_ME=${{ secrets.DOTENV_ME_BACKEND }} \
+            -e DOTENV_ME_BACKEND=${{ secrets.DOTENV_ME_BACKEND }} \
             $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
             # Delete Unused Data
             docker system prune -f
