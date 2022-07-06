@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import { search } from "../services/airlines.js";
+import { searchAirports } from "../services/airport.js";
 
 const formRef = ref(null);
 
@@ -53,7 +53,7 @@ const onSubmit = async (formElement) => {
 };
 
 const fetchSuggestions = async (query, cb) => {
-  const resp = await search(query);
+  const resp = await searchAirports(query);
   const results = resp.data.data.map(({ name, iata }) => {
     return {
       value: `${iata} - ${name}`,
