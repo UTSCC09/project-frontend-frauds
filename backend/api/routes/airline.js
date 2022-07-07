@@ -11,8 +11,16 @@ router.post(
   "/search",
   checkSchema(searchSchema),
   validateSchema,
-  async (req, res) => {
-    res.json(await Airline.search(req.body.query, req.body.fields));
+  async ({ body }, res) => {
+    res.json(
+      await Airline.search(
+        body.query,
+        body.fields,
+        body.match,
+        body.include,
+        body.exclude
+      )
+    );
   }
 );
 
