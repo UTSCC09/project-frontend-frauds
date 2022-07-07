@@ -99,8 +99,6 @@ const onSubmit = async (formElement) => {
   });
 };
 
-const fetchSuggestions = () => {};
-
 const fetchAirlineSuggestions = async (query, cb) => {
   const resp = await searchAirlines(query);
   const results = resp.data.data.map(({ name, iata }) => {
