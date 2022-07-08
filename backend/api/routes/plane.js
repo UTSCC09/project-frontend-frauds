@@ -13,13 +13,7 @@ router.post(
   validateSchema,
   async ({ body }, res) => {
     res.json(
-      await Plane.search(
-        body.query,
-        body.fields,
-        body.match,
-        body.include,
-        body.exclude
-      )
+      await Plane.search(body.query, body.match, body.include, body.exclude)
     );
   }
 );
