@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { searchAirlines } from "../services/airline";
-import { searchAirports } from "../services/airport";
+import { searchRoutes } from "../services/route";
 import { searchPlanes } from "../services/plane";
 const formRef = ref(null);
 
@@ -101,6 +101,22 @@ const onSubmit = async (formElement) => {
 
 const fetchAirlineSuggestions = async (query, cb) => {
   const resp = await searchAirlines(query);
+  const results = resp.data.data.map(({ name, iata, airlineId }) => {
+    return {
+      value: `${iata} - ${name}`,
+      airlineId,
+    };
+  });
+  cb(results);
+};
+
+const fetchDepartureAirportSuggestions = async (query, cb) => {
+  const resp = await searchRoutes(query, {
+    airplane: form.airline.split("-")[0],
+  });
+
+  console.log(resp.data.data);
+
   const results = resp.data.data.map(({ name, iata }) => {
     return {
       value: `${iata} - ${name}`,
@@ -109,8 +125,13 @@ const fetchAirlineSuggestions = async (query, cb) => {
   cb(results);
 };
 
-const fetchAirportSuggestions = async (query, cb) => {
-  const resp = await searchAirports(query);
+const fetchArrivalAirportSuggestions = async (query, cb) => {
+  const resp = await searchRoutes(query, {
+    airplane: form.airline.split("-")[0],
+  });
+
+  console.log(resp.data.data);
+
   const results = resp.data.data.map(({ name, iata }) => {
     return {
       value: `${iata} - ${name}`,
@@ -124,6 +145,8 @@ const fetchPlaneSuggestions = async (query, cb) => {
   const results = resp.data.data.map(({ name, iata }) => {
     return {
       value: `${iata} - ${name}`,
+      name,
+      iata,
     };
   });
   cb(results);
@@ -148,20 +171,11 @@ const fetchPlaneSuggestions = async (query, cb) => {
         placeholder="Airline (ex. Air Canada)"
       />
     </el-form-item>
-    <el-form-item label="Airplane" prop="airplane">
-      <el-autocomplete
-        style="width: 100%"
-        clearable
-        :fetch-suggestions="fetchPlaneSuggestions"
-        v-model="form.airplane"
-        placeholder="Airplane (ex. Boeing 770)"
-      />
-    </el-form-item>
     <el-form-item label="Leaving" prop="departureAirport">
       <el-autocomplete
         style="width: 100%"
         clearable
-        :fetch-suggestions="fetchAirportSuggestions"
+        :fetch-suggestions="fetchDepartureAirportSuggestions"
         v-model="form.departureAirport"
         placeholder="Departure Airport (ex. YYZ)"
       />
@@ -170,9 +184,18 @@ const fetchPlaneSuggestions = async (query, cb) => {
       <el-autocomplete
         style="width: 100%"
         clearable
-        :fetch-suggestions="fetchAirportSuggestions"
+        :fetch-suggestions="fetchArrivalAirportSuggestions"
         v-model="form.arrivalAirport"
         placeholder="Arrival Airport (ex. CDG)"
+      />
+    </el-form-item>
+    <el-form-item label="Airplane" prop="airplane">
+      <el-autocomplete
+        style="width: 100%"
+        clearable
+        :fetch-suggestions="fetchPlaneSuggestions"
+        v-model="form.airplane"
+        placeholder="Airplane (ex. Boeing 770)"
       />
     </el-form-item>
 

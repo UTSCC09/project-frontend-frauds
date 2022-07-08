@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
-import generateSearch from "../api/helpers/search.js";
+import { generateSearch } from "../api/helpers/index.js";
 
 const Airline = new Schema(
   {
@@ -31,8 +31,6 @@ const Airline = new Schema(
           include,
           exclude
         );
-
-        console.log(searchObj);
 
         // no results
         if (!searchObj) return { data: [] };

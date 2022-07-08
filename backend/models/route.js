@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import { generateSearch } from "../api/helpers/index.js";
 
 const Route = new Schema(
   {
@@ -26,6 +27,25 @@ const Route = new Schema(
           .limit(limit);
 
         return { count, docs };
+      },
+      async search(query, fields, match, include, exclude, limit = 5) {
+        const searchObj = generateSearch(
+          query,
+          fields,
+          match,
+          include,
+          exclude
+        );
+
+        // no results
+        if (!searchObj) return { data: [] };
+
+        // return results
+        return {
+          data: await this.find(searchObj.query, searchObj.projection).limit(
+            limit
+          ),
+        };
       },
     },
   }

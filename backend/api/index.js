@@ -3,6 +3,7 @@ import rootRoutes from "./routes/root.js";
 import airportRoutes from "./routes/airport.js";
 import airlineRoutes from "./routes/airline.js";
 import planeRoutes from "./routes/plane.js";
+import routeRoutes from "./routes/route.js";
 import bodyParser from "body-parser";
 import { logger } from "../utils/index.js";
 import cors from "cors";
@@ -23,5 +24,6 @@ app.use("/api", rootRoutes);
 app.use("/api/planes", planeRoutes);
 app.use("/api/airlines", airlineRoutes);
 app.use("/api/airports", airportRoutes);
+app.use("/api/routes", routeRoutes);
 
 export default app;
