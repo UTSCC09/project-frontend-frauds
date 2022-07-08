@@ -1,12 +1,12 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { searchAirlines } from "../services/airline";
 import { searchRoutes } from "../services/route";
 import { searchPlanes } from "../services/plane";
 const formRef = ref(null);
 
 // do not use same name with ref
 const form = reactive({
+  route: "",
   airline: "",
   airplane: "",
   departureAirport: "",
@@ -18,10 +18,10 @@ const form = reactive({
 });
 
 const rules = reactive({
-  airline: [
+  route: [
     {
       required: true,
-      message: "Please select airline",
+      message: "Please select route",
       trigger: "change",
     },
   ],
@@ -29,20 +29,6 @@ const rules = reactive({
     {
       required: true,
       message: "Please select airplane",
-      trigger: "change",
-    },
-  ],
-  departureAirport: [
-    {
-      required: true,
-      message: "Please select Departure Airport",
-      trigger: "change",
-    },
-  ],
-  arrivalAirport: [
-    {
-      required: true,
-      message: "Please select Arrival Airport",
       trigger: "change",
     },
   ],
@@ -99,47 +85,6 @@ const onSubmit = async (formElement) => {
   });
 };
 
-const fetchAirlineSuggestions = async (query, cb) => {
-  const resp = await searchAirlines(query);
-  const results = resp.data.data.map(({ name, iata, airlineId }) => {
-    return {
-      value: `${iata} - ${name}`,
-      airlineId,
-    };
-  });
-  cb(results);
-};
-
-const fetchDepartureAirportSuggestions = async (query, cb) => {
-  const resp = await searchRoutes(query, {
-    airplane: form.airline.split("-")[0],
-  });
-
-  console.log(resp.data.data);
-
-  const results = resp.data.data.map(({ name, iata }) => {
-    return {
-      value: `${iata} - ${name}`,
-    };
-  });
-  cb(results);
-};
-
-const fetchArrivalAirportSuggestions = async (query, cb) => {
-  const resp = await searchRoutes(query, {
-    airplane: form.airline.split("-")[0],
-  });
-
-  console.log(resp.data.data);
-
-  const results = resp.data.data.map(({ name, iata }) => {
-    return {
-      value: `${iata} - ${name}`,
-    };
-  });
-  cb(results);
-};
-
 const fetchPlaneSuggestions = async (query, cb) => {
   const resp = await searchPlanes(query);
   const results = resp.data.data.map(({ name, iata }) => {
@@ -149,6 +94,20 @@ const fetchPlaneSuggestions = async (query, cb) => {
       iata,
     };
   });
+  cb(results);
+};
+
+const fetchRouteSuggestions = async (query, cb) => {
+  const resp = await searchRoutes(query);
+  const results = resp.data.data.map(
+    ({ routeId, sourceAirport, destAirport, airline, name, iata }) => {
+      return {
+        value: `[ROUTE ${routeId}] ${sourceAirport} -> ${destAirport} via Airline ${airline} `,
+        name,
+        iata,
+      };
+    }
+  );
   cb(results);
 };
 </script>
@@ -162,29 +121,38 @@ const fetchPlaneSuggestions = async (query, cb) => {
     label-width="250px"
     size="large"
   >
-    <el-form-item label="Airline" prop="airline">
+    <el-form-item label="Route" prop="route">
       <el-autocomplete
         style="width: 100%"
         clearable
-        :fetch-suggestions="fetchAirlineSuggestions"
+        :fetch-suggestions="fetchRouteSuggestions"
+        v-model="form.route"
+        placeholder="Route (ex. [ROUTE 1] AER -> KZN via Airline 2B)"
+      />
+    </el-form-item>
+    <el-form-item label="Airline">
+      <el-input
+        style="width: 100%"
+        readonly
+        disabled
         v-model="form.airline"
         placeholder="Airline (ex. Air Canada)"
       />
     </el-form-item>
-    <el-form-item label="Leaving" prop="departureAirport">
-      <el-autocomplete
+    <el-form-item label="Leaving">
+      <el-input
         style="width: 100%"
-        clearable
-        :fetch-suggestions="fetchDepartureAirportSuggestions"
+        readonly
+        disabled
         v-model="form.departureAirport"
         placeholder="Departure Airport (ex. YYZ)"
       />
     </el-form-item>
-    <el-form-item label="Arriving" prop="arrivalAirport">
-      <el-autocomplete
+    <el-form-item label="Arriving">
+      <el-input
         style="width: 100%"
-        clearable
-        :fetch-suggestions="fetchArrivalAirportSuggestions"
+        readonly
+        disabled
         v-model="form.arrivalAirport"
         placeholder="Arrival Airport (ex. CDG)"
       />
