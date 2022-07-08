@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
-import { generateSearch } from "../api/helpers/index.js";
+import { generateProjection } from "../api/helpers/index.js";
 
 const Route = new Schema(
   {
+    routeId: String,
     airline: String,
     airlineId: String,
     sourceAirport: String,
@@ -14,7 +15,6 @@ const Route = new Schema(
     stops: String,
     equipment: {
       type: String,
-      get: (v) => v.split(" "),
     },
   },
   {
