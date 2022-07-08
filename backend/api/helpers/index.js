@@ -1,3 +1,5 @@
-import generateSearch from "./search.js";
+import { generateProjection } from "./search.js";
 
-export { generateSearch };
+const generateSearch = () => {};
+
+export { generateProjection, generateSearch };

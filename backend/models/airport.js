@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
-import { generateSearch } from "../api/helpers/index.js";
+import { generateProjection } from "../api/helpers/index.js";
 
 const Airport = new Schema(
   {
@@ -30,24 +30,23 @@ const Airport = new Schema(
 
         return { count, docs };
       },
-      async search(query, fields, match, include, exclude, limit = 5) {
-        const searchObj = generateSearch(
-          query,
-          fields,
-          match,
-          include,
-          exclude
-        );
-
+      async search(query, match, include, exclude, limit = 10) {
         // no results
-        if (!searchObj) return { data: [] };
+        if (!query) return { data: [] };
+
+        // conduct search
+        const docs = await this.find(
+          { $text: { $search: query } },
+          {
+            score: { $meta: "textScore" },
+            ...generateProjection(include, exclude),
+          }
+        )
+          .sort({ score: { $meta: "textScore" } })
+          .limit(limit);
 
         // return results
-        return {
-          data: await this.find(searchObj.query, searchObj.projection).limit(
-            limit
-          ),
-        };
+        return { data: docs };
       },
     },
   }
