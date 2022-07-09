@@ -1,7 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { searchRoutes } from "../services/route";
-import { searchPlanes } from "../services/plane";
 
 // form ref
 const formRef = ref(null);
@@ -89,9 +88,18 @@ const onSubmit = async (formElement) => {
 };
 
 const handleRouteSelect = (e) => {
-  form.airline = `${e.airlineData[0].iata} - ${e.airlineData[0].name}`;
-  form.arrivalAirport = `${e.sourceAirportData[0].iata} - ${e.sourceAirportData[0].name}`;
-  form.departureAirport = `${e.destAirportData[0].iata} - ${e.destAirportData[0].name}`;
+  form.airline = `${e.airlineData[0].iata} - ${
+    e.airlineData[0].name
+  } (${e.airlineData[0].country.toUpperCase()})`;
+
+  form.arrivalAirport = `${e.sourceAirportData[0].iata} - ${
+    e.sourceAirportData[0].name
+  } (${e.sourceAirportData[0].city.toUpperCase()}, ${e.sourceAirportData[0].country.toUpperCase()})`;
+
+  form.departureAirport = `${e.destAirportData[0].iata} - ${
+    e.destAirportData[0].name
+  } (${e.destAirportData[0].city.toUpperCase()}, ${e.destAirportData[0].country.toUpperCase()})`;
+
   form.airplaneOptions = [...e.equipmentListData];
   form.airplane = ""; // refresh airplane
 };
@@ -101,7 +109,7 @@ const fetchRouteSuggestions = async (query, cb) => {
   const results = resp.data.data.map(
     ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {
-        value: `[ROUTE ${routeId}] ${sourceAirport} to ${destAirport} via ${airline} `,
+        value: `[ROUTE ${routeId}] ${sourceAirport} → ${destAirport} via ${airline} `,
         routeId,
         sourceAirport,
         destAirport,
@@ -131,7 +139,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         :fetch-suggestions="fetchRouteSuggestions"
         @select="handleRouteSelect"
         v-model="form.route"
-        placeholder="Route (ex. [ROUTE 1] AER to KZN via 2B)"
+        placeholder="Please enter Route Number/Airport/Airline "
       />
     </el-form-item>
 
