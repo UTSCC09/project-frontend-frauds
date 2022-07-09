@@ -2,15 +2,17 @@
 import { reactive, ref } from "vue";
 import { searchRoutes } from "../services/route";
 import { searchPlanes } from "../services/plane";
+
+// form ref
 const formRef = ref(null);
 
 // do not use same name with ref
 const form = reactive({
   route: "",
   airline: "",
-  airplane: "",
-  departureAirport: "",
   arrivalAirport: "",
+  departureAirport: "",
+  airplane: "",
   dateRange: [],
   firstClassPrice: 0,
   businessClassPrice: 0,
@@ -85,6 +87,12 @@ const onSubmit = async (formElement) => {
   });
 };
 
+const handleRouteSelect = (e) => {
+  form.airline = `${e.airlineData[0].iata}  - ${e.airlineData[0].name}`;
+  form.arrivalAirport = `${e.sourceAirportData[0].iata}  - ${e.sourceAirportData[0].name}`;
+  form.departureAirport = `${e.destAirportData[0].iata}  - ${e.destAirportData[0].name}`;
+};
+
 const fetchPlaneSuggestions = async (query, cb) => {
   const resp = await searchPlanes(query);
   const results = resp.data.data.map(({ name, iata }) => {
@@ -100,11 +108,14 @@ const fetchPlaneSuggestions = async (query, cb) => {
 const fetchRouteSuggestions = async (query, cb) => {
   const resp = await searchRoutes(query);
   const results = resp.data.data.map(
-    ({ routeId, sourceAirport, destAirport, airline, name, iata }) => {
+    ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {
-        value: `[ROUTE ${routeId}] ${sourceAirport} -> ${destAirport} via Airline ${airline} `,
-        name,
-        iata,
+        value: `[ROUTE ${routeId}] ${sourceAirport} --> ${destAirport} via Airline ${airline} `,
+        routeId,
+        sourceAirport,
+        destAirport,
+        airline,
+        ...rest,
       };
     }
   );
@@ -121,22 +132,26 @@ const fetchRouteSuggestions = async (query, cb) => {
     label-width="250px"
     size="large"
   >
+    <!-- Route Picker -->
     <el-form-item label="Route" prop="route">
       <el-autocomplete
         style="width: 100%"
         clearable
         :fetch-suggestions="fetchRouteSuggestions"
+        @select="handleRouteSelect"
         v-model="form.route"
         placeholder="Route (ex. [ROUTE 1] AER -> KZN via Airline 2B)"
       />
     </el-form-item>
+
+    <!-- Static Fields -->
     <el-form-item label="Airline">
       <el-input
         style="width: 100%"
         readonly
         disabled
         v-model="form.airline"
-        placeholder="Airline (ex. Air Canada)"
+        placeholder="Airline"
       />
     </el-form-item>
     <el-form-item label="Leaving">
@@ -145,7 +160,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         readonly
         disabled
         v-model="form.departureAirport"
-        placeholder="Departure Airport (ex. YYZ)"
+        placeholder="Departure Airport"
       />
     </el-form-item>
     <el-form-item label="Arriving">
@@ -154,7 +169,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         readonly
         disabled
         v-model="form.arrivalAirport"
-        placeholder="Arrival Airport (ex. CDG)"
+        placeholder="Arrival Airport"
       />
     </el-form-item>
     <el-form-item label="Airplane" prop="airplane">
@@ -168,7 +183,7 @@ const fetchRouteSuggestions = async (query, cb) => {
     </el-form-item>
 
     <!-- date -->
-    <el-form-item label="Travel Dates" prop="dateRange">
+    <el-form-item label="Flight Dates" prop="dateRange">
       <el-date-picker
         v-model="form.dateRange"
         type="datetimerange"
