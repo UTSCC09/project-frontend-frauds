@@ -13,6 +13,7 @@ const form = reactive({
   arrivalAirport: "",
   departureAirport: "",
   airplane: "",
+  airplaneOptions: [],
   dateRange: [],
   firstClassPrice: 0,
   businessClassPrice: 0,
@@ -88,21 +89,11 @@ const onSubmit = async (formElement) => {
 };
 
 const handleRouteSelect = (e) => {
-  form.airline = `${e.airlineData[0].iata}  - ${e.airlineData[0].name}`;
-  form.arrivalAirport = `${e.sourceAirportData[0].iata}  - ${e.sourceAirportData[0].name}`;
-  form.departureAirport = `${e.destAirportData[0].iata}  - ${e.destAirportData[0].name}`;
-};
-
-const fetchPlaneSuggestions = async (query, cb) => {
-  const resp = await searchPlanes(query);
-  const results = resp.data.data.map(({ name, iata }) => {
-    return {
-      value: `${iata} - ${name}`,
-      name,
-      iata,
-    };
-  });
-  cb(results);
+  form.airline = `${e.airlineData[0].iata} - ${e.airlineData[0].name}`;
+  form.arrivalAirport = `${e.sourceAirportData[0].iata} - ${e.sourceAirportData[0].name}`;
+  form.departureAirport = `${e.destAirportData[0].iata} - ${e.destAirportData[0].name}`;
+  form.airplaneOptions = [...e.equipmentListData];
+  console.log(form.airplaneOptions);
 };
 
 const fetchRouteSuggestions = async (query, cb) => {
@@ -110,7 +101,7 @@ const fetchRouteSuggestions = async (query, cb) => {
   const results = resp.data.data.map(
     ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {
-        value: `[ROUTE ${routeId}] ${sourceAirport} --> ${destAirport} via Airline ${airline} `,
+        value: `[ROUTE ${routeId}] ${sourceAirport} to ${destAirport} via ${airline} `,
         routeId,
         sourceAirport,
         destAirport,
@@ -140,7 +131,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         :fetch-suggestions="fetchRouteSuggestions"
         @select="handleRouteSelect"
         v-model="form.route"
-        placeholder="Route (ex. [ROUTE 1] AER -> KZN via Airline 2B)"
+        placeholder="Route (ex. [ROUTE 1] AER to KZN via 2B)"
       />
     </el-form-item>
 
@@ -173,13 +164,13 @@ const fetchRouteSuggestions = async (query, cb) => {
       />
     </el-form-item>
     <el-form-item label="Airplane" prop="airplane">
-      <el-autocomplete
-        style="width: 100%"
-        clearable
-        :fetch-suggestions="fetchPlaneSuggestions"
-        v-model="form.airplane"
-        placeholder="Airplane (ex. Boeing 770)"
-      />
+      <el-select v-model="form.airplane" placeholder="Select Airplane">
+        <el-option
+          v-for="item in form.airplaneOptions"
+          :key="item.name"
+          :value="item.name"
+        />
+      </el-select>
     </el-form-item>
 
     <!-- date -->
@@ -222,3 +213,9 @@ const fetchRouteSuggestions = async (query, cb) => {
     </el-form-item>
   </el-form>
 </template>
+
+<style>
+.el-select {
+  flex: 1;
+}
+</style>
