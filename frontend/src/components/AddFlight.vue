@@ -93,7 +93,7 @@ const handleRouteSelect = (e) => {
   form.arrivalAirport = `${e.sourceAirportData[0].iata} - ${e.sourceAirportData[0].name}`;
   form.departureAirport = `${e.destAirportData[0].iata} - ${e.destAirportData[0].name}`;
   form.airplaneOptions = [...e.equipmentListData];
-  console.log(form.airplaneOptions);
+  form.airplane = ""; // refresh airplane
 };
 
 const fetchRouteSuggestions = async (query, cb) => {
