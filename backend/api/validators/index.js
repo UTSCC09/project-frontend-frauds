@@ -1,3 +1,4 @@
-import search from "./search.js";
+import searchValidator from "./searchValidator.js";
+import flightValidator from "./flightValidator.js";
 
-export { search };
+export { searchValidator, flightValidator };
