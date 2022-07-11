@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
-import { generateSearch } from "../api/helpers/index.js";
 
 const Plane = new Schema(
   {
     name: String,
+    planeId: String,
     iata: String,
     icao: String,
     passengerCapacity: Number,

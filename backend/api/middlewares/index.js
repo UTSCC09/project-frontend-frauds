@@ -1,3 +1,3 @@
-import validateSchema from "./validateSchema.js";
+import validateSchemaMiddleware from "./validateSchemaMiddleware.js";
 
-export { validateSchema };
+export { validateSchemaMiddleware };

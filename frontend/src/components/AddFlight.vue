@@ -1,12 +1,16 @@
 <script setup>
 import { reactive, ref } from "vue";
+import { addFlight } from "../services/flight";
 import { searchRoutes } from "../services/route";
+import { ElMessage } from "element-plus";
 
 // form ref
 const formRef = ref(null);
 
 // do not use same name with ref
 const form = reactive({
+  routeId: "",
+  planeId: "",
   route: "",
   airline: "",
   arrivalAirport: "",
@@ -38,7 +42,7 @@ const rules = reactive({
     {
       required: true,
       message: "Please enter Arrival and Departure Dates",
-      trigger: "change",
+      trigger: "focus"
     },
   ],
   firstClassPrice: [
@@ -79,29 +83,85 @@ const rules = reactive({
   ],
 });
 
+// submit handler
 const onSubmit = async (formElement) => {
   if (!formElement) return;
-  await formElement.validate((valid, fields) => {
-    if (valid) formElement.resetFields();
-    else console.log("error submit!", fields);
+
+  await formElement.validate(async (valid, _fields) => {
+    if (valid) {
+      const body = {
+        routeId: form.routeId,
+        planeId: form.planeId,
+        departureTime: form.dateRange[0],
+        arrivalTime: form.dateRange[1],
+        duration: form.dateRange[1] - form.dateRange[0],
+        price: {
+          economy: form.economyClassPrice,
+          business: form.businessClassPrice,
+          firstClass: form.firstClassPrice,
+        },
+      };
+
+      // add flight
+      await addFlight(body);
+
+      // show message
+      ElMessage({
+        message: "Flight successfully added to system.",
+        type: "success",
+      });
+
+      // reset form
+      formElement.resetFields();
+      form.airline = "";
+      form.arrivalAirport = "";
+      form.departureAirport = "";
+      form.dateRange = [];
+    } else {
+      // show message
+      ElMessage({
+        message: "Error adding flight to system.",
+        type: "error",
+      });
+    }
   });
 };
 
+// update form when route is selected
 const handleRouteSelect = (e) => {
+  if (!e) return;
+
+  // save route id
+  form.routeId = e.routeId;
+
+  // update airline
   form.airline = `${e.airlineData[0].iata} - ${
     e.airlineData[0].name
   } (${e.airlineData[0].country.toUpperCase()})`;
 
-  form.arrivalAirport = `${e.sourceAirportData[0].iata} - ${
+  // update departure airport
+  form.departureAirport = `${e.sourceAirportData[0].iata} - ${
     e.sourceAirportData[0].name
   } (${e.sourceAirportData[0].city.toUpperCase()}, ${e.sourceAirportData[0].country.toUpperCase()})`;
 
-  form.departureAirport = `${e.destAirportData[0].iata} - ${
+  // update arrival airport
+  form.arrivalAirport = `${e.destAirportData[0].iata} - ${
     e.destAirportData[0].name
   } (${e.destAirportData[0].city.toUpperCase()}, ${e.destAirportData[0].country.toUpperCase()})`;
 
+  // update list of airplanes
   form.airplaneOptions = [...e.equipmentListData];
-  form.airplane = ""; // refresh airplane
+
+  // refresh airplane
+  form.airplane = "";
+};
+
+// save selected plane
+const handlePlaneSelect = (e) => {
+  if (!e) return;
+
+  // update selected plan
+  form.planeId = e.substring(7, e.indexOf("]")).trim();
 };
 
 const fetchRouteSuggestions = async (query, cb) => {
@@ -171,12 +231,18 @@ const fetchRouteSuggestions = async (query, cb) => {
         placeholder="Arrival Airport"
       />
     </el-form-item>
+
+    <!-- Plane Select -->
     <el-form-item label="Airplane" prop="airplane">
-      <el-select v-model="form.airplane" placeholder="Select Airplane">
+      <el-select
+        v-model="form.airplane"
+        placeholder="Select Airplane"
+        @change="handlePlaneSelect"
+      >
         <el-option
           v-for="item in form.airplaneOptions"
           :key="item.name"
-          :value="item.name"
+          :value="`[PLANE ${item.planeId}] ${item.name}`"
         />
       </el-select>
     </el-form-item>
@@ -188,7 +254,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         type="datetimerange"
         range-separator="To"
         start-placeholder="Departure date"
-        end-placeholder="Return date"
+        end-placeholder="Arrival date"
         value-format="X"
       />
     </el-form-item>

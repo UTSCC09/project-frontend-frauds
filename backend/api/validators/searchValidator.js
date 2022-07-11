@@ -1,4 +1,4 @@
-export const searchSchema = {
+export default {
   query: {
     in: ["body"],
     exists: {
