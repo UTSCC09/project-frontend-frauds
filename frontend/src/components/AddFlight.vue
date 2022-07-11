@@ -42,7 +42,7 @@ const rules = reactive({
     {
       required: true,
       message: "Please enter Arrival and Departure Dates",
-      trigger: "focus"
+      trigger: "focus",
     },
   ],
   firstClassPrice: [
@@ -87,7 +87,7 @@ const rules = reactive({
 const onSubmit = async (formElement) => {
   if (!formElement) return;
 
-  await formElement.validate(async (valid, _fields) => {
+  await formElement.validate(async (valid) => {
     if (valid) {
       const body = {
         routeId: form.routeId,
