@@ -5,16 +5,13 @@ FROM node:lts-alpine@sha256:c785e617c8d7015190c0d41af52cc69be8a16e3d9eb7cb21f0bb
 WORKDIR /usr/src/app
 
 # copy files to container
-COPY --chown=node:node . /usr/src/app
+COPY . /usr/src/app
 
 # install node packages
-RUN npm install
-
-# run as node user
-USER node
+RUN npm ci --production
 
 # expose container port
 EXPOSE 3000
 
 # start application
-CMD "npm" "start"
+CMD npx --yes dotenv-vault@latest pull --dotenvMe $DOTENV_ME_BACKEND; npm start
