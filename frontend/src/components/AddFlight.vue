@@ -283,7 +283,9 @@ const fetchRouteSuggestions = async (query, cb) => {
     </el-form-item>
 
     <el-form-item>
-      <el-button type="primary" @click="onSubmit(formRef)">Search</el-button>
+      <el-button type="primary" @click="onSubmit(formRef)"
+        >Add Flight</el-button
+      >
     </el-form-item>
   </el-form>
 </template>
