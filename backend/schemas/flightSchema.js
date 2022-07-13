@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import { Route } from "../models/index.js";
+import { AirlineSchema, PlaneSchema, AirportSchema } from "./index.js";
 
 const Flight = new mongoose.Schema(
   {
@@ -13,6 +15,10 @@ const Flight = new mongoose.Schema(
       business: Schema.Types.Decimal128,
       firstClass: Schema.Types.Decimal128,
     },
+    airlineData: [AirlineSchema],
+    sourceAirportData: [AirportSchema],
+    destAirportData: [AirportSchema],
+    equipmentListData: [PlaneSchema],
   },
   {
     statics: {
@@ -33,13 +39,28 @@ const Flight = new mongoose.Schema(
         duration,
         price
       ) {
-        const resp = await this.create({
+        // find current route
+        const {
+          airlineData,
+          sourceAirportData,
+          destAirportData,
+          equipmentListData,
+        } = await Route.findOne({
+          routeId,
+        });
+
+        // create flight
+        await this.create({
           routeId,
           planeId,
           departureTime,
           arrivalTime,
           duration,
           price,
+          airlineData,
+          sourceAirportData,
+          destAirportData,
+          equipmentListData,
         });
       },
     },
