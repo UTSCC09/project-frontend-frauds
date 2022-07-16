@@ -8,7 +8,10 @@ const props = defineProps({
   },
 });
 
+// seat that is currently selected
 const seat = reactive({ x: 0, y: 0 });
+
+// seat selected or not
 const seatSelected = ref(false);
 
 // determine seat price
@@ -25,6 +28,7 @@ const getSeatPrice = (seat) => {
   return `$${price}`;
 };
 
+// on click for seat
 const onClickSeat = (e, x, y) => {
   if (!seatSelected.value) {
     Object.assign(seat, { x, y });
@@ -39,7 +43,10 @@ const onClickSeat = (e, x, y) => {
 </script>
 
 <template>
-  <h3>Selected Seat: ({{ seat.x }}, {{ seat.y }})</h3>
+  <el-row>
+    <h3>Selected Seat: ({{ seat.x }}, {{ seat.y }})</h3>
+    <el-button type="success">Purchase</el-button>
+  </el-row>
   <div class="seats-container">
     <el-row v-for="(row, x) in flight.equipmentListData.seats" :key="x">
       <el-col class="flex-1" v-for="(seat, y) in row" :key="y" :span="2">
@@ -64,6 +71,7 @@ const onClickSeat = (e, x, y) => {
 <style scoped>
 h3 {
   margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 
 .flex-1 {
@@ -83,6 +91,7 @@ h3 {
 }
 
 .seat {
+  user-select: none;
   color: white;
   font-weight: bold;
   display: flex;
