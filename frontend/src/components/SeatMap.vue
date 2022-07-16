@@ -54,11 +54,11 @@ const onClickSeat = (e, x, y) => {
           class="seat-wrapper"
           @click="(e) => onClickSeat(e, x, y)"
           :class="{
+            seat: seat !== -1,
+            reserved: seat === 0,
             'first-class': seat === 1,
             'business-class': seat === 2,
             'economy-class': seat === 3,
-            barrier: seat === -1,
-            seat: seat !== -1,
           }"
         >
           {{ getSeatPrice(seat) }}
@@ -86,8 +86,9 @@ h3 {
   background: rgba(1, 1, 1, 0.072);
 }
 
-.seat:hover {
-  opacity: 0.7;
+.seat:not(.reserved, .selected):hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
 
 .seat {
@@ -101,10 +102,6 @@ h3 {
   border-radius: 10px;
   width: 50px;
   height: 50px;
-}
-
-.barrier {
-  background: rgb(7, 121, 159);
 }
 
 .first-class {
@@ -122,6 +119,12 @@ h3 {
 .selected {
   background: gray;
   opacity: 0.5;
+}
+
+.reserved {
+  cursor: default;
+  background: lightgray;
+  opacity: 0.8;
 }
 
 .el-row {
