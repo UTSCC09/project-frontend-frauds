@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 import { Route } from "../models/index.js";
 import { AirlineSchema, PlaneSchema, AirportSchema } from "./index.js";
+import {
+  timestampGetEndOfDay,
+  timestampGetStartOfDay,
+} from "../utils/index.js";
 
 const Flight = new mongoose.Schema(
   {
@@ -11,14 +15,14 @@ const Flight = new mongoose.Schema(
     arrivalTime: Number,
     duration: Number,
     price: {
-      economy: Schema.Types.Decimal128,
-      business: Schema.Types.Decimal128,
-      firstClass: Schema.Types.Decimal128,
+      economy: Number,
+      business: Number,
+      firstClass: Number,
     },
-    airlineData: [AirlineSchema],
-    sourceAirportData: [AirportSchema],
-    destAirportData: [AirportSchema],
-    equipmentListData: [PlaneSchema],
+    airlineData: AirlineSchema,
+    sourceAirportData: AirportSchema,
+    destAirportData: AirportSchema,
+    equipmentListData: PlaneSchema,
   },
   {
     statics: {
@@ -57,11 +61,39 @@ const Flight = new mongoose.Schema(
           arrivalTime,
           duration,
           price,
-          airlineData,
-          sourceAirportData,
-          destAirportData,
-          equipmentListData,
+          airlineData: airlineData[0],
+          sourceAirportData: sourceAirportData[0],
+          destAirportData: destAirportData[0],
+          equipmentListData: equipmentListData[0],
         });
+      },
+      async findOneWayFlights(sourceAirport, destAirport, departureTime) {
+        return await this.aggregate([
+          {
+            $match: {
+              "sourceAirportData.iata": sourceAirport,
+            },
+          },
+          {
+            $match: {
+              "destAirportData.iata": destAirport,
+            },
+          },
+          {
+            $match: {
+              $and: [
+                {
+                  departureTime: {
+                    $gte: timestampGetStartOfDay(departureTime),
+                  },
+                },
+                {
+                  departureTime: { $lte: timestampGetEndOfDay(departureTime) },
+                },
+              ],
+            },
+          },
+        ]);
       },
     },
   }

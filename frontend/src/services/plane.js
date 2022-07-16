@@ -7,3 +7,4 @@ export async function searchPlanes(query) {
     fields: ["name", "iata"],
   });
 }
+
