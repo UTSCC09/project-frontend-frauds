@@ -1,4 +1,9 @@
 <script setup>
+import { onMounted, ref } from "vue";
+import { findOneWayFlights } from "../services/flight";
+import { convertSecondsToHoursMinutes } from "../utils/index.js";
+
+// options for date
 const dateFormatOptions = {
   timeZoneName: "short",
   year: "numeric",
@@ -9,103 +14,133 @@ const dateFormatOptions = {
   hourCycle: "h24",
 };
 
-defineProps({
-  routeId: {
+// component props
+const props = defineProps({
+  sourceAirport: {
     type: String,
-    required: true,
-  },
-  planeId: {
-    type: String,
-    required: true,
-  },
-  airline: {
-    type: String,
-    required: true,
-    default: "Air Canada",
-  },
-  airplane: {
-    type: String,
-    required: true,
-    default: "Boeing 770",
-  },
-  duration: {
-    type: Number,
-    required: true,
-    default: 27900,
-  },
-  departureAirport: {
-    type: String,
-    required: true,
     default: "YYZ",
   },
-  departureTime: {
-    type: Number,
-    required: true,
-    default: 1660434475,
-  },
-  arrivalTime: {
-    type: Number,
-    required: true,
-    default: 1660520875,
-  },
-  arrivalAirport: {
+  destAirport: {
     type: String,
-    required: true,
     default: "CDG",
   },
-  economyPrice: {
+  departureDate: {
     type: Number,
-    required: true,
-    default: 300,
+    default: 1658203200,
   },
-  businessPrice: {
-    type: Number,
-    required: true,
-    default: 850,
+  setProcessStage: {
+    type: Function,
+    default: () => {},
   },
-  firstClassPrice: {
-    type: Number,
-    required: true,
-    default: 1500,
+  setFlight: {
+    type: Function,
+    default: () => {},
   },
 });
+
+// search results refs
+let flights = ref([]);
+const loaded = ref(false);
+
+// fetch date on mount
+onMounted(async () => {
+  const { data } = await findOneWayFlights(
+    props.sourceAirport,
+    props.destAirport,
+    props.departureDate
+  );
+
+  // update flights
+  flights.value = [...data.data];
+
+  // data loaded
+  loaded.value = true;
+});
+
+const onClickSelectFlight = (flight) => {
+  // choose flight
+  props.setFlight(flight);
+
+  // advance to seat map
+  props.setProcessStage(2);
+};
 </script>
 
 <template>
-  <el-descriptions title="Air Canada" border>
-    <template #extra>
-      <el-button type="primary">Select Flight</el-button>
-    </template>
-    <el-descriptions-item label="Departure Airport">{{
-      departureAirport
-    }}</el-descriptions-item>
-    <el-descriptions-item label="Arrival Airport">{{
-      arrivalAirport
-    }}</el-descriptions-item>
-    <el-descriptions-item label="Duration">{{
-      `${new Date(duration * 1000)
-        .toISOString()
-        .substring(11, 13)} H ${new Date(duration * 1000)
-        .toISOString()
-        .substring(14, 16)} M`
-    }}</el-descriptions-item>
-    <el-descriptions-item label="Departure Time">{{
-      Intl.DateTimeFormat("en", dateFormatOptions).format(departureTime)
-    }}</el-descriptions-item>
-    <el-descriptions-item label="Arrival Time">
-      {{ Intl.DateTimeFormat("en", dateFormatOptions).format(arrivalTime) }}
-    </el-descriptions-item>
-    <el-descriptions-item label="Airplane">
-      <el-tag size="large" round>{{ airplane }}</el-tag>
-    </el-descriptions-item>
-    <el-descriptions-item label="Economy Price">
-      ${{ economyPrice }} CAD
-    </el-descriptions-item>
-    <el-descriptions-item label="Business Price">
-      ${{ businessPrice }} CAD
-    </el-descriptions-item>
-    <el-descriptions-item label="First Class Price">
-      ${{ firstClassPrice }} CAD
-    </el-descriptions-item>
-  </el-descriptions>
+  <el-skeleton v-if="loaded === false" :rows="10" animated />
+  <div v-else-if="flights.length === 0">
+    <h2>No Data Found</h2>
+  </div>
+  <ul v-else class="flight-li">
+    <li class="flight-li" v-for="flight in flights" :key="flight._id">
+      <el-descriptions
+        class="flight-result"
+        :title="flight.airlineData.name"
+        border
+      >
+        <!-- Select Flight Button -->
+        <template #extra>
+          <el-button type="primary" @click="onClickSelectFlight(flight)"
+            >Select Flight</el-button
+          >
+        </template>
+
+        <!-- Airport Information -->
+        <el-descriptions-item label="Departure Airport">{{
+          flight.sourceAirportData.iata
+        }}</el-descriptions-item>
+        <el-descriptions-item label="Arrival Airport">{{
+          flight.destAirportData.iata
+        }}</el-descriptions-item>
+
+        <!-- Date and Time Information -->
+        <el-descriptions-item label="Duration">{{
+          convertSecondsToHoursMinutes(flight.duration)
+        }}</el-descriptions-item>
+        <el-descriptions-item label="Departure Time">{{
+          Intl.DateTimeFormat("en", dateFormatOptions).format(
+            flight.departureTime * 1000
+          )
+        }}</el-descriptions-item>
+        <el-descriptions-item label="Arrival Time">
+          {{
+            Intl.DateTimeFormat("en", dateFormatOptions).format(
+              flight.arrivalTime * 1000
+            )
+          }}
+        </el-descriptions-item>
+
+        <!-- Price Information -->
+        <el-descriptions-item label="Airplane">
+          <el-tag size="large" round>{{
+            flight.equipmentListData.name
+          }}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="Economy Price">
+          ${{ flight.price.economy }} CAD
+        </el-descriptions-item>
+        <el-descriptions-item label="Business Price">
+          ${{ flight.price.business }} CAD
+        </el-descriptions-item>
+        <el-descriptions-item label="First Class Price">
+          ${{ flight.price.firstClass }} CAD
+        </el-descriptions-item>
+      </el-descriptions>
+    </li>
+  </ul>
 </template>
+
+<style scoped>
+.flight-result {
+  margin-bottom: 2rem;
+}
+
+li .flight-li {
+  all: unset;
+}
+
+ul .flight-li {
+  all: unset;
+  padding-inline-start: 0;
+}
+</style>

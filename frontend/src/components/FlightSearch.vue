@@ -4,6 +4,25 @@ import { searchAirports } from "../services/airport.js";
 
 const formRef = ref(null);
 
+const props = defineProps({
+  setProcessStage: {
+    type: Function,
+    default: () => {},
+  },
+  setSourceAirport: {
+    type: Function,
+    default: () => {},
+  },
+  setDestAirport: {
+    type: Function,
+    default: () => {},
+  },
+  setDepartureDate: {
+    type: Function,
+    default: () => {},
+  },
+});
+
 // do not use same name with ref
 const form = reactive({
   departureAirport: "",
@@ -47,8 +66,17 @@ const rules = reactive({
 const onSubmit = async (formElement) => {
   if (!formElement) return;
   await formElement.validate((valid, fields) => {
-    if (valid) formElement.resetFields();
-    else console.log("error submit!", fields);
+    if (valid) {
+      // set parent refs
+      props.setDepartureDate(form.departureDate);
+      props.setSourceAirport(form.departureAirport.split("-")[0].trim());
+      props.setDestAirport(form.arrivalAirport.split("-")[0].trim());
+
+      // show search results
+      props.setProcessStage(1);
+
+      formElement.resetFields();
+    } else console.log("error submit!", fields);
   });
 };
 
