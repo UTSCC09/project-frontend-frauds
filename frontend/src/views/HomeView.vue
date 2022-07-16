@@ -4,6 +4,7 @@ import FlightSearch from "../components/FlightSearch.vue";
 import SearchResult from "../components/SearchResult.vue";
 import { ref, reactive } from "vue";
 import PageTitle from "../components/PageTitle.vue";
+import GoBackButton from "../components/GoBackButton.vue";
 
 // page titles
 const pageTitle = ["Book Flight", "Choose Flight", "Select Seats"];
@@ -29,6 +30,8 @@ let flight = reactive({
 });
 
 // setters
+const decrementProcessStage = () =>
+  (processStage.value = Math.max(processStage.value - 1, 0));
 const setProcessStage = (x) => (processStage.value = x);
 const setSourceAirport = (x) => (sourceAirport.value = x);
 const setDestAirport = (x) => (destAirport.value = x);
@@ -38,7 +41,18 @@ const setFlight = (x) => Object.assign(flight, x);
 
 <template>
   <main>
-    <PageTitle :title="pageTitle[processStage]" />
+    <el-row>
+      <el-col :span="20">
+        <PageTitle :title="pageTitle[processStage]" class="flex-1" />
+      </el-col>
+      <el-col :span="4" class="back-btn">
+        <GoBackButton
+          v-if="processStage !== 0"
+          :prev-function="decrementProcessStage"
+          class="flex-1"
+        />
+      </el-col>
+    </el-row>
 
     <FlightSearch
       v-if="processStage === 0"
@@ -60,9 +74,11 @@ const setFlight = (x) => Object.assign(flight, x);
 </template>
 
 <style scoped>
-.page-title {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  font-weight: bold;
+.back-btn {
+  align-self: center;
+  text-align: end;
+}
+.el-row {
+  margin-bottom: 1rem;
 }
 </style>
