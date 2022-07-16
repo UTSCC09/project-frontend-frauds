@@ -5,7 +5,7 @@ import { searchAirports } from "../services/airport.js";
 const formRef = ref(null);
 
 const props = defineProps({
-  setProcessStage: {
+  incrementProcessStage: {
     type: Function,
     default: () => {},
   },
@@ -73,7 +73,7 @@ const onSubmit = async (formElement) => {
       props.setDestAirport(form.arrivalAirport.split("-")[0].trim());
 
       // show search results
-      props.setProcessStage(1);
+      props.incrementProcessStage();
 
       formElement.resetFields();
     } else console.log("error submit!", fields);
