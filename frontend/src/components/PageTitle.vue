@@ -15,6 +15,7 @@ defineProps({
 
 <style scoped>
 .page-title {
+  padding-left: 0;
   padding-top: 1rem;
   padding-bottom: 1rem;
   font-weight: bold;

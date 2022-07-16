@@ -8,11 +8,13 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^1.32.0",
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "element-plus": "^2.2.8",
     "vue": "^3.2.37",
-    "vue-router": "^4.0.16"
+    "vue-router": "^4.0.16",
+    "vue-stripe-js": "^1.0.1"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",

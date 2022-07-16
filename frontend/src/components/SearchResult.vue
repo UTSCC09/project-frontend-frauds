@@ -28,7 +28,7 @@ const props = defineProps({
     type: Number,
     default: 1658203200,
   },
-  setProcessStage: {
+  incrementProcessStage: {
     type: Function,
     default: () => {},
   },
@@ -62,7 +62,7 @@ const onClickSelectFlight = (flight) => {
   props.setFlight(flight);
 
   // advance to seat map
-  props.setProcessStage(2);
+  props.incrementProcessStage();
 };
 </script>
 

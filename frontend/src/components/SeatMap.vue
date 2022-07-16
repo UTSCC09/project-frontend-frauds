@@ -6,10 +6,26 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  incrementProcessStage: {
+    type: Function,
+    required: true,
+  },
+  setSeat: {
+    type: Function,
+    required: true,
+  },
+  setSeatPrice: {
+    type: Function,
+    required: true,
+  },
+  setSeatClass: {
+    type: Function,
+    required: true,
+  },
 });
 
 // seat that is currently selected
-const seat = reactive({ x: 0, y: 0 });
+const seat = reactive({ x: -1, y: -1 });
 
 // seat selected or not
 const seatSelected = ref(false);
@@ -35,17 +51,53 @@ const onClickSeat = (e, x, y) => {
     seatSelected.value = true;
     e.target.classList.toggle("selected");
   } else if (e.target.classList.contains("selected")) {
-    Object.assign(seat, { x, y });
+    Object.assign(seat, { x: -1, y: -1 });
     seatSelected.value = false;
     e.target.classList.toggle("selected");
   }
+};
+
+// on click for purchase
+const onClickPurchase = () => {
+  // save seat choice
+  props.setSeat(seat.x, seat.y);
+
+  // extract seat prices and class
+  let seatClass = props.flight.equipmentListData.seats[seat.x][seat.y];
+  let seatPrice;
+
+  if (seatClass === 1) {
+    seatClass = "First Class";
+    seatPrice = props.flight.price.firstClass;
+  } else if (seatClass === 2) {
+    seatClass = "Business";
+    seatPrice = props.flight.price.business;
+  } else {
+    seatClass = "Economy";
+    seatPrice = props.flight.price.economy;
+  }
+
+  // set seat class
+  props.setSeatClass(seatClass);
+
+  //set seat price
+  props.setSeatPrice(seatPrice);
+
+  // advance to next screen
+  props.incrementProcessStage();
 };
 </script>
 
 <template>
   <el-row>
-    <h3>Selected Seat: ({{ seat.x }}, {{ seat.y }})</h3>
-    <el-button type="success">Purchase</el-button>
+    <!-- chosen seat -->
+    <h3 v-if="seat.x === -1 && seat.y === -1">Please Select a Seat</h3>
+    <h3 v-else>Selected Seat: ({{ seat.x }}, {{ seat.y }})</h3>
+    <el-button
+      :disabled="seat.x === -1 && seat.y === -1"
+      @click="onClickPurchase"
+      >Purchase</el-button
+    >
   </el-row>
   <div class="seats-container">
     <el-row v-for="(row, x) in flight.equipmentListData.seats" :key="x">
@@ -81,8 +133,6 @@ h3 {
 .seats-container {
   border-radius: 20px;
   padding: 10px;
-  width: 40vw;
-  height: 2170px;
   background: rgba(1, 1, 1, 0.072);
 }
 
