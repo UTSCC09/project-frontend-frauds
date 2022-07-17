@@ -27,6 +27,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  resetProcessStage: {
+    type: Function,
+    required: true,
+  },
 });
 
 // stripe refs
@@ -69,13 +73,17 @@ onBeforeMount(async () => {
 });
 
 const onClickPurchase = async () => {
+  // check if card is valid
   const cardValid = card.value.domElement.classList.contains(
     "StripeElement--complete"
   );
 
+  // class name to help with getting class id
   const className = { "First Class": 1, Business: 2, Economy: 3 };
 
+  // check if card data is valid
   if (cardValid) {
+    // add booking
     await addBooking({
       userId: "Payam",
       roundtrip: false,
@@ -93,7 +101,12 @@ const onClickPurchase = async () => {
         },
       },
     });
+
+    // show toast notification
     ElMessage.success("Flight purchase successful!");
+
+    // reset screen
+    props.resetProcessStage();
   } else {
     ElMessage.error("Please provide valid card information.");
   }
