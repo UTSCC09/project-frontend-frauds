@@ -6,7 +6,8 @@ import {
   airlineRoutes,
   planeRoutes,
   routeRoutes,
-  flightRoutes
+  flightRoutes,
+  bookingRoutes,
 } from "./routes/index.js";
 
 import bodyParser from "body-parser";
@@ -31,5 +32,6 @@ app.use("/api/airlines", airlineRoutes);
 app.use("/api/airports", airportRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/flights", flightRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 export default app;

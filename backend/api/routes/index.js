@@ -4,6 +4,7 @@ import planeRoutes from "./planeRoutes.js";
 import flightRoutes from "./flightRoutes.js";
 import rootRoutes from "./rootRoutes.js";
 import routeRoutes from "./routeRoutes.js";
+import bookingRoutes from "./bookingRoutes.js";
 
 export {
   airlineRoutes,
@@ -12,4 +13,5 @@ export {
   flightRoutes,
   rootRoutes,
   routeRoutes,
+  bookingRoutes,
 };

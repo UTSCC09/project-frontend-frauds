@@ -82,9 +82,9 @@ const onSubmit = async (formElement) => {
 
 const fetchSuggestions = async (query, cb) => {
   const resp = await searchAirports(query);
-  const results = resp.data.data.map(({ name, iata }) => {
+  const results = resp.data.data.map(({ name, iata, city, country }) => {
     return {
-      value: `${iata} - ${name}`,
+      value: `${iata} - ${name} (${city.toUpperCase()}, ${country.toUpperCase()})`,
     };
   });
   cb(results);
