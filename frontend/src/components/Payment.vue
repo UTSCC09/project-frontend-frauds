@@ -4,8 +4,9 @@ import { ref, onBeforeMount } from "vue";
 import { StripeElements, StripeElement } from "vue-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { ElMessage } from "element-plus";
+import { addBooking } from "../services/booking.js";
 
-defineProps({
+const props = defineProps({
   flightClass: {
     type: String,
     required: true,
@@ -16,6 +17,10 @@ defineProps({
   },
   flightSeat: {
     type: Object,
+    required: true,
+  },
+  flightId: {
+    type: String,
     required: true,
   },
   taxRate: {
@@ -63,12 +68,31 @@ onBeforeMount(async () => {
   });
 });
 
-const onClickPurchase = () => {
+const onClickPurchase = async () => {
   const cardValid = card.value.domElement.classList.contains(
     "StripeElement--complete"
   );
 
+  const className = { "First Class": 1, Business: 2, Economy: 3 };
+
   if (cardValid) {
+    await addBooking({
+      userId: "Payam",
+      roundtrip: false,
+      cost: props.flightPrice,
+      taxRate: props.taxRate,
+      totalPaid: (props.flightPrice * (1 + props.taxRate)).toFixed(2),
+      currency: "CAD",
+      departureFlight: {
+        flightId: props.flightId,
+        class: className[props.flightClass],
+        classDescription: props.flightClass,
+        seat: {
+          x: props.flightSeat.x,
+          y: props.flightSeat.y,
+        },
+      },
+    });
     ElMessage.success("Flight purchase successful!");
   } else {
     ElMessage.error("Please provide valid card information.");

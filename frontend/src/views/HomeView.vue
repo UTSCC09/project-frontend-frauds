@@ -2,7 +2,7 @@
 import SeatMap from "../components/SeatMap.vue";
 import FlightSearch from "../components/FlightSearch.vue";
 import SearchResult from "../components/SearchResult.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, toRefs } from "vue";
 import PageTitle from "../components/PageTitle.vue";
 import GoBackButton from "../components/GoBackButton.vue";
 import Payment from "../components/Payment.vue";
@@ -25,6 +25,7 @@ const departureDate = ref();
 
 // flight result vars
 let flight = reactive({
+  _id: "",
   routeId: "",
   price: {
     economy: 0,
@@ -40,7 +41,8 @@ let flight = reactive({
   },
 });
 
-// chosen seats
+// payment props
+const { _id } = toRefs(flight);
 let seat = reactive({ x: -1, y: -1 });
 let seatClass = ref("");
 let seatPrice = ref(0);
@@ -106,6 +108,7 @@ const setSeatPrice = (x) => (seatPrice.value = x);
       :flight-class="seatClass"
       :flight-price="seatPrice"
       :flight-seat="seat"
+      :flight-id="_id"
     />
   </main>
 </template>

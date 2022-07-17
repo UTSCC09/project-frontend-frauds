@@ -172,7 +172,8 @@ h3 {
 }
 
 .reserved {
-  cursor: default;
+  cursor: not-allowed;
+  pointer-events: none;
   background: lightgray;
   opacity: 0.8;
 }
