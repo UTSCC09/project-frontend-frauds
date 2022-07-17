@@ -47,12 +47,14 @@ let seat = reactive({ x: -1, y: -1 });
 let seatClass = ref("");
 let seatPrice = ref(0);
 
-// setters
+// process stage helpers
+const resetProcessStage = () => (processStage.value = 0);
 const decrementProcessStage = () =>
   (processStage.value = Math.max(processStage.value - 1, 0));
 const incrementProcessStage = () =>
   (processStage.value = Math.min(processStage.value + 1, 3));
 
+// refs and reactive stters
 const setSeat = (x, y) => Object.assign(seat, { x, y });
 const setSourceAirport = (x) => (sourceAirport.value = x);
 const setDestAirport = (x) => (destAirport.value = x);
@@ -109,6 +111,7 @@ const setSeatPrice = (x) => (seatPrice.value = x);
       :flight-price="seatPrice"
       :flight-seat="seat"
       :flight-id="_id"
+      :reset-process-stage="resetProcessStage"
     />
   </main>
 </template>
