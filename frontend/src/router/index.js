@@ -11,8 +11,13 @@ const router = createRouter({
     },
     {
       path: "/add-flight",
-      name: "add flight",
+      name: "Add Flight",
       component: () => import("../views/AddFlightView.vue"),
+    },
+    {
+      path: "/credits",
+      name: "Credits",
+      component: () => import("../views/CreditsView.vue"),
     },
   ],
 });

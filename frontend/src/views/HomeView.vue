@@ -54,7 +54,7 @@ const decrementProcessStage = () =>
 const incrementProcessStage = () =>
   (processStage.value = Math.min(processStage.value + 1, 3));
 
-// refs and reactive stters
+// r setters
 const setSeat = (x, y) => Object.assign(seat, { x, y });
 const setSourceAirport = (x) => (sourceAirport.value = x);
 const setDestAirport = (x) => (destAirport.value = x);
