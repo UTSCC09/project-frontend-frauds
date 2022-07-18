@@ -12,7 +12,7 @@ const router = express.Router();
 
 // search
 router.post(
-  "/flight",
+  "/",
   checkSchema(addFlightValidator),
   validateSchema,
   asyncHandler(async ({ body }, res) => {
