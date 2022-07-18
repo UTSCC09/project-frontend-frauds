@@ -1,8 +1,9 @@
 import { PDFDocument } from "pdf-lib";
 import * as fs from "fs";
 import { writeFile } from "fs/promises";
+import nodemailer from "nodemailer";
 
-async function loadPDF(){
+async function loadAndSendPDF(){
     const req = JSON.parse(
         "{\n" +
         "    \"airline\": \"Air Toronto\",\n" +
@@ -44,11 +45,52 @@ async function loadPDF(){
         seatField.setText(req.seat);
 
         const pdfBytes = await pdfDoc.save();
-        await writeFile("ticket.pdf", pdfBytes);
+        //await writeFile("ticket.pdf", pdfBytes); //downloads the ticket
+
+        // emailing
+
+        let transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: "auto-emailer@airtoronto-backend-dev.xyz",
+                pass: "password"
+            }
+        });
+
+        transporter.verify(function (error, success) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("Server is ready to send emails");
+            }
+        });
+
+        let mailOptions = {
+            from: "auto-emailer@airtoronto-backend-dev.xyz",
+            to: "flyingzambie0309@gmail.com",
+            subject: "Flight Ticket",
+            text: "Here is your flight ticket!",
+            attachments: [{
+                filename: "ticket.pdf",
+                contentType: "application/pdf",
+                content: pdfBytes
+            }]
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("Email sent: " + info.response);
+            }
+        });
+
         /*res.contentType("application/pdf");
         res.send(pdfBytes);*/
     });
 }
 
 // download filled pdf to current directory
-//loadPDF();
+loadAndSendPDF();
