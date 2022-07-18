@@ -117,21 +117,29 @@ const onClickPurchase = async () => {
   <!-- Flight Details-->
   <div class="flight-details">
     <h3>
-      <span class="text-bold">Seat Location:</span> ({{ flightSeat.x }},
-      {{ flightSeat.y }})
+      <span class="text-bold">Seat Location:</span>
+      <span class="float-right">({{ flightSeat.x }}, {{ flightSeat.y }})</span>
     </h3>
-    <h3><span class="text-bold">Seat Class:</span> {{ flightClass }}</h3>
-    <h3><span class="text-bold">Flight Cost:</span> ${{ flightPrice }} CAD</h3>
+    <h3>
+      <span class="text-bold">Seat Class:</span>
+      <span class="float-right">{{ flightClass }}</span>
+    </h3>
+    <h3>
+      <span class="text-bold">Flight Cost:</span>
+      <span class="float-right">${{ flightPrice }} CAD</span>
+    </h3>
     <hr />
     <h3>
-      <span class="text-bold">Taxes ({{ taxRate * 100 }}%): </span
-      >{{ (flightPrice * taxRate).toFixed(2) }} CAD
+      <span class="text-bold">Taxes ({{ taxRate * 100 }}%): </span>
+      <span class="float-right"
+        >{{ (flightPrice * taxRate).toFixed(2) }} CAD</span
+      >
     </h3>
     <h3>
-      <span class="text-bold">Total Due:</span> ${{
-        (flightPrice * (1 + taxRate)).toFixed(2)
-      }}
-      CAD
+      <span class="text-bold">Total Due:</span>
+      <span class="float-right"
+        >${{ (flightPrice * (1 + taxRate)).toFixed(2) }} CAD</span
+      >
     </h3>
   </div>
 
@@ -154,6 +162,10 @@ const onClickPurchase = async () => {
 </template>
 
 <style scoped>
+.float-right {
+  float: right;
+}
+
 .credit-card-label {
   margin-bottom: 0.5rem;
 }
