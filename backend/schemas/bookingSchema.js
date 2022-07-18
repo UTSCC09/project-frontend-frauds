@@ -51,13 +51,12 @@ const BookingSchema = new Schema(
   {
     statics: {
       async paginate(page = 0, limit = 10) {
-        const count = await this.estimatedDocumentCount({});
+        const total = await this.estimatedDocumentCount({});
         const docs = await this.find({})
           .sort({ name: 1 })
           .skip(page * limit)
           .limit(limit);
-
-        return { count, docs };
+        return { total, docs, count: docs.length };
       },
       async addBooking(
         userId,

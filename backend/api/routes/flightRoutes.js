@@ -16,6 +16,7 @@ router.post(
   checkSchema(addFlightValidator),
   validateSchema,
   asyncHandler(async ({ body }, res) => {
+    // add flight
     await Flight.addFlight(
       body.routeId,
       body.planeId,
@@ -24,6 +25,8 @@ router.post(
       body.duration,
       body.price
     );
+
+    // send success message
     res.json({ message: "flight added to system" });
   })
 );
@@ -36,6 +39,7 @@ router.get(
   asyncHandler(async ({ query }, res) => {
     const { sourceAirport, destAirport, departureDate } = query;
 
+    // retrieve one-way flights
     res.json({
       data: await Flight.findOneWayFlights(
         sourceAirport,

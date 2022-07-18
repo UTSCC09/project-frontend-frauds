@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import { searchAirports } from "../services/airport.js";
+import { disablePastDates } from "../utils";
 
 const formRef = ref(null);
 
@@ -136,6 +137,7 @@ const fetchSuggestions = async (query, cb) => {
         start-placeholder="Departure date"
         end-placeholder="Return date"
         value-format="X"
+        :disabled-date="disablePastDates"
       />
     </el-form-item>
     <el-form-item v-else label="Departure Date" prop="departureDate">
@@ -144,6 +146,7 @@ const fetchSuggestions = async (query, cb) => {
         type="date"
         value-format="X"
         placeholder="Departure Date"
+        :disabled-date="disablePastDates"
       />
     </el-form-item>
 

@@ -13,7 +13,9 @@ router.post(
   checkSchema(searchValidator),
   validateSchema,
   asyncHandler(async ({ body, query }, res) => {
-    res.json(await Airline.search(body.query, body.include, body.exclude, query.limit));
+    res.json(
+      await Airline.search(body.query, body.include, body.exclude, query.limit)
+    );
   })
 );
 

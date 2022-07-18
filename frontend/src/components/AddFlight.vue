@@ -3,6 +3,7 @@ import { reactive, ref } from "vue";
 import { addFlight } from "../services/flight";
 import { searchRoutes } from "../services/route";
 import { ElMessage } from "element-plus";
+import { disablePastDates } from "../utils";
 
 // form ref
 const formRef = ref(null);
@@ -102,8 +103,14 @@ const onSubmit = async (formElement) => {
         },
       };
 
-      // add flight
-      await addFlight(body);
+      try {
+        await addFlight(body); // add flight
+      } catch (err) {
+        return ElMessage({
+          type: "error",
+          message: err.response.data.message,
+        });
+      }
 
       // show message
       ElMessage({
@@ -256,6 +263,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         start-placeholder="Departure date"
         end-placeholder="Arrival date"
         value-format="X"
+        :disabled-date="disablePastDates"
       />
     </el-form-item>
 

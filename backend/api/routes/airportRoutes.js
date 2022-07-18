@@ -14,12 +14,7 @@ router.post(
   validateSchema,
   asyncHandler(async ({ body, query }, res) => {
     res.json(
-      await Airport.search(
-        body.query,
-        body.include,
-        body.exclude,
-        query.limit
-      )
+      await Airport.search(body.query, body.include, body.exclude, query.limit)
     );
   })
 );
