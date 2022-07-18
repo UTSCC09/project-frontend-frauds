@@ -3,6 +3,8 @@ import * as fs from "fs";
 import { writeFile } from "fs/promises";
 import nodemailer from "nodemailer";
 
+//TODO: integrate and refactor using the task queue
+
 async function loadAndSendPDF(){
     const req = JSON.parse(
         "{\n" +
@@ -15,7 +17,7 @@ async function loadAndSendPDF(){
         "    \"classs\": \"economy\",\n" +
         "    \"seat\": \"AB-15\"\n" +
         "}"
-    )
+    );
 
     const formPdfBytes = fs.readFile("plane-ticket-template-fillable.pdf", async (err, data) => {
         if (err) {
@@ -46,14 +48,13 @@ async function loadAndSendPDF(){
         //await writeFile("ticket.pdf", pdfBytes); //downloads the ticket to current directory
 
         // emailing
-
         let transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             secure: true,
             auth: {
                 user: "auto-emailer@airtoronto-backend-dev.xyz",
-                pass: "password"
+                pass: "Ovn3IbOFvGbA6CXLXlSldAUPJ"
             }
         });
 
