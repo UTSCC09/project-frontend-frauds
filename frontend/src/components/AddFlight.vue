@@ -172,7 +172,17 @@ const handlePlaneSelect = (e) => {
 };
 
 const fetchRouteSuggestions = async (query, cb) => {
-  const resp = await searchRoutes(query);
+  let resp;
+
+  try {
+    resp = await searchRoutes(query);
+  } catch (err) {
+    return ElMessage({
+      type: "error",
+      message: err.response.data.message,
+    });
+  }
+
   const results = resp.data.data.map(
     ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {

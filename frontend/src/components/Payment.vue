@@ -83,24 +83,31 @@ const onClickPurchase = async () => {
 
   // check if card data is valid
   if (cardValid) {
-    // add booking
-    await addBooking({
-      userId: "Payam",
-      roundtrip: false,
-      cost: props.flightPrice,
-      taxRate: props.taxRate,
-      totalPaid: (props.flightPrice * (1 + props.taxRate)).toFixed(2),
-      currency: "CAD",
-      departureFlight: {
-        flightId: props.flightId,
-        class: className[props.flightClass],
-        classDescription: props.flightClass,
-        seat: {
-          x: props.flightSeat.x,
-          y: props.flightSeat.y,
+    try {
+      // add booking
+      await addBooking({
+        userId: "Payam",
+        roundtrip: false,
+        cost: props.flightPrice,
+        taxRate: props.taxRate,
+        totalPaid: (props.flightPrice * (1 + props.taxRate)).toFixed(2),
+        currency: "CAD",
+        departureFlight: {
+          flightId: props.flightId,
+          class: className[props.flightClass],
+          classDescription: props.flightClass,
+          seat: {
+            x: props.flightSeat.x,
+            y: props.flightSeat.y,
+          },
         },
-      },
-    });
+      });
+    } catch (err) {
+      return ElMessage({
+        type: "error",
+        message: err.response.data.message,
+      });
+    }
 
     // show toast notification
     ElMessage.success("Flight purchase successful!");
