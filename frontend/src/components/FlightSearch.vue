@@ -2,6 +2,7 @@
 import { reactive, ref } from "vue";
 import { searchAirports } from "../services/airport.js";
 import { disablePastDates } from "../utils";
+import { ElMessage } from "element-plus";
 
 const formRef = ref(null);
 
@@ -82,7 +83,17 @@ const onSubmit = async (formElement) => {
 };
 
 const fetchSuggestions = async (query, cb) => {
-  const resp = await searchAirports(query);
+  let resp;
+
+  try {
+    resp = await searchAirports(query);
+  } catch (err) {
+    return ElMessage({
+      type: "error",
+      message: err.response.data.message,
+    });
+  }
+
   const results = resp.data.data.map(({ name, iata, city, country }) => {
     return {
       value: `${iata} - ${name} (${city.toUpperCase()}, ${country.toUpperCase()})`,
