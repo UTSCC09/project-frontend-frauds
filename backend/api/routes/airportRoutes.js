@@ -16,7 +16,6 @@ router.post(
     res.json(
       await Airport.search(
         body.query,
-        body.match,
         body.include,
         body.exclude,
         query.limit

@@ -12,9 +12,9 @@ router.post(
   "/search",
   checkSchema(searchValidator),
   validateSchema,
-  asyncHandler(async ({ body }, res) => {
+  asyncHandler(async ({ body, query }, res) => {
     res.json(
-      await Plane.search(body.query, body.match, body.include, body.exclude)
+      await Plane.search(body.query, body.include, body.exclude, query.limit)
     );
   })
 );

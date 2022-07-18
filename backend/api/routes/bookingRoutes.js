@@ -36,7 +36,7 @@ router.post(
 
     // send response
     res.json({
-      message: "Booking successfully added to system",
+      message: "Booking successfully completed",
     });
   })
 );
