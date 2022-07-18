@@ -13,6 +13,7 @@ import {
 import bodyParser from "body-parser";
 import { logger } from "../utils/index.js";
 import cors from "cors";
+import errorHandlerMiddleware from "./middlewares/errorHandlerMiddleware.js";
 
 const app = express();
 
@@ -33,5 +34,8 @@ app.use("/api/airports", airportRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/flights", flightRoutes);
 app.use("/api/bookings", bookingRoutes);
+
+// ---------- THIS MUST BE LAST DO NOT TOUCH  ----------
+app.use(errorHandlerMiddleware);
 
 export default app;
