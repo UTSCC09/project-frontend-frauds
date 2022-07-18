@@ -21,8 +21,6 @@ async function loadAndSendPDF(){
         if (err) {
             return res.status(400).end("Failed to read file.");
         }
-        /*res.contentType("application/pdf");
-        res.send(data);*/
         const pdfDoc = await PDFDocument.load(data);
         const form = pdfDoc.getForm();
 
@@ -45,7 +43,7 @@ async function loadAndSendPDF(){
         seatField.setText(req.seat);
 
         const pdfBytes = await pdfDoc.save();
-        //await writeFile("ticket.pdf", pdfBytes); //downloads the ticket
+        //await writeFile("ticket.pdf", pdfBytes); //downloads the ticket to current directory
 
         // emailing
 
@@ -69,7 +67,7 @@ async function loadAndSendPDF(){
 
         let mailOptions = {
             from: "auto-emailer@airtoronto-backend-dev.xyz",
-            to: "flyingzambie0309@gmail.com",
+            to: "payamyek@gmail.com",
             subject: "Flight Ticket",
             text: "Here is your flight ticket!",
             attachments: [{
@@ -86,11 +84,7 @@ async function loadAndSendPDF(){
                 console.log("Email sent: " + info.response);
             }
         });
-
-        /*res.contentType("application/pdf");
-        res.send(pdfBytes);*/
     });
 }
 
-// download filled pdf to current directory
 loadAndSendPDF();
