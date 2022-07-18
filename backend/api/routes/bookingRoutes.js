@@ -9,7 +9,7 @@ const router = express.Router();
 
 // POST: create booking
 router.post(
-  "/booking",
+  "/",
   checkSchema(addBookingValidator),
   validateSchema,
   asyncHandler(async ({ body }, res) => {
