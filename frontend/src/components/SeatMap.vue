@@ -37,11 +37,12 @@ const getSeatPrice = (seat) => {
   let price = 0;
 
   // determine price
-  if (seat === 1) price = props.flight.price.firstClass;
-  else if (seat === 2) price = props.flight.price.business;
-  else price = props.flight.price.economy;
+  if (seat === 0) price = "N/A";
+  else if (seat === 1) price = `$${props.flight.price.firstClass}`;
+  else if (seat === 2) price = `$${props.flight.price.business}`;
+  else price = `$${props.flight.price.economy}`;
 
-  return `$${price}`;
+  return price;
 };
 
 // on click for seat

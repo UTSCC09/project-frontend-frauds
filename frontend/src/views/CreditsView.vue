@@ -50,6 +50,14 @@
         >Source</a
       >)
     </li>
+    <li>
+      How to handle errors in an Async Express App&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://zellwk.com/blog/express-errors/"
+        >Source</a
+      >)
+    </li>
   </ul>
 
   <!-- Docker -->
