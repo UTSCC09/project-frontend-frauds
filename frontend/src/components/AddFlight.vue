@@ -3,6 +3,7 @@ import { reactive, ref } from "vue";
 import { addFlight } from "../services/flight";
 import { searchRoutes } from "../services/route";
 import { ElMessage } from "element-plus";
+import { disablePastDates } from "../utils";
 
 // form ref
 const formRef = ref(null);
@@ -102,8 +103,14 @@ const onSubmit = async (formElement) => {
         },
       };
 
-      // add flight
-      await addFlight(body);
+      try {
+        await addFlight(body); // add flight
+      } catch (err) {
+        return ElMessage({
+          type: "error",
+          message: err.response.data.message,
+        });
+      }
 
       // show message
       ElMessage({
@@ -165,7 +172,17 @@ const handlePlaneSelect = (e) => {
 };
 
 const fetchRouteSuggestions = async (query, cb) => {
-  const resp = await searchRoutes(query);
+  let resp;
+
+  try {
+    resp = await searchRoutes(query);
+  } catch (err) {
+    return ElMessage({
+      type: "error",
+      message: err.response.data.message,
+    });
+  }
+
   const results = resp.data.data.map(
     ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {
@@ -256,6 +273,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         start-placeholder="Departure date"
         end-placeholder="Arrival date"
         value-format="X"
+        :disabled-date="disablePastDates"
       />
     </el-form-item>
 
@@ -283,7 +301,9 @@ const fetchRouteSuggestions = async (query, cb) => {
     </el-form-item>
 
     <el-form-item>
-      <el-button type="primary" @click="onSubmit(formRef)">Search</el-button>
+      <el-button type="primary" @click="onSubmit(formRef)"
+        >Add Flight</el-button
+      >
     </el-form-item>
   </el-form>
 </template>

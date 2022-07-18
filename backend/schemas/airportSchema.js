@@ -22,17 +22,20 @@ const Airport = new Schema(
   {
     statics: {
       async paginate(page = 0, limit = 10) {
-        const count = await this.estimatedDocumentCount({});
+        const total = await this.estimatedDocumentCount({});
         const docs = await this.find({})
           .sort({ name: 1 })
           .skip(page * limit)
           .limit(limit);
-
-        return { count, docs };
+        return { total, docs, count: docs.length };
       },
-      async search(query, match, include, exclude, limit = 10) {
+      async search(query, include = [], exclude = [], limit = 10) {
         // no results
         if (!query) return { data: [] };
+
+        // cannot project score field
+        if (exclude.length && exclude.includes("score"))
+          throw createError(400, "Cannot exclude score field from results");
 
         // conduct search
         const docs = await this.find(
