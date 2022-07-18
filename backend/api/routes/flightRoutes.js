@@ -6,6 +6,7 @@ import {
   retrieveFlightsValidator,
 } from "../validators/index.js";
 import validateSchema from "../middlewares/validateSchemaMiddleware.js";
+import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ router.get(
   "/",
   checkSchema(retrieveFlightsValidator),
   validateSchema,
-  async ({ query }, res) => {
+  asyncHandler(async ({ query }, res) => {
     const { sourceAirport, destAirport, departureDate } = query;
 
     res.json({
@@ -42,7 +43,7 @@ router.get(
         departureDate
       ),
     });
-  }
+  })
 );
 
 export default router;

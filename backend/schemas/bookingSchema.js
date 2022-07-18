@@ -1,3 +1,4 @@
+import createError from "http-errors";
 import mongoose from "mongoose";
 import { Flight } from "../models/index.js";
 const { Schema, Types } = mongoose;
@@ -73,14 +74,26 @@ const BookingSchema = new Schema(
           _id: Types.ObjectId(departureFlight.flightId),
         });
 
+        // invalid departure flight
+        if (docDeparture === null)
+          throw createError(400, "Departure flight doesn't exist");
+
         // get seat map
         const seatMap = [...docDeparture.equipmentListData.seats];
+        const seatValue =
+          seatMap[departureFlight.seat.x][departureFlight.seat.y];
+
+        // cannot reserve barrier seat
+        if (seatValue === -1)
+          throw createError(400, "Chosen seat is not a valid seat");
+        else if (seatValue === 0)
+          throw createError(400, "Seat already reserved");
 
         // update seats for departure flight as booked
         seatMap[departureFlight.seat.x][departureFlight.seat.y] = 0;
 
         // update flights seats data
-        const resp = await Flight.updateOne(
+        await Flight.updateOne(
           { _id: Types.ObjectId(docDeparture._id) },
           { $set: { "equipmentListData.seats": seatMap } }
         );

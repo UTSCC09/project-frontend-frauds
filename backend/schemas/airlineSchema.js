@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import { generateProjection } from "../api/helpers/index.js";
+import createError from "http-errors";
 
 const Airline = new Schema(
   {
@@ -22,9 +24,13 @@ const Airline = new Schema(
           .limit(limit);
         return { count, docs };
       },
-      async search(query, match, include, exclude, limit = 10) {
+      async search(query, include = [], exclude = [], limit = 10) {
         // no results
         if (!query) return { data: [] };
+
+        // cannot project score field
+        if (exclude.length && exclude.includes("score"))
+          throw createError(400, "Cannot exclude score field from results");
 
         // conduct search
         const docs = await this.find(

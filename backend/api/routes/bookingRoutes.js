@@ -3,6 +3,7 @@ import { Booking } from "../../models/index.js";
 import { checkSchema } from "express-validator";
 import { addBookingValidator } from "../validators/index.js";
 import validateSchema from "../middlewares/validateSchemaMiddleware.js";
+import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.post(
   "/booking",
   checkSchema(addBookingValidator),
   validateSchema,
-  async ({ body }, res) => {
+  asyncHandler(async ({ body }, res) => {
     const {
       userId,
       departureFlight,
@@ -37,7 +38,7 @@ router.post(
     res.json({
       message: "Booking successfully added to system",
     });
-  }
+  })
 );
 
 export default router;
