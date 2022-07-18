@@ -15,7 +15,7 @@ router.post(
   "/flight",
   checkSchema(addFlightValidator),
   validateSchema,
-  async ({ body }, res) => {
+  asyncHandler(async ({ body }, res) => {
     await Flight.addFlight(
       body.routeId,
       body.planeId,
@@ -25,7 +25,7 @@ router.post(
       body.price
     );
     res.json({ message: "flight added to system" });
-  }
+  })
 );
 
 // flights
