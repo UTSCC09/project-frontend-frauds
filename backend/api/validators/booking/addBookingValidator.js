@@ -39,8 +39,8 @@ export default {
   },
   x: {
     in: ["body.departureFlight"],
-    isNumber: {
-      errorMessage: "x should be a number",
+    isInt: {
+      errorMessage: "x should be an integer",
     },
     exists: {
       errorMessage: "x is required",
@@ -48,8 +48,8 @@ export default {
   },
   y: {
     in: ["body.departureFlight"],
-    isNumber: {
-      errorMessage: "y should be a number",
+    isInt: {
+      errorMessage: "y should be an integer",
     },
     exists: {
       errorMessage: "y is required",
