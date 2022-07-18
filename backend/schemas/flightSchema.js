@@ -6,8 +6,9 @@ import {
   timestampGetEndOfDay,
   timestampGetStartOfDay,
 } from "../utils/index.js";
+import createError from "http-errors";
 
-const Flight = new mongoose.Schema(
+const Flight = new Schema(
   {
     routeId: String,
     planeId: String,
@@ -44,14 +45,19 @@ const Flight = new mongoose.Schema(
         price
       ) {
         // find current route
+        const doc = await Route.findOne({
+          routeId,
+        });
+
+        // route not valid
+        if (doc === null) throw createError(404, `Route ${routeId} not found`);
+
         const {
           airlineData,
           sourceAirportData,
           destAirportData,
           equipmentListData,
-        } = await Route.findOne({
-          routeId,
-        });
+        } = doc;
 
         // create flight
         await this.create({
