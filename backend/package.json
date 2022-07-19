@@ -6,7 +6,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "Frontend Frauds",
   "license": "ISC",
@@ -15,9 +16,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "express-session": "^1.17.3",
     "express-validator": "^6.14.2",
-    "googleapis": "^105.0.0",
     "mongoose": "^6.4.0",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "winston": "^3.8.1"
   },
   "devDependencies": {
