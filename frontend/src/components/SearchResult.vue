@@ -207,8 +207,8 @@ const getPercentageSeatsBooked = (seats) => {
 }
 
 .search-result:hover {
-  transition: transform 0.25s ease-in-out;
+  transition: transform 0.3s ease-in-out;
   transform: scale(1.003);
-  box-shadow: 0px 0px 11px 3px #aba8a8;
+  box-shadow: 0px 0px 11px 2px #aba8a8;
 }
 </style>
