@@ -23,6 +23,14 @@ const props = defineProps({
     type: Function,
     default: () => {},
   },
+  setReturnDate: {
+    type: Function,
+    default: () => {},
+  },
+  setRoundtrip: {
+    type: Function,
+    default: () => {},
+  },
 });
 
 // do not use same name with ref
@@ -70,7 +78,13 @@ const onSubmit = async (formElement) => {
   await formElement.validate((valid, fields) => {
     if (valid) {
       // set parent refs
-      props.setDepartureDate(form.departureDate);
+      if (form.roundTrip) {
+        props.setDepartureDate(form.dateRange[0]);
+        props.setReturnDate(form.dateRange[1]);
+      } else {
+        props.setDepartureDate(form.departureDate);
+      }
+
       props.setSourceAirport(form.departureAirport.split("-")[0].trim());
       props.setDestAirport(form.arrivalAirport.split("-")[0].trim());
 
@@ -101,6 +115,10 @@ const fetchSuggestions = async (query, cb) => {
   });
   cb(results);
 };
+
+const onClickSwitch = (state) => {
+  props.setRoundtrip(state);
+};
 </script>
 
 <template>
@@ -115,6 +133,7 @@ const fetchSuggestions = async (query, cb) => {
     <el-form-item>
       <el-switch
         v-model="form.roundTrip"
+        @change="onClickSwitch"
         class="mb-2"
         active-text="Round Trip"
         inactive-text="One Way"

@@ -28,6 +28,10 @@ const props = defineProps({
     type: Number,
     default: 1658203200,
   },
+  returnDate: {
+    type: Number,
+    default: 1658203200,
+  },
   incrementProcessStage: {
     type: Function,
     default: () => {},
@@ -35,6 +39,10 @@ const props = defineProps({
   setFlight: {
     type: Function,
     default: () => {},
+  },
+  returnFlightMustExist: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -58,6 +66,22 @@ const pageSize = ref(4);
 
 // fetch date on mount
 onMounted(async () => {
+  // check return flight exists before preceding
+  if (props.returnFlightMustExist) {
+    const returnResp = await findOneWayFlights(
+      props.destAirport,
+      props.sourceAirport,
+      props.returnDate
+    );
+
+    // no data can be found if no return flight
+    if (returnResp.data.data.length === 0) {
+      Object.assign(flights, { data: [] });
+      return (loaded.value = true);
+    }
+  }
+
+  // get flight
   const resp = await findOneWayFlights(
     props.sourceAirport,
     props.destAirport,
@@ -184,6 +208,7 @@ const getPercentageSeatsBooked = (seats) => {
       :total="flights.metadata.total"
       :current-page="currentPage"
       :page-size="pageSize"
+      :hide-on-single-page="true"
       @update:current-page="updateCurrentPage"
       @current-change="currentChange"
     />
