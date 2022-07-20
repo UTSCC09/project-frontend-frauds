@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive } from "vue";
 import { findOneWayFlights } from "../services/flight";
 import { convertSecondsToHoursMinutes } from "../utils/index.js";
 
@@ -39,19 +39,35 @@ const props = defineProps({
 });
 
 // search results refs
-let flights = ref([]);
+let flights = reactive({
+  data: [],
+  metadata: {
+    total: 0,
+    page: 0,
+    count: 0,
+    limit: 0,
+  },
+});
+
+// did the data load
 const loaded = ref(false);
+
+// current pagination page
+const currentPage = ref(1);
+const pageSize = ref(4);
 
 // fetch date on mount
 onMounted(async () => {
-  const { data } = await findOneWayFlights(
+  const resp = await findOneWayFlights(
     props.sourceAirport,
     props.destAirport,
-    props.departureDate
+    props.departureDate,
+    Math.max(0, currentPage.value - 1),
+    pageSize.value
   );
 
   // update flights
-  flights.value = [...data.data];
+  Object.assign(flights, resp.data);
 
   // data loaded
   loaded.value = true;
@@ -64,15 +80,34 @@ const onClickSelectFlight = (flight) => {
   // advance to seat map
   props.incrementProcessStage();
 };
+
+const updateCurrentPage = (page) => {
+  currentPage.value = page;
+};
+
+// track changes to current page
+const currentChange = async (page) => {
+  // get flights
+  const resp = await findOneWayFlights(
+    props.sourceAirport,
+    props.destAirport,
+    props.departureDate,
+    Math.max(0, page - 1),
+    pageSize.value
+  );
+
+  // update flights
+  Object.assign(flights, resp.data);
+};
 </script>
 
 <template>
   <el-skeleton v-if="loaded === false" :rows="10" animated />
-  <div v-else-if="flights.length === 0">
+  <div v-else-if="flights.data.length === 0">
     <h2>No Data Found</h2>
   </div>
   <ul v-else class="flight-li">
-    <li class="flight-li" v-for="flight in flights" :key="flight._id">
+    <li class="flight-li" v-for="flight in flights.data" :key="flight._id">
       <el-descriptions
         class="flight-result"
         :title="flight.airlineData.name"
@@ -128,6 +163,15 @@ const onClickSelectFlight = (flight) => {
       </el-descriptions>
     </li>
   </ul>
+  <div class="pagination">
+    <el-pagination
+      :total="flights.metadata.total"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      @update:current-page="updateCurrentPage"
+      @current-change="currentChange"
+    />
+  </div>
 </template>
 
 <style scoped>

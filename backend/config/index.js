@@ -6,6 +6,7 @@ dotenv.config();
 // app configs
 const config = {};
 
+config.AIRTORONTO_BACKEND_URL = process.env.AIRTORONTO_BACKEND_URL;
 config.APP_ENV = process.env.APP_ENV;
 config.SERVER_PORT = Number.parseInt(process.env.SERVER_PORT);
 
