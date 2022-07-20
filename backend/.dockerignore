@@ -7,3 +7,6 @@ Dockerfile
 .env
 .env.me
 *.log
+.env*
+!.env.project
+!.env.vault

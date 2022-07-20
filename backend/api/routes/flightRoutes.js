@@ -33,19 +33,25 @@ router.post(
 
 // flights
 router.get(
-  "/",
+  "/oneway",
   checkSchema(retrieveFlightsValidator),
   validateSchema,
   asyncHandler(async ({ query }, res) => {
-    const { sourceAirport, destAirport, departureDate } = query;
+    const { sourceAirport, destAirport, departureDate, limit, page } = query;
 
-    // retrieve one-way flights
+    const { data, metadata, links } = await Flight.findOneWayFlights(
+      sourceAirport,
+      destAirport,
+      departureDate,
+      page,
+      limit
+    );
+
+    // return one-way flights
     res.json({
-      data: await Flight.findOneWayFlights(
-        sourceAirport,
-        destAirport,
-        departureDate
-      ),
+      data,
+      metadata,
+      links,
     });
   })
 );

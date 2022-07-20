@@ -3,10 +3,12 @@ const { Schema } = mongoose;
 import { Route } from "../models/index.js";
 import { AirlineSchema, PlaneSchema, AirportSchema } from "./index.js";
 import {
+  generatePaginationLinks,
   timestampGetEndOfDay,
   timestampGetStartOfDay,
 } from "../utils/index.js";
 import createError from "http-errors";
+import config from "../config/index.js";
 
 const Flight = new Schema(
   {
@@ -95,8 +97,15 @@ const Flight = new Schema(
           equipmentListData: equipmentListData[0],
         });
       },
-      async findOneWayFlights(sourceAirport, destAirport, departureTime) {
-        return await this.aggregate([
+      async findOneWayFlights(
+        sourceAirport,
+        destAirport,
+        departureTime,
+        page = 0,
+        limit = 10
+      ) {
+        // find flights using aggregation pipeline
+        const docs = await this.aggregate([
           {
             $match: {
               "sourceAirportData.iata": sourceAirport,
@@ -116,12 +125,56 @@ const Flight = new Schema(
                   },
                 },
                 {
-                  departureTime: { $lte: timestampGetEndOfDay(departureTime) },
+                  departureTime: {
+                    $lte: timestampGetEndOfDay(departureTime),
+                  },
                 },
               ],
             },
           },
+          {
+            $facet: {
+              data: [
+                {
+                  $skip: page * limit,
+                },
+                {
+                  $limit: limit,
+                },
+              ],
+              metadata: [{ $count: "total" }, { $addFields: { page, limit } }],
+            },
+          },
         ]);
+
+        // construct url
+        const backendUrl = new URL(
+          `${config.AIRTORONTO_BACKEND_URL}/api/flights/oneway`
+        );
+
+        // url params
+        backendUrl.searchParams.append("sourceAirport", sourceAirport);
+        backendUrl.searchParams.append("destAirport", destAirport);
+        backendUrl.searchParams.append("departureDate", departureTime);
+
+        // pagination links
+        let links;
+        if (docs[0].metadata[0] !== undefined)
+          links = generatePaginationLinks(
+            backendUrl.toString(),
+            page,
+            limit,
+            docs[0].metadata[0].total
+          );
+
+        return {
+          data: docs[0].data,
+          metadata: {
+            ...docs[0].metadata[0],
+            count: docs[0].data.length,
+          },
+          links,
+        };
       },
     },
   }
