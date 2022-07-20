@@ -99,6 +99,17 @@ const currentChange = async (page) => {
   // update flights
   Object.assign(flights, resp.data);
 };
+
+// get percentage of how many seats are booked
+const getPercentageSeatsBooked = (seats) => {
+  // convert 2d array to 1d
+  const flatSeats = seats.flat();
+
+  const totalSeats = flatSeats.filter((x) => x !== -1).length;
+  const bookedSeats = flatSeats.filter((x) => x === 0).length;
+
+  return Math.floor((bookedSeats / totalSeats) * 100);
+};
 </script>
 
 <template>
@@ -106,61 +117,61 @@ const currentChange = async (page) => {
   <div v-else-if="flights.data.length === 0">
     <h2>No Data Found</h2>
   </div>
-  <ul v-else class="flight-li">
-    <li class="flight-li" v-for="flight in flights.data" :key="flight._id">
-      <el-descriptions
-        class="flight-result"
-        :title="flight.airlineData.name"
-        border
-      >
-        <!-- Select Flight Button -->
-        <template #extra>
-          <el-button type="primary" @click="onClickSelectFlight(flight)"
-            >Select Flight</el-button
+  <ul v-else>
+    <li class="search-result" v-for="flight in flights.data" :key="flight._id">
+      <el-row>
+        <el-col :span="10">
+          <el-row> <span class="text-bold">Air Canada</span> </el-row>
+          <el-row>
+            <span>
+              {{
+                Intl.DateTimeFormat("en", dateFormatOptions).format(
+                  flight.departureTime * 1000
+                )
+              }}
+              -
+              {{
+                Intl.DateTimeFormat("en", dateFormatOptions).format(
+                  flight.arrivalTime * 1000
+                )
+              }}</span
+            >
+          </el-row>
+          <el-row>
+            {{ flight.sourceAirportData.iata }}
+            ({{ flight.sourceAirportData.city }},
+            {{ flight.sourceAirportData.country }}) -
+            {{ flight.destAirportData.iata }}
+            ({{ flight.destAirportData.city }},
+            {{ flight.destAirportData.country }})
+          </el-row>
+        </el-col>
+        <el-col :span="4">
+          <el-row justify="center">
+            Via {{ flight.equipmentListData.name }}</el-row
           >
-        </template>
-
-        <!-- Airport Information -->
-        <el-descriptions-item label="Departure Airport">{{
-          flight.sourceAirportData.iata
-        }}</el-descriptions-item>
-        <el-descriptions-item label="Arrival Airport">{{
-          flight.destAirportData.iata
-        }}</el-descriptions-item>
-
-        <!-- Date and Time Information -->
-        <el-descriptions-item label="Duration">{{
-          convertSecondsToHoursMinutes(flight.duration)
-        }}</el-descriptions-item>
-        <el-descriptions-item label="Departure Time">{{
-          Intl.DateTimeFormat("en", dateFormatOptions).format(
-            flight.departureTime * 1000
-          )
-        }}</el-descriptions-item>
-        <el-descriptions-item label="Arrival Time">
-          {{
-            Intl.DateTimeFormat("en", dateFormatOptions).format(
-              flight.arrivalTime * 1000
-            )
-          }}
-        </el-descriptions-item>
-
-        <!-- Price Information -->
-        <el-descriptions-item label="Airplane">
-          <el-tag size="large" round>{{
-            flight.equipmentListData.name
-          }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="Economy Price">
-          ${{ flight.price.economy }} CAD
-        </el-descriptions-item>
-        <el-descriptions-item label="Business Price">
-          ${{ flight.price.business }} CAD
-        </el-descriptions-item>
-        <el-descriptions-item label="First Class Price">
-          ${{ flight.price.firstClass }} CAD
-        </el-descriptions-item>
-      </el-descriptions>
+          <el-row justify="center">
+            Duration {{ convertSecondsToHoursMinutes(flight.duration) }}</el-row
+          >
+          <el-row justify="center"> 0 Stops </el-row>
+        </el-col>
+        <el-col :span="10"
+          ><el-row justify="end">
+            <span class="text-bold">
+              Starting from CAD ${{ flight.price.economy }}</span
+            ></el-row
+          >
+          <el-row justify="end"
+            >{{ getPercentageSeatsBooked(flight.equipmentListData.seats) }}% of
+            seats booked</el-row
+          >
+          <el-row justify="end">
+            <el-button type="primary" @click="onClickSelectFlight(flight)">
+              Select
+            </el-button>
+          </el-row>
+        </el-col>
+      </el-row>
     </li>
   </ul>
   <div class="pagination">
@@ -178,13 +189,26 @@ const currentChange = async (page) => {
 .flight-result {
   margin-bottom: 2rem;
 }
-
-li .flight-li {
-  all: unset;
+.el-row {
+  margin-top: 5px;
 }
 
-ul .flight-li {
-  all: unset;
-  padding-inline-start: 0;
+.text-bold {
+  font-weight: bold;
+}
+
+.search-result {
+  padding: 10px 15px 10px 15px;
+  border-radius: 12px;
+  color: #ccc9d4;
+  background: #3a3840;
+  display: block;
+  margin-bottom: 30px;
+}
+
+.search-result:hover {
+  transition: transform 0.25s ease-in-out;
+  transform: scale(1.003);
+  box-shadow: 0px 0px 11px 3px #aba8a8;
 }
 </style>
