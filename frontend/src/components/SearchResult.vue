@@ -121,7 +121,12 @@ const getPercentageSeatsBooked = (seats) => {
     <li class="search-result" v-for="flight in flights.data" :key="flight._id">
       <el-row>
         <el-col :span="10">
-          <el-row> <span class="text-bold">Air Canada</span> </el-row>
+          <el-row>
+            <span class="text-bold"
+              >{{ flight.airlineData.iata }} -
+              {{ flight.airlineData.name }}</span
+            >
+          </el-row>
           <el-row>
             <span>
               {{
