@@ -7,6 +7,7 @@ import { ElMessage } from "element-plus";
 import { addBooking } from "../services/booking.js";
 
 const props = defineProps({
+  // first flight
   flightClass: {
     type: String,
     required: true,
@@ -21,6 +22,27 @@ const props = defineProps({
   },
   flightId: {
     type: String,
+    required: true,
+  },
+  // return flight
+  returnFlightClass: {
+    type: String,
+    required: true,
+  },
+  returnFlightPrice: {
+    type: Number,
+    required: true,
+  },
+  returnFlightSeat: {
+    type: Object,
+    required: true,
+  },
+  returnFlightId: {
+    type: String,
+    required: true,
+  },
+  roundtrip: {
+    type: Boolean,
     required: true,
   },
   taxRate: {
@@ -122,7 +144,56 @@ const onClickPurchase = async () => {
 
 <template>
   <!-- Flight Details-->
-  <div class="flight-details">
+  <div v-if="roundtrip" class="flight-details">
+    <h3>
+      <span class="text-bold"> Departure Flight Seat Location:</span>
+      <span class="float-right">({{ flightSeat.x }}, {{ flightSeat.y }})</span>
+    </h3>
+    <h3>
+      <span class="text-bold">Departure Flight Seat Class:</span>
+      <span class="float-right">{{ flightClass }}</span>
+    </h3>
+    <h3>
+      <span class="text-bold">Departure Flight Cost:</span>
+      <span class="float-right">${{ flightPrice }} CAD</span>
+    </h3>
+    <hr />
+    <h3>
+      <span class="text-bold"> Return Flight Seat Location:</span>
+      <span class="float-right"
+        >({{ returnFlightSeat.x }}, {{ returnFlightSeat.y }})</span
+      >
+    </h3>
+    <h3>
+      <span class="text-bold">Return Flight Seat Class:</span>
+      <span class="float-right">{{ returnFlightClass }}</span>
+    </h3>
+    <h3>
+      <span class="text-bold">Return Flight Cost:</span>
+      <span class="float-right">${{ returnFlightPrice }} CAD</span>
+    </h3>
+    <hr />
+    <hr />
+    <h3>
+      <span class="text-bold">Taxes ({{ taxRate * 100 }}%): </span>
+      <span class="float-right"
+        >${{
+          ((returnFlightPrice + flightPrice) * taxRate).toFixed(2)
+        }}
+        CAD</span
+      >
+    </h3>
+    <h3>
+      <span class="text-bold">Total Due:</span>
+      <span class="float-right"
+        >${{
+          ((flightPrice + returnFlightPrice) * (1 + taxRate)).toFixed(2)
+        }}
+        CAD</span
+      >
+    </h3>
+  </div>
+  <div v-else class="flight-details">
     <h3>
       <span class="text-bold">Seat Location:</span>
       <span class="float-right">({{ flightSeat.x }}, {{ flightSeat.y }})</span>

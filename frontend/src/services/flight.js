@@ -13,6 +13,12 @@ export async function findOneWayFlights(
   limit = 5
 ) {
   return axios.get(`${config.BACKEND_URL}/api/flights/oneway`, {
-    params: { sourceAirport, destAirport, departureDate, page, limit },
+    params: {
+      sourceAirport,
+      destAirport,
+      departureDate,
+      page,
+      limit,
+    },
   });
 }
