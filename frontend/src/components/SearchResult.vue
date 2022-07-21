@@ -25,12 +25,12 @@ const props = defineProps({
     default: "CDG",
   },
   departureDate: {
-    type: Number,
-    default: 1658203200,
+    type: String,
+    default: "1658203200",
   },
   returnDate: {
-    type: Number,
-    default: 1658203200,
+    type: String,
+    default: "1658203200",
   },
   incrementProcessStage: {
     type: Function,

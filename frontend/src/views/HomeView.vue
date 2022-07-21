@@ -13,10 +13,10 @@ import { computed } from "vue";
   ROUNDTRIP (3: results, 4: seat map, 5: payment) */
 const processStage = ref(0);
 
-/* track if flight is roundtrip */
+/* Track if Flight is Roundtrip */
 const roundtrip = ref(true);
 
-/* page titles to be shown throughout process */
+/* Page Titles */
 const pageTitle = computed(() => {
   if (roundtrip.value) {
     return [
@@ -31,13 +31,13 @@ const pageTitle = computed(() => {
   return ["Book Flight", "Choose Flight", "Select Seats", "Purchase Flight"];
 });
 
-// flight search params
+/* Flight Search Info */
 const sourceAirport = ref("");
 const destAirport = ref("");
 const departureDate = ref(0);
 const returnDate = ref(0);
 
-// flight result vars
+/* Departure Flight */
 let flight = reactive({
   _id: "",
   routeId: "",
@@ -55,6 +55,7 @@ let flight = reactive({
   },
 });
 
+/*  Return Flight */
 let returnFlight = reactive({
   _id: "",
   routeId: "",
@@ -72,28 +73,28 @@ let returnFlight = reactive({
   },
 });
 
-/* PAYMENT PROPS */
+/* Retrieve Flight Id's */
 const { _id } = toRefs(flight);
 const { _id: _returnId } = toRefs(returnFlight);
 
-// departure flight
+/* Departure Flight Seat Info */
 let seat = reactive({ x: -1, y: -1 });
 let seatClass = ref("");
 let seatPrice = ref(0);
 
-// return flight
+/* Return Flight Seat Info */
 let returnSeat = reactive({ x: -1, y: -1 });
 let returnSeatClass = ref("");
 let returnSeatPrice = ref(0);
 
-// process stage helpers
+/* Process Stage Helpers */
 const resetProcessStage = () => (processStage.value = 0);
 const decrementProcessStage = () =>
   (processStage.value = Math.max(processStage.value - 1, 0));
 const incrementProcessStage = () =>
   (processStage.value = processStage.value + 1);
 
-// setters
+/* Ref Setters */
 const setSourceAirport = (x) => (sourceAirport.value = x);
 const setDestAirport = (x) => (destAirport.value = x);
 const setDepartureDate = (x) => (departureDate.value = x);
