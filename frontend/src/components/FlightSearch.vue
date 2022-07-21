@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { searchAirports } from "../services/airport.js";
 import { disablePastDates } from "../utils";
 import { ElMessage } from "element-plus";
@@ -116,9 +116,14 @@ const fetchSuggestions = async (query, cb) => {
   cb(results);
 };
 
+// handle changes to toggle switch
 const onClickSwitch = (state) => {
   props.setRoundtrip(state);
 };
+
+onMounted(() => {
+  props.setRoundtrip(true);
+});
 </script>
 
 <template>
