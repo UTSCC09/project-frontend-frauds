@@ -106,8 +106,8 @@ const onClickPurchase = async () => {
   // check if card data is valid
   if (cardValid) {
     try {
-      // add booking
-      await addBooking({
+      // booking data to add
+      const bookingData = {
         userId: "Payam",
         roundtrip: false,
         cost: props.flightPrice,
@@ -123,7 +123,23 @@ const onClickPurchase = async () => {
             y: props.flightSeat.y,
           },
         },
-      });
+      };
+
+      // add return trip information
+      if (props.roundtrip) {
+        bookingData.returnFlight = {
+          flightId: props.returnFlightId,
+          class: className[props.returnFlightClass],
+          classDescription: props.returnFlightClass,
+          seat: {
+            x: props.returnFlightSeat.x,
+            y: props.returnFlightSeat.y,
+          },
+        };
+      }
+
+      // create booking
+      addBooking(bookingData);
     } catch (err) {
       return ElMessage({
         type: "error",

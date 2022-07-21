@@ -16,6 +16,7 @@ router.post(
     const {
       userId,
       departureFlight,
+      returnFlight,
       roundtrip,
       cost,
       taxRate,
@@ -31,7 +32,8 @@ router.post(
       cost,
       taxRate,
       totalPaid,
-      currency
+      currency,
+      returnFlight
     );
 
     // send response
