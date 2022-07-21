@@ -22,7 +22,7 @@ const pageTitle = computed(() => {
     return [
       "Book Flight",
       "Choose Departure Flight",
-      "Select Departure FlightSeats",
+      "Select Departure Flight Seats",
       "Choose Return Flight",
       "Select Return Flight Seats",
       "Purchase Flight",
