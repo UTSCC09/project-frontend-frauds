@@ -1,6 +1,7 @@
 <script setup>
 import PageTitle from "../components/PageTitle.vue";
 import { reactive, ref } from "vue";
+import { unsubscribe, subscribe } from "../services/webhook.js";
 
 const form = reactive({
   callbackURL: "",
@@ -40,8 +41,15 @@ const events = ["FLIGHT_BOOKING (Triggers on Flight Booking)"];
 
 const onSubmitSubscribe = async (formEl) => {
   if (!formEl) return;
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
+      await subscribe(
+        {
+          event: form.event.split("(")[0].trim(),
+          callbackURL: form.callbackURL,
+        },
+        form.flightId
+      );
       formEl.resetFields();
     } else console.log("error submit!", fields);
   });
@@ -49,8 +57,15 @@ const onSubmitSubscribe = async (formEl) => {
 
 const onSubmitUnsubscribe = async (formEl) => {
   if (!formEl) return;
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
+      await unsubscribe(
+        {
+          event: form.event.split("(")[0].trim(),
+          callbackURL: form.callbackURL,
+        },
+        form.flightId
+      );
       formEl.resetFields();
     } else console.log("error submit!", fields);
   });
