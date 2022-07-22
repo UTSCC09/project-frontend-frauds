@@ -26,8 +26,12 @@ const Flight = new Schema(
     sourceAirportData: AirportSchema,
     destAirportData: AirportSchema,
     equipmentListData: PlaneSchema,
+    createdAt: Number,
+    updatedAt: Number,
   },
   {
+    // mongoose use UNIX timestamps: https://masteringjs.io/tutorials/mongoose/timestamps
+    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
     statics: {
       async paginate(page = 0, limit = 10) {
         const total = await this.estimatedDocumentCount({});

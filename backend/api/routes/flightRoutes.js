@@ -10,7 +10,7 @@ import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
-// search
+// POST: add flight to system
 router.post(
   "/",
   checkSchema(addFlightValidator),
@@ -31,7 +31,7 @@ router.post(
   })
 );
 
-// flights
+// GET: flights
 router.get(
   "/oneway",
   checkSchema(retrieveFlightsValidator),
