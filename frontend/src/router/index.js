@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import("../views/AddFlightView.vue"),
     },
     {
+      path: "/flight-events",
+      name: "Flight Events",
+      component: () => import("../views/FlightEventsView.vue"),
+    },
+    {
       path: "/credits",
       name: "Credits",
       component: () => import("../views/CreditsView.vue"),
