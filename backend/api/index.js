@@ -8,6 +8,7 @@ import {
   routeRoutes,
   flightRoutes,
   bookingRoutes,
+  webhookRoutes,
 } from "./routes/index.js";
 
 import bodyParser from "body-parser";
@@ -34,6 +35,7 @@ app.use("/api/airports", airportRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/flights", flightRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/webhooks", webhookRoutes);
 
 // ---------- THIS MUST BE LAST DO NOT TOUCH  ----------
 app.use(errorHandlerMiddleware);
