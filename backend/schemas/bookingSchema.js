@@ -72,8 +72,12 @@ const BookingSchema = new Schema(
       enum: ["CAD"],
       default: "CAD",
     },
+    createdAt: Number,
+    updatedAt: Number,
   },
   {
+    // mongoose use UNIX timestamps: https://masteringjs.io/tutorials/mongoose/timestamps
+    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
     statics: {
       async paginate(page = 0, limit = 10) {
         const total = await this.estimatedDocumentCount({});
@@ -97,6 +101,7 @@ const BookingSchema = new Schema(
         const { seats: depSeats, doc: depDoc } = await validateSeatHelper(
           departureFlight
         );
+
         const { seats: returnSeats, doc: returnDoc } = await validateSeatHelper(
           returnFlight
         );

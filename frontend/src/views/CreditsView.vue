@@ -2,7 +2,7 @@
   <PageTitle title="Credits" />
 
   <!-- Data -->
-  <h2>Data</h2>
+  <h2>Open Source Data</h2>
   <ul>
     <li>
       Static backend data about Airplanes, Airports, Airlines, and Routes is
@@ -55,6 +55,14 @@
         target="_blank"
         rel="noopener noreferrer"
         href="https://zellwk.com/blog/express-errors/"
+        >Source</a
+      >)
+    </li>
+    <li>
+      How to make mongoose use Unix timestamps&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://masteringjs.io/tutorials/mongoose/timestamps"
         >Source</a
       >)
     </li>
