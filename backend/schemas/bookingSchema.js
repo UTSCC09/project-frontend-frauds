@@ -98,25 +98,23 @@ const BookingSchema = new Schema(
         returnFlight = null
       ) {
         // validate seats for these flights
-        const { seats: depSeats, doc: depDoc } = await validateSeatHelper(
-          departureFlight
-        );
+        const depData = await validateSeatHelper(departureFlight);
 
-        const { seats: returnSeats, doc: returnDoc } = await validateSeatHelper(
-          returnFlight
-        );
+        let returnData;
+        if (roundtrip) returnData = await validateSeatHelper(returnFlight);
 
         // reserve departure seats
         await Flight.updateOne(
-          { _id: Types.ObjectId(depDoc._id) },
-          { $set: { "equipmentListData.seats": depSeats } }
+          { _id: Types.ObjectId(depData.doc._id) },
+          { $set: { "equipmentListData.seats": depData.seats } }
         );
 
         // reserve return seats
-        await Flight.updateOne(
-          { _id: Types.ObjectId(returnDoc._id) },
-          { $set: { "equipmentListData.seats": returnSeats } }
-        );
+        if (roundtrip)
+          await Flight.updateOne(
+            { _id: Types.ObjectId(returnData.doc._id) },
+            { $set: { "equipmentListData.seats": returnData.seats } }
+          );
 
         // create booking
         await this.create({
@@ -133,5 +131,10 @@ const BookingSchema = new Schema(
     },
   }
 );
+
+// define hook on creation
+BookingSchema.post("save", (result) => {
+  console.log(result);
+});
 
 export default BookingSchema;
