@@ -27,19 +27,19 @@ const props = defineProps({
   // return flight
   returnFlightClass: {
     type: String,
-    required: true,
+    default: "",
   },
   returnFlightPrice: {
     type: Number,
-    required: true,
+    default: 0,
   },
   returnFlightSeat: {
     type: Object,
-    required: true,
+    default: null,
   },
   returnFlightId: {
     type: String,
-    required: true,
+    default: "",
   },
   roundtrip: {
     type: Boolean,
@@ -109,7 +109,7 @@ const onClickPurchase = async () => {
       // booking data to add
       const bookingData = {
         userId: "Payam",
-        roundtrip: false,
+        roundtrip: props.roundtrip,
         cost: props.flightPrice,
         taxRate: props.taxRate,
         totalPaid: (props.flightPrice * (1 + props.taxRate)).toFixed(2),

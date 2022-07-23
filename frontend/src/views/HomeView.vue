@@ -219,6 +219,7 @@ const setRoundtrip = (x) => (roundtrip.value = x);
         :flight-seat="seat"
         :flight-id="_id"
         :reset-process-stage="resetProcessStage"
+        :roundtrip="false"
       />
     </div>
   </main>
