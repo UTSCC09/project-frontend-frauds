@@ -3,6 +3,8 @@ import { ExpressAdapter } from "@bull-board/express";
 import { eventQueue, webhookQueue } from "../../queue/index.js";
 import { createBullBoard } from "@bull-board/api";
 
+// hello world example with bull board: https://github.com/felixmosh/bull-board#readme
+
 // adapter to allow to use with express
 const serverAdapter = new ExpressAdapter();
 
