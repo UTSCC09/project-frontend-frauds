@@ -4,9 +4,9 @@ import FlightSearch from "../components/FlightSearch.vue";
 import SearchResult from "../components/SearchResult.vue";
 import { ref, reactive, toRefs } from "vue";
 import PageTitle from "../components/PageTitle.vue";
-import GoBackButton from "../components/GoBackButton.vue";
 import Payment from "../components/Payment.vue";
 import { computed } from "vue";
+import { Search, Promotion, User, Money } from "@element-plus/icons-vue";
 
 /* track which stage user is at
   (0: flight search, 1: results, 2: seat map, 3: payment)
@@ -89,8 +89,7 @@ let returnSeatPrice = ref(0);
 
 /* Process Stage Helpers */
 const resetProcessStage = () => (processStage.value = 0);
-const decrementProcessStage = () =>
-  (processStage.value = Math.max(processStage.value - 1, 0));
+const setProcessStage = (x) => (processStage.value = Math.max(x, 0));
 const incrementProcessStage = () =>
   (processStage.value = processStage.value + 1);
 
@@ -117,16 +116,59 @@ const setRoundtrip = (x) => (roundtrip.value = x);
 <template>
   <main>
     <!-- Page Headers-->
-    <el-row>
-      <el-col :span="20">
+    <el-row class="process-top">
+      <el-col v-if="processStage === 0">
         <PageTitle :title="pageTitle[processStage]" class="flex-1" />
       </el-col>
-      <el-col :span="4" class="back-btn">
-        <GoBackButton
-          v-if="processStage !== 0"
-          :prev-function="decrementProcessStage"
-          class="flex-1"
-        />
+      <el-col v-else-if="roundtrip === true">
+        <el-steps :active="processStage">
+          <el-step
+            @click="() => processStage > 0 && setProcessStage(0)"
+            title="Flight Search"
+            :icon="Search"
+          />
+          <el-step
+            @click="() => processStage > 1 && setProcessStage(1)"
+            title="Departure Flight"
+            :icon="Promotion"
+          />
+          <el-step
+            @click="() => processStage > 2 && setProcessStage(2)"
+            title="Departure Seat"
+            :icon="User"
+          />
+          <el-step
+            @click="() => processStage > 3 && setProcessStage(3)"
+            title="Return Flight"
+            :icon="Promotion"
+          />
+          <el-step
+            @click="() => processStage > 4 && setProcessStage(4)"
+            title="Return Seat"
+            :icon="User"
+          />
+          <el-step title="Payment" :icon="Money" />
+        </el-steps>
+      </el-col>
+      <el-col v-else-if="roundtrip === false">
+        <el-steps :active="processStage">
+          <el-step
+            @click="() => processStage > 0 && setProcessStage(0)"
+            title="Flight Search"
+            :icon="Search"
+          />
+          <el-step
+            @click="() => processStage > 1 && setProcessStage(1)"
+            title="Departure Flight"
+            :icon="Promotion"
+          />
+          <el-step
+            @click="() => processStage > 2 && setProcessStage(2)"
+            title="Departure Seat"
+            :icon="User"
+          />
+          <el-step title="Payment" :icon="Money" />
+        </el-steps>
       </el-col>
     </el-row>
 
@@ -225,12 +267,17 @@ const setRoundtrip = (x) => (roundtrip.value = x);
   </main>
 </template>
 
-<style scoped>
-.back-btn {
-  align-self: center;
-  text-align: end;
+<style>
+.el-step__head.is-finish {
+  cursor: pointer;
 }
-.el-row {
+
+.el-steps {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.el-row.process-top {
   margin-bottom: 1rem;
 }
 </style>
