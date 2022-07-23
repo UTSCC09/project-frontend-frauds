@@ -1,14 +1,18 @@
 import Queue from "bull";
 
-const queue = new Queue("myQueue");
+const bookingsQueue = new Queue("bookingsQueue",{
+  redis: { host: "", port: 5454 }
+});
 
-const main = async () => {
-  await queue.add({ name: "John", age: 30 });
-};
+/*const main = async () => {
+  await bookingsQueue.add();
+};*/
 
-queue.process((job, done) => {
+bookingsQueue.process((job, done) => {
   console.log(job.data);
   done();
 });
 
-main().catch(console.error);
+module.exports = { bookingsQueue };
+
+// main().catch(console.error);
