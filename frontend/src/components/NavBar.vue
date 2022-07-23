@@ -1,6 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import logo from "@/assets/logo.png";
+import {
+  HomeFilled,
+  DocumentAdd,
+  Ticket,
+  InfoFilled,
+  Watch,
+} from "@element-plus/icons-vue";
 
 const activeIndex = ref("1");
 
@@ -29,11 +36,26 @@ onMounted(() => {
   >
     <el-image :src="logo" />
     <div class="flex-grow"></div>
-    <el-menu-item index="1" route="/">Home</el-menu-item>
-    <el-menu-item index="2" route="/add-flight">Add Flight</el-menu-item>
-    <el-menu-item index="3" route="/flight-events">Flight Events</el-menu-item>
-    <el-menu-item index="4" route="/bookings">My Bookings</el-menu-item>
-    <el-menu-item index="5" route="/credits">Credits</el-menu-item>
+    <el-menu-item index="1" route="/">
+      <el-icon><HomeFilled /></el-icon>
+      Home
+    </el-menu-item>
+    <el-menu-item index="2" route="/add-flight">
+      <el-icon><DocumentAdd /></el-icon>
+      Add Flight
+    </el-menu-item>
+    <el-menu-item index="3" route="/flight-events">
+      <el-icon><Watch /></el-icon>
+      Flight Events
+    </el-menu-item>
+    <el-menu-item index="4" route="/bookings">
+      <el-icon><Ticket /></el-icon>
+      My Bookings
+    </el-menu-item>
+    <el-menu-item index="5" route="/credits">
+      <el-icon><InfoFilled /></el-icon>
+      Credits
+    </el-menu-item>
   </el-menu>
 </template>
 
