@@ -2,6 +2,7 @@ import createError from "http-errors";
 import mongoose from "mongoose";
 import { Flight } from "../models/index.js";
 const { Schema, Types } = mongoose;
+import { WebhookEvent } from "../constants/index.js";
 
 // validates flight seats
 const validateSeatHelper = async (flight) => {
@@ -133,8 +134,12 @@ const BookingSchema = new Schema(
 );
 
 // define hook on creation
-BookingSchema.post("save", (result) => {
-  console.log(result);
+BookingSchema.post("save", ({ _id }) => {
+  const job = {
+    event: WebhookEvent.FLIGHT_BOOKING,
+    flightId: _id.toString(),
+  };
+  console.log(job);
 });
 
 export default BookingSchema;
