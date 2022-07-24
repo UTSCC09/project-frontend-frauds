@@ -6,9 +6,9 @@ import { dirname } from "path";
 
 // redis connection
 const connection = {
-  host: config.REDIS_HOST,
-  port: config.REDIS_PORT,
-  password: config.REDIS_PASSWORD,
+    host: config.REDIS_HOST,
+    port: config.REDIS_PORT,
+    password: config.REDIS_PASSWORD,
 };
 
 // dirname problem: https://stackoverflow.com/questions/8817423/why-is-dirname-not-defined-in-node-repl
@@ -16,12 +16,12 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 // retrieve processor in order sandbox it
-const processorFile = path.join(_dirname, "webhookProcessor.cjs");
+const processorFile = path.join(_dirname, "registrationProcessor.cjs");
 
 // define worker
-export const webhookWorker = new Worker("webhookQueue", processorFile, {
-  connection,
+export const registrationWorker = new Worker("registrationQueue", processorFile, {
+    connection,
 });
 
-// queue for webhooks
-export const webhookQueue = new Queue("webhookQueue", { connection });
+// queue for registration
+export const registrationQueue = new Queue("registrationQueue", { connection });

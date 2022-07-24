@@ -23,5 +23,5 @@ export const eventWorker = new Worker("eventQueue", processorFile, {
   connection,
 });
 
-// queue for bookings
+// queue for events
 export const eventQueue = new Queue("eventQueue", { connection });
