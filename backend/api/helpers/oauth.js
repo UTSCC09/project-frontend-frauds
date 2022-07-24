@@ -14,10 +14,8 @@ export const strategy = () => {
         passReqToCallback: true,
       },
       async function (request, _accessToken, _refreshToken, profile, done) {
-        console.log("I am in the async function " + request.body.register);
         try {
-          console.log("I have arrived at nothing ", request.body.register);
-          if (true) {
+          if (false) {
             // TODO: Send job to queue
             console.log("I have arrived at insert");
             if (request.body.operator === "true") {
@@ -37,7 +35,7 @@ export const strategy = () => {
               );
             }
           }
-          await User.findUser();
+          // await User.findUser();
           return done(null, profile);
         } catch (err) {
           return done(err, null);

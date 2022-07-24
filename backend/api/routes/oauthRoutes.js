@@ -11,20 +11,6 @@ function isLoggedIn(req, res, next) {
 
 router.get(
   "/google/signin",
-  (req, _res, next) => {
-    req.register = false;
-    next();
-  },
-  passport.authenticate("google", { scope: ["email", "profile"] })
-);
-
-router.get(
-  "/google/signup",
-  (req, _res, next) => {
-    req.body.register = true;
-    console.log("I am in the middleware " + req.body.register);
-    next();
-  },
   passport.authenticate("google", { scope: ["email", "profile"] })
 );
 
@@ -38,7 +24,12 @@ router.get(
 
 router.get("/google/success", isLoggedIn, (req, res) => {
   console.log(req.user);
-  res.send("hello " + req.user.emails[0].value);
+  res.send(
+    "hello " +
+      req.user.displayName +
+      ", your email is: " +
+      req.user.emails[0].value
+  );
 });
 
 router.get("/google/failure", isLoggedIn, (req, res) => {
