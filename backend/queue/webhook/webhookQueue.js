@@ -8,9 +8,6 @@ class WebhookQueue {
   // queue
   #queue = undefined;
 
-  // worker
-  #worker = undefined;
-
   // name of queue
   #queueName = "webhookQueue";
 
@@ -28,8 +25,8 @@ class WebhookQueue {
         connection: this.#connection,
       });
 
-      // spawn 5 workers
-      for (let i = 10; i > 0; i--) this.#spawnWorker();
+      // spawn workers
+      for (let i = config.WEBHOOK_WORKERS; i > 0; i--) this.#spawnWorker();
     }
   }
 

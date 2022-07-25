@@ -10,9 +10,6 @@ class EventQueue {
   // queue
   #queue = undefined;
 
-  // worker
-  #worker = undefined;
-
   // name of queue
   #queueName = "eventQueue";
 
@@ -30,8 +27,8 @@ class EventQueue {
         connection: this.#connection,
       });
 
-      // spawn 5 workers
-      for (let i = 10; i > 0; i--) this.#spawnWorker();
+      // spawn workers
+      for (let i = config.EVENT_WORKERS; i > 0; i--) this.#spawnWorker();
     }
   }
 
@@ -120,7 +117,9 @@ class EventQueue {
     await this.#queue.add("eventJob", { flightId, bookingId, event });
 
     // log number of workers
-    logger.info(`NUMBER OF EVENT WORKERS: ${(await this.#queue.getWorkers()).length}`);
+    logger.info(
+      `NUMBER OF EVENT WORKERS: ${(await this.#queue.getWorkers()).length}`
+    );
   }
 }
 
