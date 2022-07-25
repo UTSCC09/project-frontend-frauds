@@ -89,6 +89,9 @@ const onSubmit = async (formElement) => {
   if (!formElement) return;
 
   await formElement.validate(async (valid) => {
+    let resp;
+
+    // check if form is valid
     if (valid) {
       const body = {
         routeId: form.routeId,
@@ -104,7 +107,8 @@ const onSubmit = async (formElement) => {
       };
 
       try {
-        await addFlight(body); // add flight
+        // add flight
+        resp = await addFlight(body);
       } catch (err) {
         return ElMessage({
           type: "error",
@@ -114,7 +118,7 @@ const onSubmit = async (formElement) => {
 
       // show message
       ElMessage({
-        message: "Flight successfully added to system.",
+        message: resp.data.message,
         type: "success",
       });
 

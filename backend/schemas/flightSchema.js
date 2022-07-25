@@ -126,7 +126,7 @@ const Flight = new Schema(
           );
 
         // create flight
-        await this.create({
+        return await this.create({
           routeId,
           planeId,
           departureTime,

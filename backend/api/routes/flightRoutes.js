@@ -17,7 +17,7 @@ router.post(
   validateSchema,
   asyncHandler(async ({ body }, res) => {
     // add flight
-    await Flight.addFlight(
+    const { _id } = await Flight.addFlight(
       body.routeId,
       body.planeId,
       body.departureTime,
@@ -27,7 +27,7 @@ router.post(
     );
 
     // send success message
-    res.json({ message: "flight added to system" });
+    res.json({ message: `flight added to system with id ${_id}` });
   })
 );
 
