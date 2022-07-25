@@ -1,3 +1,3 @@
-import { webhookQueue } from "./webhookQueue.js";
+import WebhookQueue from "./WebhookQueue.js";
 
-export { webhookQueue };
+export { WebhookQueue };

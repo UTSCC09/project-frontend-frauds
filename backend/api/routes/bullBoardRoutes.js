@@ -1,6 +1,6 @@
 import { BullMQAdapter } from "@bull-board/api/bullMQAdapter.js";
 import { ExpressAdapter } from "@bull-board/express";
-import { eventQueue, webhookQueue } from "../../queue/index.js";
+import { EventQueue, WebhookQueue } from "../../queue/index.js";
 import { createBullBoard } from "@bull-board/api";
 
 // hello world example with bull board: https://github.com/felixmosh/bull-board#readme
@@ -10,7 +10,10 @@ const serverAdapter = new ExpressAdapter();
 
 // create bull board
 createBullBoard({
-  queues: [new BullMQAdapter(eventQueue), new BullMQAdapter(webhookQueue)],
+  queues: [
+    new BullMQAdapter(EventQueue.queueInstance),
+    new BullMQAdapter(WebhookQueue.queueInstance),
+  ],
   serverAdapter: serverAdapter,
 });
 

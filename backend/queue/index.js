@@ -1,4 +1,4 @@
-import { eventQueue } from "./event/index.js";
-import { webhookQueue } from "./webhook/index.js";
+import { EventQueue } from "./event/index.js";
+import { WebhookQueue } from "./webhook/index.js";
 
-export { eventQueue, webhookQueue };
+export { EventQueue, WebhookQueue };
