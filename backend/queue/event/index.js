@@ -1,3 +1,3 @@
-import EventQueue from "./EventQueue.js";
+import EventQueue from "./eventQueue.js";
 
 export { EventQueue };
