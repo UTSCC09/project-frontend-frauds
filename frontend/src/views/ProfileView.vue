@@ -5,6 +5,7 @@
 <template>
   <main>
     <h2 class="page-title">Profile</h2>
+    <user />
   </main>
 </template>
 
