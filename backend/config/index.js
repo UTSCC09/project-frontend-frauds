@@ -24,5 +24,9 @@ config.REDIS_HOST = process.env.REDIS_HOST;
 config.REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 config.REDIS_PORT = Number.parseInt(process.env.REDIS_PORT);
 
+// QUEUE WORKER CONFIGS
+config.EVENT_WORKERS = Number.parseInt(process.env.EVENT_WORKERS);
+config.WEBHOOK_WORKERS = Number.parseInt(process.env.WEBHOOK_WORKERS);
+
 // export app config
 export default config;

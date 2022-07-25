@@ -16,6 +16,19 @@
   </ul>
 
   <!-- NodeJS-->
+  <h2>Vue 3</h2>
+  <ul>
+    <li>
+      Elements Plus component library used for styling, components, and icons&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://element-plus.org/en-US/"
+        >Source</a
+      >)
+    </li>
+  </ul>
+
+  <!-- NodeJS-->
   <h2>NodeJS</h2>
   <ul>
     <li>
@@ -63,6 +76,14 @@
         target="_blank"
         rel="noopener noreferrer"
         href="https://masteringjs.io/tutorials/mongoose/timestamps"
+        >Source</a
+      >)
+    </li>
+    <li>
+      How to create a singleton&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.sitepoint.com/javascript-design-patterns-singleton/"
         >Source</a
       >)
     </li>

@@ -8,6 +8,7 @@ import {
   routeRoutes,
   flightRoutes,
   bookingRoutes,
+  webhookRoutes,
   bullBoardRoutes,
 } from "./routes/index.js";
 
@@ -35,6 +36,7 @@ app.use("/api/airports", airportRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/flights", flightRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/webhooks", webhookRoutes);
 app.use("/admin/queues", bullBoardRoutes);
 
 // ---------- THIS MUST BE LAST DO NOT TOUCH  ----------

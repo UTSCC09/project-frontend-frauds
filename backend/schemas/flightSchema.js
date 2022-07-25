@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const { Schema } = mongoose;
+const { Schema, Types } = mongoose;
 import { Route } from "../models/index.js";
 import { AirlineSchema, PlaneSchema, AirportSchema } from "./index.js";
 import {
@@ -28,6 +28,14 @@ const Flight = new Schema(
     equipmentListData: PlaneSchema,
     createdAt: Number,
     updatedAt: Number,
+    _webhooks: [
+      {
+        event: String,
+        callbackURL: String,
+        userId: String,
+        _id: false,
+      },
+    ],
   },
   {
     // mongoose use UNIX timestamps: https://masteringjs.io/tutorials/mongoose/timestamps
@@ -40,6 +48,36 @@ const Flight = new Schema(
           .skip(page * limit)
           .limit(limit);
         return { total, docs, count: docs.length };
+      },
+      async subscribeWebhook(event, callbackURL, userId, flightId) {
+        // create object to add to webhooks array
+        const webhookObject = { event, callbackURL, userId };
+
+        // search for flight
+        const { matchedCount, modifiedCount } = await this.updateOne(
+          { _id: Types.ObjectId(flightId) },
+          { $addToSet: { _webhooks: webhookObject } }
+        );
+
+        if (matchedCount !== 1)
+          throw createError(404, `Flight with id ${flightId} not found`);
+        else if (modifiedCount !== 1)
+          throw createError(400, `Failed to register webhook`);
+      },
+      async unsubscribeWebhook(event, callbackURL, userId, flightId) {
+        // create object to remove from webhooks array
+        const webhookObject = { event, callbackURL, userId };
+
+        // search for flight
+        const { matchedCount, modifiedCount } = await this.updateOne(
+          { _id: Types.ObjectId(flightId) },
+          { $pull: { _webhooks: webhookObject } }
+        );
+
+        if (matchedCount !== 1)
+          throw createError(404, `Flight with id ${flightId} not found`);
+        else if (modifiedCount !== 1)
+          throw createError(400, `Failed to register webhook`);
       },
       async addFlight(
         routeId,
@@ -88,7 +126,7 @@ const Flight = new Schema(
           );
 
         // create flight
-        await this.create({
+        return await this.create({
           routeId,
           planeId,
           departureTime,

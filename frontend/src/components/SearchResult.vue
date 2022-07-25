@@ -216,6 +216,10 @@ const getPercentageSeatsBooked = (seats) => {
 </template>
 
 <style scoped>
+ul {
+  padding-inline-start: 0;
+}
+
 .flight-result {
   margin-bottom: 2rem;
 }
