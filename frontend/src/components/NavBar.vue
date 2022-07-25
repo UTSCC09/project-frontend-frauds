@@ -2,7 +2,9 @@
 import { ref } from "vue";
 import logo from "@/assets/logo.png";
 
+
 const activeIndex = ref("1");
+
 </script>
 
 <template>
@@ -20,7 +22,8 @@ const activeIndex = ref("1");
     <el-menu-item index="3" route="/bookings">Bookings</el-menu-item>
     <el-menu-item index="4" route="/credits">Credits</el-menu-item>
     <el-menu-item index="5" route="/signin">Sign In</el-menu-item>
-    <el-menu-item index="6" route="/signup">Sign Up</el-menu-item>
+    <el-menu-item index="6" route="/signup">Profile</el-menu-item>
+    <el-menu-item index="7" route="/signout">Sign Out</el-menu-item>
   </el-menu>
 </template>
 
