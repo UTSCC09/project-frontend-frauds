@@ -55,10 +55,19 @@ const onSubmitSubscribe = async (formEl) => {
           form.flightId
         );
       } catch (err) {
-        return ElMessage({
-          type: "error",
-          message: err.response.data.message,
-        });
+        if (err.response.data.errors.length === 0) {
+          return ElMessage({
+            type: "error",
+            message: err.response.data.message,
+          });
+        } else {
+          return err.response.data.errors.forEach((e) =>
+            ElMessage({
+              type: "error",
+              message: e.msg,
+            })
+          );
+        }
       }
 
       // clear fields
@@ -88,10 +97,19 @@ const onSubmitUnsubscribe = async (formEl) => {
           form.flightId
         );
       } catch (err) {
-        return ElMessage({
-          type: "error",
-          message: err.response.data.message,
-        });
+        if (err.response.data.errors.length === 0) {
+          return ElMessage({
+            type: "error",
+            message: err.response.data.message,
+          });
+        } else {
+          return err.response.data.errors.forEach((e) =>
+            ElMessage({
+              type: "error",
+              message: e.msg,
+            })
+          );
+        }
       }
 
       // clear fields
