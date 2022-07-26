@@ -56,6 +56,7 @@ jobs:
             # Run a new container from a new image
             docker run -d \
             --name $IMAGE_NAME \
+            --mount type=bind,source=/mnt/air_toronto_prod_frontend_volume/config.js,target=/app/config.js  \
             -p 8080:8080 \
             $CONTAINER_REGISTRY/$IMAGE_NAME:$GITHUB_SHA
             # Delete Unused Data
