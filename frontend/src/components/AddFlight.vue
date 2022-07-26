@@ -3,6 +3,7 @@ import { reactive, ref } from "vue";
 import { addFlight } from "../services/flight";
 import { searchRoutes } from "../services/route";
 import { ElMessage } from "element-plus";
+import { disablePastDates } from "../utils";
 
 // form ref
 const formRef = ref(null);
@@ -88,6 +89,9 @@ const onSubmit = async (formElement) => {
   if (!formElement) return;
 
   await formElement.validate(async (valid) => {
+    let resp;
+
+    // check if form is valid
     if (valid) {
       const body = {
         routeId: form.routeId,
@@ -102,12 +106,19 @@ const onSubmit = async (formElement) => {
         },
       };
 
-      // add flight
-      await addFlight(body);
+      try {
+        // add flight
+        resp = await addFlight(body);
+      } catch (err) {
+        return ElMessage({
+          type: "error",
+          message: err.response.data.message,
+        });
+      }
 
       // show message
       ElMessage({
-        message: "Flight successfully added to system.",
+        message: resp.data.message,
         type: "success",
       });
 
@@ -165,7 +176,17 @@ const handlePlaneSelect = (e) => {
 };
 
 const fetchRouteSuggestions = async (query, cb) => {
-  const resp = await searchRoutes(query);
+  let resp;
+
+  try {
+    resp = await searchRoutes(query);
+  } catch (err) {
+    return ElMessage({
+      type: "error",
+      message: err.response.data.message,
+    });
+  }
+
   const results = resp.data.data.map(
     ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {
@@ -256,6 +277,7 @@ const fetchRouteSuggestions = async (query, cb) => {
         start-placeholder="Departure date"
         end-placeholder="Arrival date"
         value-format="X"
+        :disabled-date="disablePastDates"
       />
     </el-form-item>
 
@@ -283,7 +305,9 @@ const fetchRouteSuggestions = async (query, cb) => {
     </el-form-item>
 
     <el-form-item>
-      <el-button type="primary" @click="onSubmit(formRef)">Search</el-button>
+      <el-button type="primary" @click="onSubmit(formRef)"
+        >Add Flight</el-button
+      >
     </el-form-item>
   </el-form>
 </template>

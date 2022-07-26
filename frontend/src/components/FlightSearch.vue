@@ -1,8 +1,37 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { searchAirports } from "../services/airport.js";
+import { disablePastDates } from "../utils";
+import { ElMessage } from "element-plus";
 
 const formRef = ref(null);
+
+const props = defineProps({
+  incrementProcessStage: {
+    type: Function,
+    default: () => {},
+  },
+  setSourceAirport: {
+    type: Function,
+    default: () => {},
+  },
+  setDestAirport: {
+    type: Function,
+    default: () => {},
+  },
+  setDepartureDate: {
+    type: Function,
+    default: () => {},
+  },
+  setReturnDate: {
+    type: Function,
+    default: () => {},
+  },
+  setRoundtrip: {
+    type: Function,
+    default: () => {},
+  },
+});
 
 // do not use same name with ref
 const form = reactive({
@@ -47,20 +76,54 @@ const rules = reactive({
 const onSubmit = async (formElement) => {
   if (!formElement) return;
   await formElement.validate((valid, fields) => {
-    if (valid) formElement.resetFields();
-    else console.log("error submit!", fields);
+    if (valid) {
+      // set parent refs
+      if (form.roundTrip) {
+        props.setDepartureDate(form.dateRange[0]);
+        props.setReturnDate(form.dateRange[1]);
+      } else {
+        props.setDepartureDate(form.departureDate);
+      }
+
+      props.setSourceAirport(form.departureAirport.split("-")[0].trim());
+      props.setDestAirport(form.arrivalAirport.split("-")[0].trim());
+
+      // show search results
+      props.incrementProcessStage();
+
+      formElement.resetFields();
+    } else console.log("error submit!", fields);
   });
 };
 
 const fetchSuggestions = async (query, cb) => {
-  const resp = await searchAirports(query);
-  const results = resp.data.data.map(({ name, iata }) => {
+  let resp;
+
+  try {
+    resp = await searchAirports(query);
+  } catch (err) {
+    return ElMessage({
+      type: "error",
+      message: err.response.data.message,
+    });
+  }
+
+  const results = resp.data.data.map(({ name, iata, city, country }) => {
     return {
-      value: `${iata} - ${name}`,
+      value: `${iata} - ${name} (${city.toUpperCase()}, ${country.toUpperCase()})`,
     };
   });
   cb(results);
 };
+
+// handle changes to toggle switch
+const onClickSwitch = (state) => {
+  props.setRoundtrip(state);
+};
+
+onMounted(() => {
+  props.setRoundtrip(true);
+});
 </script>
 
 <template>
@@ -75,6 +138,7 @@ const fetchSuggestions = async (query, cb) => {
     <el-form-item>
       <el-switch
         v-model="form.roundTrip"
+        @change="onClickSwitch"
         class="mb-2"
         active-text="Round Trip"
         inactive-text="One Way"
@@ -108,6 +172,7 @@ const fetchSuggestions = async (query, cb) => {
         start-placeholder="Departure date"
         end-placeholder="Return date"
         value-format="X"
+        :disabled-date="disablePastDates"
       />
     </el-form-item>
     <el-form-item v-else label="Departure Date" prop="departureDate">
@@ -116,6 +181,7 @@ const fetchSuggestions = async (query, cb) => {
         type="date"
         value-format="X"
         placeholder="Departure Date"
+        :disabled-date="disablePastDates"
       />
     </el-form-item>
 

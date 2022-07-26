@@ -5,6 +5,7 @@ import PlaneSchema from "./planeSchema.js";
 import RouteSchema from "./routeSchema.js";
 import FlightSchema from "./flightSchema.js";
 import UserSchema from "./userSchema.js";
+import BookingSchema from "./bookingSchema.js";
 
 export {
   AirlineSchema,
@@ -14,4 +15,5 @@ export {
   RouteSchema,
   FlightSchema,
   UserSchema,
+  BookingSchema,
 };
