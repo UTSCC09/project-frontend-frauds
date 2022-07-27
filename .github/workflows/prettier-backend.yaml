@@ -13,12 +13,15 @@ jobs:
       # checkout
       - name: Checkout the repo
       - uses: actions/checkout@v2
+
       # cd
       - name: Change Directory to Backend
       - run: cd backend
+
       # install
       - name: Install Prettier
       - run: npm install prettier
+      
       # run
       - name: Run Prettier
       - run: npx prettier --check .
