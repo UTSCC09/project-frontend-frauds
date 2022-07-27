@@ -16,12 +16,12 @@ jobs:
 
       # cd
       - name: Change Directory to Backend 
-        run: cd frontend
+        run: cd project-frontend-frauds/frontend
 
       # install
       - name: Install Prettier 
         run: npm install prettier
-        
+
       # run
       - name: Run Prettier 
         run: npx prettier --check .
