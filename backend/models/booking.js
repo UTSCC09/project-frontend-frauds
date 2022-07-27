@@ -4,11 +4,14 @@ import { WebhookEvent } from "../constants/index.js";
 import { EventQueue } from "../queue/index.js";
 
 // define hook on creation
-BookingSchema.post("save", async ({ departureFlight, _id }) => {
+BookingSchema.post("save", async (doc) => {
+
   // add event to queue
   await EventQueue.add(
-    departureFlight.flightId.toString(),
-    _id,
+    doc.departureFlight.flightId.toString(),
+    doc.returnFlight.flightId?.toString(),
+    doc.roundtrip,
+    doc._id.toString(),
     WebhookEvent.FLIGHT_BOOKING
   );
 });
