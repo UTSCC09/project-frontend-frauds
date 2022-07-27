@@ -134,14 +134,4 @@ const BookingSchema = new Schema(
   }
 );
 
-// define hook on creation
-BookingSchema.post("save", async ({ departureFlight, _id }) => {
-  // add event to queue
-  await EventQueue.add(
-    departureFlight.flightId.toString(),
-    _id,
-    WebhookEvent.FLIGHT_BOOKING
-  );
-});
-
 export default BookingSchema;
