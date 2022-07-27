@@ -1,0 +1,23 @@
+name: Run JShint Frontend
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      # install
+      - name: Install Prettier
+        run: npm install jshint
+
+      # run
+      - name: Run Prettier
+        run: jshint --exclude ./frontend/node_modules frontend
