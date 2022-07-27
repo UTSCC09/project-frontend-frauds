@@ -2,21 +2,23 @@ name: Run Prettier Backend
 
 on:
   push:
+    branches:
+      - "**"
 
 jobs:
-  build:
+  prettier:
     runs-on: ubuntu-latest
 
     steps:
       # checkout
-      - name: Checkout the repo 
+      - name: Checkout the repo
       - uses: actions/checkout@v2
       # cd
-      - name: Change Directory to Backend 
+      - name: Change Directory to Backend
       - run: cd backend
       # install
-      - name: Install Prettier 
+      - name: Install Prettier
       - run: npm install prettier
       # run
-      - name: Run Prettier 
+      - name: Run Prettier
       - run: npx prettier --check .
