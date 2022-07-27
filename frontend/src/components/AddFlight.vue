@@ -24,6 +24,7 @@ const form = reactive({
   economyClassPrice: 0,
 });
 
+// form rules
 const rules = reactive({
   route: [
     {
@@ -88,11 +89,13 @@ const rules = reactive({
 const onSubmit = async (formElement) => {
   if (!formElement) return;
 
+  // validate form
   await formElement.validate(async (valid) => {
     let resp;
 
     // check if form is valid
     if (valid) {
+      // body of add flight request
       const body = {
         routeId: form.routeId,
         planeId: form.planeId,
@@ -128,12 +131,6 @@ const onSubmit = async (formElement) => {
       form.arrivalAirport = "";
       form.departureAirport = "";
       form.dateRange = [];
-    } else {
-      // show message
-      ElMessage({
-        message: "Error adding flight to system.",
-        type: "error",
-      });
     }
   });
 };
@@ -175,6 +172,7 @@ const handlePlaneSelect = (e) => {
   form.planeId = e.substring(7, e.indexOf("]")).trim();
 };
 
+// fetch route suggestions
 const fetchRouteSuggestions = async (query, cb) => {
   let resp;
 
@@ -187,10 +185,11 @@ const fetchRouteSuggestions = async (query, cb) => {
     });
   }
 
+  // generate search results
   const results = resp.data.data.map(
     ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {
-        value: `[ROUTE ${routeId}] ${sourceAirport} → ${destAirport} via ${airline} `,
+        value: `[ROUTE ${routeId}] ${sourceAirport} → ${destAirport} via ${airline}`,
         routeId,
         sourceAirport,
         destAirport,
@@ -199,6 +198,8 @@ const fetchRouteSuggestions = async (query, cb) => {
       };
     }
   );
+
+  // update search results
   cb(results);
 };
 </script>
