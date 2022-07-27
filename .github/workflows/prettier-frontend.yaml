@@ -1,0 +1,22 @@
+name: Run Prettier Frontend
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout
+      - name: Checkout the repo 
+      - uses: actions/checkout@v2
+      # cd
+      - name: Change Directory to Backend 
+      - run: cd frontend
+      # install
+      - name: Install Prettier 
+      - run: npm install prettier
+      # run
+      - name: Run Prettier 
+      - run: npx prettier --check .
