@@ -19,7 +19,8 @@
   <h2>Vue 3</h2>
   <ul>
     <li>
-      Elements Plus component library used for styling, components, and icons&nbsp;(<a
+      Elements Plus component library used for styling, components, and
+      icons&nbsp;(<a
         target="_blank"
         rel="noopener noreferrer"
         href="https://element-plus.org/en-US/"
