@@ -11,5 +11,5 @@ export {
   addFlightValidator,
   retrieveFlightsValidator,
   addBookingValidator,
-  webhookValidator
+  webhookValidator,
 };
