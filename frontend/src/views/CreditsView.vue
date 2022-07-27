@@ -27,6 +27,14 @@
         >Source</a
       >)
     </li>
+    <li>
+      How to generate favicon for site using an emoji&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://favicon.io/emoji-favicons/"
+        >Source</a
+      >)
+    </li>
   </ul>
 
   <!-- NodeJS-->
