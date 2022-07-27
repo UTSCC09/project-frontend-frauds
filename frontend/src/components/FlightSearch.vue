@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
-import { searchAirports } from '../services/airport.js'
-import { disablePastDates } from '../utils'
-import { ElMessage } from 'element-plus'
+import { onMounted, reactive, ref } from "vue";
+import { searchAirports } from "../services/airport.js";
+import { disablePastDates } from "../utils";
+import { ElMessage } from "element-plus";
 
 // reference to form
 const formRef = ref(null);
