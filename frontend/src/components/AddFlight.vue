@@ -113,10 +113,12 @@ const onSubmit = async (formElement) => {
         // add flight
         resp = await addFlight(body);
       } catch (err) {
-        return ElMessage({
-          type: "error",
-          message: err.response.data.message,
-        });
+        return err.response.data.errors.forEach((e) =>
+          ElMessage({
+            type: "error",
+            message: e.msg,
+          })
+        );
       }
 
       // show message
@@ -179,10 +181,12 @@ const fetchRouteSuggestions = async (query, cb) => {
   try {
     resp = await searchRoutes(query);
   } catch (err) {
-    return ElMessage({
-      type: "error",
-      message: err.response.data.message,
-    });
+    return err.response.data.errors.forEach((e) =>
+      ElMessage({
+        type: "error",
+        message: e.msg,
+      })
+    );
   }
 
   // generate search results

@@ -119,10 +119,12 @@ const fetchSuggestions = async (query, cb) => {
     // free text search airports
     resp = await searchAirports(query);
   } catch (err) {
-    return ElMessage({
-      type: "error",
-      message: err.response.data.message,
-    });
+    return err.response.data.errors.forEach((e) =>
+      ElMessage({
+        type: "error",
+        message: e.msg,
+      })
+    );
   }
 
   // structure suggestions

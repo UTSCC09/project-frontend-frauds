@@ -141,10 +141,12 @@ const onClickPurchase = async () => {
       // create booking
       addBooking(bookingData);
     } catch (err) {
-      return ElMessage({
-        type: "error",
-        message: err.response.data.message,
-      });
+      return err.response.data.errors.forEach((e) =>
+        ElMessage({
+          type: "error",
+          message: e.msg,
+        })
+      );
     }
 
     // show toast notification
