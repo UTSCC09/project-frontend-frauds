@@ -15,8 +15,8 @@
     </li>
   </ul>
 
-  <!-- NodeJS-->
-  <h2>Vue 3</h2>
+  <!-- Frontend -->
+  <h2>Frontend (Vue3)</h2>
   <ul>
     <li>
       Elements Plus component library used for styling, components, and
@@ -35,10 +35,18 @@
         >Source</a
       >)
     </li>
+    <li>
+      Base styling for Stripe card component&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://stripe.com/docs/js/appendix/style?type=card"
+        >Source</a
+      >)
+    </li>
   </ul>
 
-  <!-- NodeJS-->
-  <h2>NodeJS</h2>
+  <!-- NodeJS -->
+  <h2>Backend (NodeJS)</h2>
   <ul>
     <li>
       How to validate errors caught by <i>express-validator</i>&nbsp;(<a
@@ -93,6 +101,14 @@
         target="_blank"
         rel="noopener noreferrer"
         href="https://www.sitepoint.com/javascript-design-patterns-singleton/"
+        >Source</a
+      >)
+    </li>
+    <li>
+      How to setup bull board for bullMQ queues&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://github.com/felixmosh/bull-board#readme"
         >Source</a
       >)
     </li>
