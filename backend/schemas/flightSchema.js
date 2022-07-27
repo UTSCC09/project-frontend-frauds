@@ -53,30 +53,56 @@ const Flight = new Schema(
         // create object to add to webhooks array
         const webhookObject = { event, callbackURL, userId };
 
+        // check if subscriber exists
+        const doc = await this.findOne({ _id: Types.ObjectId(flightId) });
+
+        // compare two webhook object for equality
+        const webhookObjectCompare = (x) =>
+          x.event === event &&
+          x.callbackURL === callbackURL &&
+          x.userId === userId;
+
+        // subscriber exists
+        if (doc === null)
+          throw createError(409, `Flight ${flightId} does not exist`);
+        else if (doc._webhooks.some(webhookObjectCompare))
+          throw createError(409, `Already subscribed to webhook`);
+
         // search for flight
-        const { matchedCount, modifiedCount } = await this.updateOne(
+        const { modifiedCount } = await this.updateOne(
           { _id: Types.ObjectId(flightId) },
           { $addToSet: { _webhooks: webhookObject } }
         );
 
-        if (matchedCount !== 1)
-          throw createError(404, `Flight with id ${flightId} not found`);
-        else if (modifiedCount !== 1)
+        if (modifiedCount !== 1)
           throw createError(400, `Failed to register webhook`);
       },
       async unsubscribeWebhook(event, callbackURL, userId, flightId) {
         // create object to remove from webhooks array
         const webhookObject = { event, callbackURL, userId };
 
+        // check if subscriber exists
+        const doc = await this.findOne({ _id: Types.ObjectId(flightId) });
+
+        // compare two webhook object for equality
+        const webhookObjectCompare = (x) =>
+          x.event === event &&
+          x.callbackURL === callbackURL &&
+          x.userId === userId;
+
+        // subscriber exists
+        if (doc === null)
+          throw createError(409, `Flight ${flightId} does not exist`);
+        else if (!doc._webhooks.some(webhookObjectCompare))
+          throw createError(409, `Not subscribed to webhook`);
+
         // search for flight
-        const { matchedCount, modifiedCount } = await this.updateOne(
+        const { modifiedCount } = await this.updateOne(
           { _id: Types.ObjectId(flightId) },
           { $pull: { _webhooks: webhookObject } }
         );
 
-        if (matchedCount !== 1)
-          throw createError(404, `Flight with id ${flightId} not found`);
-        else if (modifiedCount !== 1)
+        if (modifiedCount !== 1)
           throw createError(400, `Failed to register webhook`);
       },
       async addFlight(
