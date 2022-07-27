@@ -2,8 +2,6 @@ import createError from "http-errors";
 import mongoose from "mongoose";
 import { Flight } from "../models/index.js";
 const { Schema, Types } = mongoose;
-import { WebhookEvent } from "../constants/index.js";
-import { EventQueue } from "../queue/index.js";
 
 // validates flight seats
 const validateSeatHelper = async (flight) => {
