@@ -16,8 +16,8 @@ jobs:
 
       # cd
       - name: Change Directory to Backend 
-        run: ll project-frontend-frauds/frontend
-
+        run: ll 
+        
       # install
       - name: Install Prettier 
         run: npm install prettier
