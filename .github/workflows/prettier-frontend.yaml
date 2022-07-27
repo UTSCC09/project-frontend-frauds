@@ -2,9 +2,11 @@ name: Run Prettier Frontend
 
 on:
   push:
+    branches:
+      - "**"
 
 jobs:
-  build:
+  prettier:
     runs-on: ubuntu-latest
 
     steps:
