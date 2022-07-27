@@ -26,7 +26,7 @@ export default {
       errorMessage: "flight id must be provided",
     },
     isMongoId: {
-      errorMessage: "must provide a valid flight id"
-    }
+      errorMessage: "must provide a valid flight id",
+    },
   },
 };
