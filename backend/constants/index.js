@@ -9,7 +9,9 @@ export default {
   // constants for queue job names
   QUEUE_JOB: {
     EVENT: "eventJob",
+    WEBHOOK: "webhookJob",
   },
+
   // constants for flight (seat) class levels
   FLIGHT_CLASS: {
     FIRST_CLASS: 1,

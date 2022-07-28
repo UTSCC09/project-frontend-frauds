@@ -51,7 +51,7 @@ class EventQueue {
     await job.log("Starting to process job");
 
     // extract data
-    const { flightId, bookingId, event, isDeparture } = job.data;
+    const { flightId, bookingId, event, createdAt, isDeparture } = job.data;
 
     // get  departure flight
     const docFlight = await Flight.findOne({ _id: flightId });
@@ -79,6 +79,7 @@ class EventQueue {
           ...(isDeparture ? departureFlight : returnFlight),
           callbackURL,
           event,
+          createdAt,
         },
       };
     });
