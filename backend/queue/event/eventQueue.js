@@ -51,58 +51,41 @@ class EventQueue {
     await job.log("Starting to process job");
 
     // extract data
-    const { flightId, bookingId, event } = job.data;
+    const { flightId, bookingId, event, createdAt, isDeparture } = job.data;
 
-    // get flight
+    // get  departure flight
     const docFlight = await Flight.findOne({ _id: flightId });
 
     // get booking
     const docBooking = await Booking.findOne({ _id: bookingId });
 
-    await job.log("Retrieved data from mongoDB");
+    await job.log("Retrieve MongoDB data");
 
-    if (docFlight === undefined || docBooking === undefined) {
-      job.moveToFailed("Flight event is not valid");
-      return "Failed";
-    }
+    if (docFlight === null || docBooking === null)
+      return "No Webhooks to Process";
 
-    // webhooks
+    // extract data
     const { _webhooks } = docFlight;
-
-    // no webhooks
-    if (_webhooks === undefined || _webhooks.length === 0)
-      return "No webhooks registered";
-
-    // filter to relevant events
-    const webhooks = _webhooks.filter((x) => x.event === event);
-
-    // retrieve booking flights
     const { departureFlight, returnFlight } = docBooking;
 
-    if (departureFlight.flightId === flightId) {
-      await job.log("Flight was the departure flight");
+    // retrieve relevant webhooks
+    const filteredWebhooks = _webhooks.filter((x) => x.event === event);
 
-      // create jobs
-      const jobs = webhooks.map(({ callbackURL }) => {
-        return {
-          name: "webhookJob",
-          data: { ...departureFlight, callbackURL },
-        };
-      });
+    // create jobs
+    const jobs = filteredWebhooks.map(({ callbackURL }) => {
+      return {
+        name: "webhookJob",
+        data: {
+          ...(isDeparture ? departureFlight : returnFlight),
+          callbackURL,
+          event,
+          createdAt,
+        },
+      };
+    });
 
-      // add jobs to queue
-      await WebhookQueue.addBulk(jobs);
-    } else {
-      await job.log("Flight was the return flight");
-
-      // create jobs
-      const jobs = webhooks.map(({ callbackURL }) => {
-        return { name: "webhookJob", data: { ...returnFlight, callbackURL } };
-      });
-
-      // add jobs to queue
-      await WebhookQueue.addBulk(jobs);
-    }
+    // add jobs to queue
+    await WebhookQueue.addBulk(jobs);
 
     return "Event Queue Class Finished Task";
   }
@@ -113,12 +96,30 @@ class EventQueue {
   }
 
   // adds job to queue
-  async add(flightId, bookingId, event) {
-    await this.#queue.add("eventJob", { flightId, bookingId, event });
+  async add(departureFlightId, returnFlightId, roundtrip, bookingId, event) {
+    // add flight to queue
+    await this.#queue.add(constants.QUEUE_JOB.EVENT, {
+      departureFlightId,
+      returnFlightId,
+      roundtrip,
+      bookingId,
+      event,
+    });
 
     // log number of workers
     logger.info(
       `NUMBER OF EVENT WORKERS: ${(await this.#queue.getWorkers()).length}`
+    );
+  }
+
+  // adds job to queue
+  async addBulk(jobs) {
+    // add bulk jobs
+    await this.#queue.addBulk(jobs);
+
+    // log number of workers
+    logger.info(
+      `NUMBER OF WEBHOOK WORKERS: ${(await this.#queue.getWorkers()).length}`
     );
   }
 }

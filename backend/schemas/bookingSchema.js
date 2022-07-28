@@ -2,8 +2,6 @@ import createError from "http-errors";
 import mongoose from "mongoose";
 import { Flight } from "../models/index.js";
 const { Schema, Types } = mongoose;
-import { WebhookEvent } from "../constants/index.js";
-import { EventQueue } from "../queue/index.js";
 
 // validates flight seats
 const validateSeatHelper = async (flight) => {
@@ -133,15 +131,5 @@ const BookingSchema = new Schema(
     },
   }
 );
-
-// define hook on creation
-BookingSchema.post("save", async ({ departureFlight, _id }) => {
-  // add event to queue
-  await EventQueue.add(
-    departureFlight.flightId.toString(),
-    _id,
-    WebhookEvent.FLIGHT_BOOKING
-  );
-});
 
 export default BookingSchema;

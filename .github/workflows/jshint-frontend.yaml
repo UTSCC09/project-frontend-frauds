@@ -1,0 +1,23 @@
+name: Run JShint Frontend
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  jshint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      # install
+      - name: Install JShint
+        run: npm install -g jshint
+
+      # run
+      - name: Run JShint
+        run: jshint --exclude ./frontend/node_modules frontend

@@ -1,4 +1,4 @@
-import { WebhookEvent } from "../../constants/index.js";
+import constants from "../../constants/index.js";
 
 export default {
   event: {
@@ -7,7 +7,14 @@ export default {
       errorMessage: "event is required",
     },
     isIn: {
-      options: [["FLIGHT_BOOKING"]],
+      options: [
+        [
+          constants.WEBHOOK_EVENT.FLIGHT_BOOKING,
+          constants.WEBHOOK_EVENT.FLIGHT_BOOKING_BUSINESS,
+          constants.WEBHOOK_EVENT.FLIGHT_BOOKING_ECONOMY,
+          constants.WEBHOOK_EVENT.FLIGHT_BOOKING_FIRST_CLASS,
+        ],
+      ],
       errorMessage: "Please provide a valid event to listen to",
     },
   },
@@ -26,7 +33,7 @@ export default {
       errorMessage: "flight id must be provided",
     },
     isMongoId: {
-      errorMessage: "must provide a valid flight id"
-    }
+      errorMessage: "must provide a valid flight id",
+    },
   },
 };

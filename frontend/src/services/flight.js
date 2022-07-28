@@ -1,10 +1,12 @@
 import axios from "axios";
 import config from "../../config";
 
+// add flight
 export async function addFlight(body) {
   return axios.post(`${config.BACKEND_URL}/api/flights`, body);
 }
 
+// find oneway flights
 export async function findOneWayFlights(
   sourceAirport,
   destAirport,
