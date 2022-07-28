@@ -3,8 +3,13 @@ import { BookingSchema } from "../schemas/index.js";
 import constants from "../constants/index.js";
 import { EventQueue } from "../queue/index.js";
 
-const generateEventQueueJobs = (docFlight, bookingId, isDeparture) => {
-  if (docFlight === undefined) return [];
+const generateEventQueueJobs = (
+  docFlight,
+  bookingId,
+  createdAt,
+  isDeparture
+) => {
+  if (docFlight === undefined || docFlight.flightId === undefined) return [];
 
   /* Jobs to add to Event Queue */
   const jobs = [];
@@ -14,6 +19,7 @@ const generateEventQueueJobs = (docFlight, bookingId, isDeparture) => {
     flightId: docFlight.flightId,
     bookingId,
     isDeparture,
+    createdAt,
   };
 
   // add FLIGHT_BOOKING event job
@@ -56,13 +62,23 @@ const generateEventQueueJobs = (docFlight, bookingId, isDeparture) => {
 
 // generate and schedule event queue jobs
 const scheduleEventQueueJobs = async (doc) => {
-  const { departureFlight, returnFlight, _id } = doc;
+  const { departureFlight, returnFlight, _id, createdAt, roundtrip } = doc;
 
   // generate departure jobs
-  const departureJobs = generateEventQueueJobs(departureFlight, _id, true);
+  const departureJobs = generateEventQueueJobs(
+    departureFlight,
+    _id.toString(),
+    createdAt,
+    true
+  );
 
   // generate return jobs
-  const returnJobs = generateEventQueueJobs(returnFlight, _id, false);
+  const returnJobs = generateEventQueueJobs(
+    returnFlight,
+    _id.toString(),
+    createdAt,
+    false
+  );
 
   // add jobs to queue
   await EventQueue.addBulk(departureJobs.concat(returnJobs));
