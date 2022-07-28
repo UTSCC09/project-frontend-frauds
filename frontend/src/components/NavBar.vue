@@ -9,6 +9,32 @@ import {
   Watch,
 } from "@element-plus/icons-vue";
 
+import { useAuth0 } from '@auth0/auth0-vue';
+
+const { loginWithRedirect:login, user, isAuthenticated, getAccessTokenSilently, logout} = useAuth0();
+
+async function loginWithRedirect() {
+  await login();
+  const token = await getAccessTokenSilently();
+  /*
+  * This function will check the backend for the user. If the user is already
+  * registered it will skip ahead and log the user in. Otherwise
+  * It will redirect the user again to select their role.
+  *
+   */
+  // TODO: WRITE THIS AS A SERVICE
+  const response = await fetch('https://api.example.com/posts', {
+    headers: {
+      Authorization: 'Bearer ' + token
+    }
+  });
+  const data = await response.json();
+
+}
+
+function logoutWithRedirect() {
+  logout( {returnTo: window.location.origin} );
+}
 
 const activeIndex = ref("1");
 
@@ -25,10 +51,8 @@ onMounted(() => {
     activeIndex.value = "5";
   } else if (currentUrl.endsWith("/signin")) {
     activeIndex.value = "6";
-  } else if (currentUrl.endsWith("/signup")) {
-    activeIndex.value = "7";
   } else if (currentUrl.endsWith("/signout")) {
-    activeIndex.value = "8";
+    activeIndex.value = "7";
   }
 });
 </script>
@@ -63,9 +87,9 @@ onMounted(() => {
       <el-icon><InfoFilled /></el-icon>
       Credits
     </el-menu-item>
-    <el-menu-item index="5" route="/signin">Sign In</el-menu-item>
-    <el-menu-item index="6" route="/signup">Profile</el-menu-item>
-    <el-menu-item index="7" route="/signout">Sign Out</el-menu-item>
+    <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect">log in</el-menu-item>
+    <el-menu-item v-if ="isAuthenticated" index="7" @click="logoutWithRedirect">log out</el-menu-item>
+
   </el-menu>
 </template>
 
@@ -79,5 +103,8 @@ onMounted(() => {
   width: 180px;
   height: 55px;
   margin-bottom: 10px;
+}
+.el-button {
+
 }
 </style>

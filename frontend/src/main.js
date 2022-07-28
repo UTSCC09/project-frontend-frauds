@@ -15,6 +15,7 @@ app.use(
     domain: "dev-m4i2pdc6.us.auth0.com",
     client_id: "GjvQEnzCqamAmaYQYue0kFeFnpntOk0K",
     redirect_uri: window.location.origin,
+    audience: "https://www.airtoronto-backend.xyz",
   })
 );
 

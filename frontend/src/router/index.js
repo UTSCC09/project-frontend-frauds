@@ -15,19 +15,11 @@ const router = createRouter({
       component: () => import("../views/AddFlightView.vue"),
     },
     {
-      path: "/signin",
-      name: "sign in",
-      component: () => import("../views/SignInView.vue"),
-    },
-    {
-      path: "/signup",
-      name: "sign up",
+      path: "/bookings",
+      name: "bookings",
       component: () => import("../views/ProfileView.vue"),
     },
     {
-      path: "/signout",
-      name: "sign out",
-      component: () => import("../views/SignOutView.vue"),
       path: "/flight-events",
       name: "Flight Events",
       component: () => import("../views/FlightEventsView.vue"),
