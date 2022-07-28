@@ -3,7 +3,7 @@ import { Flight } from "../models/index.js";
 import mongoose from "mongoose";
 const { Schema, Types } = mongoose;
 import { WebhookEvent } from "../constants/index.js";
-import { EventQueue } from "../queue/index.js";
+import {BookingQueue, EventQueue} from "../queue/index.js";
 
 // validates flight seats
 const validateSeatHelper = async (flight) => {
@@ -141,6 +141,9 @@ BookingSchema.post("save", async ({ departureFlight, _id }) => {
     departureFlight.flightId.toString(),
     _id,
     WebhookEvent.FLIGHT_BOOKING
+  );
+  await BookingQueue.add(
+      _id
   );
 });
 

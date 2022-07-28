@@ -27,6 +27,8 @@ config.REDIS_PORT = Number.parseInt(process.env.REDIS_PORT);
 // QUEUE WORKER CONFIGS
 config.EVENT_WORKERS = Number.parseInt(process.env.EVENT_WORKERS);
 config.WEBHOOK_WORKERS = Number.parseInt(process.env.WEBHOOK_WORKERS);
+config.BOOKING_WORKERS = Number.parseInt(process.env.BOOKING_WORKERS);
+config.REGISTRATION_WORKERS = Number.parseInt(process.env.REGISTRATION_WORKERS);
 
 // export app config
 export default config;
