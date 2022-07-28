@@ -52,20 +52,15 @@ class BookingQueue {
     async #processor(job) {
         await job.log("Starting to process job");
 
-        // extract data
-        const { bookingId } = job.data;
-
         // get booking
-        const docBooking = await Booking.findOne({ _id: bookingId });
+        const docBooking = job.data;/*await Booking.findOne({ _id: job.data.bookingId });*/
 
         await job.log("Retrieved data from mongoDB");
 
-        if (docBooking === undefined) {
+        if (docBooking === null) {
             await job.moveToFailed("Booking record is not valid");
             return "Failed";
         }
-
-        const { userId, departureFlight, returnFlight, roundTrip, cost, taxRate, totalPaid, currency, createdAt } = docBooking;
 
         // pdf generation and emailing logic, need to refactor
         fs.readFile("Travel Receipt Template.pdf", async (err, data) => {
@@ -85,30 +80,32 @@ class BookingQueue {
             const taxField = form.getTextField("Tax");
             const grandTotalField = form.getTextField("Grand Total");
 
-            bookingNumberField.setText(docBooking._id);
-            preparedForNameField.setText(await User.findOne({ _id: userId }).name);
-            emailField.setText(await User.findOne({ _id: userId }).name);
-            dateField.setText(new Date(createdAt).toLocaleDateString('en-us', {
+            const docUser = await User.findOne({ _id: userId });
+
+            bookingNumberField.setText(docBooking._id.toString());
+            preparedForNameField.setText(docUser.name);
+            emailField.setText(docUser.email);
+            dateField.setText(new Date(docBooking.createdAt).toLocaleDateString('en-us', {
                 year: "numeric",
                 month: "short",
                 day: "numeric"
             }));
-            if (roundTrip) roundTripField.check();
-            currencyField.setText(currency.type);
-            subTotalField.setText(cost.toString());
-            taxField.setText(taxRate.toString());
-            grandTotalField.setText(totalPaid.toString());
+            if (docBooking.roundTrip) roundTripField.check();
+            currencyField.setText(docBooking.currency.type);
+            subTotalField.setText(docBooking.cost.toString());
+            taxField.setText(docBooking.taxRate.toString());
+            grandTotalField.setText(docBooking.totalPaid.toString());
 
             const pdfBytes = await pdfDoc.save();
 
             // emailing: refactor
             let transporter = nodemailer.createTransport({
-                host: "mail.privateemail.com",
-                port: 465,
+                host: config.EMAIL_HOST,
+                port: config.EMAIL_PORT,
                 secure: true,
                 auth: {
-                    user: "auto-emailer@airtoronto-backend-dev.xyz",
-                    pass: "Ovn3IbOFvGbA6CXLXlSldAUPJ"
+                    user: config.EMAIL_AUTH_USER,
+                    pass: config.EMAIL_AUTH_PASSWORD
                 }
             });
 
@@ -121,8 +118,8 @@ class BookingQueue {
             });
 
             let mailOptions = {
-                from: "auto-emailer@airtoronto-backend-dev.xyz",
-                to: "jasongu508@gmail.com",
+                from: config.EMAIL_AUTH_USER,
+                to: docUser.email,
                 subject: "Flight Ticket",
                 text: "Here is your flight ticket!",
                 attachments: [{
@@ -151,8 +148,8 @@ class BookingQueue {
     }
 
     // adds job to queue
-    async add(bookingId) {
-        await this.#queue.add("bookingJob", { data: { bookingId} });
+    async add(doc) {
+        await this.#queue.add("bookingJob", doc);
 
         // log number of workers
         logger.info(
