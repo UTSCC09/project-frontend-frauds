@@ -62,7 +62,7 @@ const generateEventQueueJobs = (
 
 // generate and schedule event queue jobs
 const scheduleEventQueueJobs = async (doc) => {
-  const { departureFlight, returnFlight, _id, createdAt, roundtrip } = doc;
+  const { departureFlight, returnFlight, _id, createdAt } = doc;
 
   // generate departure jobs
   const departureJobs = generateEventQueueJobs(
