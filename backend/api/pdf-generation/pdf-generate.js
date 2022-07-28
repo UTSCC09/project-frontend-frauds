@@ -68,7 +68,7 @@ async function loadAndSendPDF(){
 
         let mailOptions = {
             from: "auto-emailer@airtoronto-backend-dev.xyz",
-            to: "payamyek@gmail.com",
+            to: "jasongu508@gmail.com",
             subject: "Flight Ticket",
             text: "Here is your flight ticket!",
             attachments: [{

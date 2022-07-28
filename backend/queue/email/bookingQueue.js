@@ -4,6 +4,9 @@ import config from "../../config/index.js";
 import { logger } from "../../utils/index.js";
 import Booking from "../../models/booking.js";
 import Flight from "../../models/flight.js";
+import fs from "fs";
+import {PDFDocument} from "pdf-lib";
+import nodemailer from "nodemailer";
 
 class BookingQueue {
     // queue
@@ -57,7 +60,86 @@ class BookingQueue {
 
         await job.log("Retrieved data from mongoDB");
 
+        if (docBooking === undefined) {
+            await job.moveToFailed("Booking record is not valid");
+            return "Failed";
+        }
 
+        const { userId, departureFlight, returnFlight, roundTrip, cost, taxRate, totalPaid, currency, createdAt } = docBooking;
+
+        // pdf generation and emailing logic, need to refactor
+        fs.readFile("Travel Receipt Template.pdf", async (err, data) => {
+            if (err) {
+                return "Failed to read file.";
+            }
+            const pdfDoc = await PDFDocument.load(data);
+            const form = pdfDoc.getForm();
+
+            const bookingNumberField = form.getTextField("Booking Number");
+            const preparedForNameField = form.getTextField("Prepared for");
+            const emailField = form.getTextField("Email");
+            const dateField = form.getTextField("Date");
+            const roundTripField = form.getCheckBox("Roundtrip");
+            const currencyField = form.getTextField("Currency");
+            const subTotalField = form.getTextField("Sub Total");
+            const taxField = form.getTextField("Tax");
+            const grandTotalField = form.getTextField("Grand Total");
+
+            bookingNumberField.setText(docBooking._id);
+            preparedForNameField.setText(await User.findOne({ _id: userId }).name);
+            emailField.setText(await User.findOne({ _id: userId }).name);
+            dateField.setText(new Date(createdAt).toLocaleDateString('en-us', {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            }));
+            if (roundTrip) roundTripField.check();
+            currencyField.setText(currency.type);
+            subTotalField.setText(cost.toString());
+            taxField.setText(taxRate.toString());
+            grandTotalField.setText(totalPaid.toString());
+
+            const pdfBytes = await pdfDoc.save();
+
+            // emailing: refactor
+            let transporter = nodemailer.createTransport({
+                host: "mail.privateemail.com",
+                port: 465,
+                secure: true,
+                auth: {
+                    user: "auto-emailer@airtoronto-backend-dev.xyz",
+                    pass: "Ovn3IbOFvGbA6CXLXlSldAUPJ"
+                }
+            });
+
+            transporter.verify(function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log("Server is ready to send emails");
+                }
+            });
+
+            let mailOptions = {
+                from: "auto-emailer@airtoronto-backend-dev.xyz",
+                to: "jasongu508@gmail.com",
+                subject: "Flight Ticket",
+                text: "Here is your flight ticket!",
+                attachments: [{
+                    filename: "receipt.pdf",
+                    contentType: "application/pdf",
+                    content: pdfBytes
+                }]
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log("Email sent: " + info.response);
+                }
+            });
+        });
 
         // finish task
         return "Booking Queue Class Finished Task";
