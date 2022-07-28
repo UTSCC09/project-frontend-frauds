@@ -1,151 +1,93 @@
-import createError from "http-errors";
-import {Flight} from "../models/index.js";
 import mongoose from "mongoose";
+import { BookingSchema } from "../schemas/index.js";
+import constants from "../constants/index.js";
+import { EventQueue } from "../queue/index.js";
 
-const {Schema, Types} = mongoose;
-import {WebhookEvent} from "../constants/index.js";
-import {BookingQueue, EventQueue} from "../queue/index.js";
+const generateEventQueueJobs = (
+  docFlight,
+  bookingId,
+  createdAt,
+  isDeparture
+) => {
+  if (docFlight === undefined || docFlight.flightId === undefined) return [];
 
-// validates flight seats
-const validateSeatHelper = async (flight) => {
-    // locate departure flight
-    const doc = await Flight.findOne({
-        _id: Types.ObjectId(flight.flightId),
+  /* Jobs to add to Event Queue */
+  const jobs = [];
+
+  /* Event Queue Data */
+  const eventQueueData = {
+    flightId: docFlight.flightId,
+    bookingId,
+    isDeparture,
+    createdAt,
+  };
+
+  // add FLIGHT_BOOKING event job
+  jobs.push({
+    name: constants.QUEUE_JOB.EVENT,
+    data: {
+      ...eventQueueData,
+      event: constants.WEBHOOK_EVENT.FLIGHT_BOOKING,
+    },
+  });
+
+  // add additional job based on seat class
+  if (docFlight.class === constants.FLIGHT_CLASS.FIRST_CLASS)
+    jobs.push({
+      name: constants.QUEUE_JOB.EVENT,
+      data: {
+        ...eventQueueData,
+        event: constants.WEBHOOK_EVENT.FLIGHT_BOOKING_FIRST_CLASS,
+      },
+    });
+  else if (docFlight.class === constants.FLIGHT_CLASS.BUSINESS)
+    jobs.push({
+      name: constants.QUEUE_JOB.EVENT,
+      data: {
+        ...eventQueueData,
+        event: constants.WEBHOOK_EVENT.FLIGHT_BOOKING_BUSINESS,
+      },
+    });
+  else
+    jobs.push({
+      name: constants.QUEUE_JOB.EVENT,
+      data: {
+        ...eventQueueData,
+        event: constants.WEBHOOK_EVENT.FLIGHT_BOOKING_ECONOMY,
+      },
     });
 
-    // invalid departure flight
-    if (doc === null) throw createError(400, "Departure flight doesn't exist");
-
-    // get seat map
-    const seatMap = [...doc.equipmentListData.seats];
-    const seatValue = seatMap[flight.seat.x][flight.seat.y];
-
-    // cannot reserve barrier seat
-    if (seatValue === -1)
-        throw createError(400, "Chosen seat is not a valid seat");
-    else if (seatValue === 0) throw createError(400, "Seat already reserved");
-
-    // update seats for departure flight as booked
-    seatMap[flight.seat.x][flight.seat.y] = 0;
-
-    return {seats: seatMap, doc};
+  return jobs;
 };
 
-const BookingSchema = new Schema(
-    {
-        userId: String,
-        departureFlight: {
-            flightId: String,
-            class: {
-                type: Number,
-                enum: [1, 2, 3],
-                default: 3,
-            },
-            classDescription: {
-                type: String,
-                enum: ["First Class", "Business", "Economy"],
-                default: "Economy",
-            },
-            seat: {
-                x: Number,
-                y: Number,
-            },
-        },
-        returnFlight: {
-            flightId: String,
-            class: {
-                type: Number,
-                enum: [1, 2, 3],
-            },
-            classDescription: {
-                type: String,
-                enum: ["First Class", "Business", "Economy"],
-            },
-            seat: {
-                x: Number,
-                y: Number,
-            },
-        },
-        roundtrip: Boolean,
-        cost: Number,
-        taxRate: Number,
-        totalPaid: Number,
-        currency: {
-            type: String,
-            enum: ["CAD"],
-            default: "CAD",
-        },
-        createdAt: Number,
-        updatedAt: Number,
-    },
-    {
-        // mongoose use UNIX timestamps: https://masteringjs.io/tutorials/mongoose/timestamps
-        timestamps: {currentTime: () => Math.floor(Date.now() / 1000)},
-        statics: {
-            async paginate(page = 0, limit = 10) {
-                const total = await this.estimatedDocumentCount({});
-                const docs = await this.find({})
-                    .sort({name: 1})
-                    .skip(page * limit)
-                    .limit(limit);
-                return {total, docs, count: docs.length};
-            },
-            async addBooking(
-                userId,
-                departureFlight,
-                roundtrip,
-                cost,
-                taxRate,
-                totalPaid,
-                currency,
-                returnFlight = null
-            ) {
-                // validate seats for these flights
-                const depData = await validateSeatHelper(departureFlight);
+// generate and schedule event queue jobs
+const scheduleEventQueueJobs = async (doc) => {
+  const { departureFlight, returnFlight, _id, createdAt } = doc;
 
-                let returnData;
-                if (roundtrip) returnData = await validateSeatHelper(returnFlight);
+  // generate departure jobs
+  const departureJobs = generateEventQueueJobs(
+    departureFlight,
+    _id.toString(),
+    createdAt,
+    true
+  );
 
-                // reserve departure seats
-                await Flight.updateOne(
-                    {_id: Types.ObjectId(depData.doc._id)},
-                    {$set: {"equipmentListData.seats": depData.seats}}
-                );
+  // generate return jobs
+  const returnJobs = generateEventQueueJobs(
+    returnFlight,
+    _id.toString(),
+    createdAt,
+    false
+  );
 
-                // reserve return seats
-                if (roundtrip)
-                    await Flight.updateOne(
-                        {_id: Types.ObjectId(returnData.doc._id)},
-                        {$set: {"equipmentListData.seats": returnData.seats}}
-                    );
-
-                // create booking
-                await this.create({
-                    userId,
-                    roundtrip,
-                    cost,
-                    taxRate,
-                    totalPaid,
-                    currency,
-                    departureFlight,
-                    returnFlight,
-                });
-            },
-        },
-    }
-);
+  // add jobs to queue
+  await EventQueue.addBulk(departureJobs.concat(returnJobs));
+};
 
 // define hook on creation
-BookingSchema.post("save", async ({departureFlight, _id}) => {
-    // add event to queue
-    await EventQueue.add(
-        departureFlight.flightId.toString(),
-        _id,
-        WebhookEvent.FLIGHT_BOOKING
-    );
-    await BookingQueue.add(
-        _id
-    );
+BookingSchema.post("save", async (doc) => {
+  // add event queue jobs
+  await scheduleEventQueueJobs(doc);
 });
 
 export default mongoose.model("Booking", BookingSchema);

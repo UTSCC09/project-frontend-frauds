@@ -1,22 +1,16 @@
 # dockerize vue: https://v2.vuejs.org/v2/cookbook/dockerize-vuejs-app.html
 FROM node:lts-alpine@sha256:c785e617c8d7015190c0d41af52cc69be8a16e3d9eb7cb21f0bb58bcfca14d6b
 
-# install simple http server for serving static content
 RUN npm install -g http-server
 
-# make the 'app' folder the current working directory
 WORKDIR /app
 
-# copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
 
-# install project dependencies
 RUN npm ci
 
-# copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
 
-# build app for production with minification
 RUN npm run build
 
 EXPOSE 8080

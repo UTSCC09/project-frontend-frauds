@@ -3,6 +3,7 @@ import { Queue, Worker } from "bullmq";
 import config from "../../config/index.js";
 import axios from "axios";
 import { logger } from "../../utils/index.js";
+import constants from "../../constants/index.js";
 
 class WebhookQueue {
   // queue
@@ -57,7 +58,7 @@ class WebhookQueue {
     await job.log("Callback Sent");
 
     // finish task
-    return "Event Queue Class Finished Task";
+    return "Webhook Queue Class Finished Task";
   }
 
   // getter
@@ -67,7 +68,9 @@ class WebhookQueue {
 
   // adds job to queue
   async add(flightId, event) {
-    await this.#queue.add("webhookJob", { data: { flightId, event } });
+    await this.#queue.add(constants.QUEUE_JOB.WEBHOOK, {
+      data: { flightId, event },
+    });
 
     // log number of workers
     logger.info(

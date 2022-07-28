@@ -39,12 +39,17 @@ const rules = reactive({
 });
 
 // subscribable events
-const events = ["FLIGHT_BOOKING (Triggers on Flight Booking)"];
+const events = [
+  "FLIGHT_BOOKING (Triggers on all flight bookings)",
+  "FLIGHT_BOOKING_FIRST_CLASS (Triggers only on first class flight bookings)",
+  "FLIGHT_BOOKING_BUSINESS (Triggers only on business flight bookings)",
+  "FLIGHT_BOOKING_ECONOMY (Triggers only on economy flight bookings)",
+];
 
 // submit handler for subscribe button
 const onSubmitSubscribe = async (formEl) => {
   if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
+  await formEl.validate(async (valid) => {
     if (valid) {
       try {
         await subscribe(
@@ -55,19 +60,12 @@ const onSubmitSubscribe = async (formEl) => {
           form.flightId
         );
       } catch (err) {
-        if (err.response.data.errors.length === 0) {
-          return ElMessage({
+        return err.response.data.errors.forEach((e) =>
+          ElMessage({
             type: "error",
-            message: err.response.data.message,
-          });
-        } else {
-          return err.response.data.errors.forEach((e) =>
-            ElMessage({
-              type: "error",
-              message: e.msg,
-            })
-          );
-        }
+            message: e.msg,
+          })
+        );
       }
 
       // clear fields
@@ -78,14 +76,14 @@ const onSubmitSubscribe = async (formEl) => {
         message: "Subscribed to flight events",
         type: "success",
       });
-    } else console.log("error submit!", fields);
+    }
   });
 };
 
 // submit handler for unsubscribe button
 const onSubmitUnsubscribe = async (formEl) => {
   if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
+  await formEl.validate(async (valid) => {
     if (valid) {
       // try to unsubscribe
       try {
@@ -97,19 +95,12 @@ const onSubmitUnsubscribe = async (formEl) => {
           form.flightId
         );
       } catch (err) {
-        if (err.response.data.errors.length === 0) {
-          return ElMessage({
+        return err.response.data.errors.forEach((e) =>
+          ElMessage({
             type: "error",
-            message: err.response.data.message,
-          });
-        } else {
-          return err.response.data.errors.forEach((e) =>
-            ElMessage({
-              type: "error",
-              message: e.msg,
-            })
-          );
-        }
+            message: e.msg,
+          })
+        );
       }
 
       // clear fields
@@ -120,7 +111,7 @@ const onSubmitUnsubscribe = async (formEl) => {
         message: "Unsubscribed from flight events",
         type: "success",
       });
-    } else console.log("error submit!", fields);
+    }
   });
 };
 </script>
