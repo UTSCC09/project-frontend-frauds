@@ -1,6 +1,8 @@
 import express from "express";
 import passport from "passport";
 import { strategy } from "../helpers/index.js";
+import user from "../../models/user.js";
+import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 strategy();
@@ -8,6 +10,24 @@ strategy();
 function isLoggedIn(req, res, next) {
   req.user ? next() : res.sendStatus(401);
 }
+
+router.post(
+  "/testUserDBCreate",
+  asyncHandler(async({email, name, role}, res, next) => {
+    const {firstName, middleName, LastName } = name;
+    res.json(
+      await user.insertUser(email, {firstName, middleName, LastName}, role)
+    );
+  })
+);
+router.post(
+  "/testUserDBUpdateRole",
+  asyncHandler(async({email, role}, res, next) => {
+    res.json(
+      await user.updateRole(email, role)
+    );
+  })
+);
 
 router.get(
   "/google/signin",
