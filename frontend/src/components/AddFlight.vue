@@ -101,6 +101,7 @@ const particlesOptions = {
     },
   ],
 };
+
 // init function for confetti
 async function particlesInit(engine) {
   await loadConfettiPreset(engine); // eslint-disable-line
@@ -294,6 +295,7 @@ const fetchRouteSuggestions = async (query, cb) => {
     <!-- Plane Select -->
     <el-form-item label="Airplane" prop="airplane">
       <el-select
+        :disabled="form.route.includes('[') === false"
         v-model="form.airplane"
         placeholder="Select Airplane"
         @change="handlePlaneSelect"
