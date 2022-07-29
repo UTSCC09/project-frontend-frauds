@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import {authGuard} from "@auth0/auth0-vue";
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL), // jshint ignore:line
@@ -8,27 +9,41 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      beforeEnter:authGuard,
     },
     {
       path: "/add-flight",
       name: "Add Flight",
       component: () => import("../views/AddFlightView.vue"),
+      beforeEnter:authGuard,
+
     },
     {
       path: "/bookings",
       name: "bookings",
       component: () => import("../views/ProfileView.vue"),
+      beforeEnter:authGuard,
+
     },
     {
       path: "/flight-events",
       name: "Flight Events",
       component: () => import("../views/FlightEventsView.vue"),
+      beforeEnter:authGuard,
+
     },
     {
       path: "/credits",
       name: "Credits",
       component: () => import("../views/CreditsView.vue"),
+      beforeEnter:authGuard,
     },
+    {
+      path: "/success",
+      name: "success",
+      component: () => import("../views/ProfileView.vue"),
+      beforeEnter:authGuard,
+    }
   ],
 });
 

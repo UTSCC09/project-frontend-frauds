@@ -30,6 +30,15 @@ router.post(
     );
   })
 );
+router.post(
+  "/testUserDBGetUserByEmail",
+  asyncHandler(async(req, res, next) => {
+    const {email} = req.body;
+    res.json(
+      await user.findUser(email)
+    );
+  })
+)
 
 router.get(
   "/google/signin",

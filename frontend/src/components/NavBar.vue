@@ -8,8 +8,10 @@ import {
   InfoFilled,
   Watch,
 } from "@element-plus/icons-vue";
+import config from "../../config";
 
 import { useAuth0 } from '@auth0/auth0-vue';
+import axios from "axios";
 
 const { loginWithRedirect:login, user, isAuthenticated, getAccessTokenSilently, logout} = useAuth0();
 
@@ -23,13 +25,15 @@ async function loginWithRedirect() {
   *
    */
   // TODO: WRITE THIS AS A SERVICE
-  const response = await fetch('https://api.example.com/posts', {
+  const response = await axios.post(`${config.BACKEND_URL}/auth/testUserDBGetUserByEmail`, {
+    email: user.value.email
+  } ,{
     headers: {
       Authorization: 'Bearer ' + token
     }
   });
   const data = await response.json();
-
+  console.log(data);
 }
 
 function logoutWithRedirect() {
