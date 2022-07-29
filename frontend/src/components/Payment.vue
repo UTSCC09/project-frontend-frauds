@@ -3,7 +3,7 @@ import config from "../../config";
 import { ref, onBeforeMount } from "vue";
 import { StripeElements, StripeElement } from "vue-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { addBooking } from "../services/booking.js";
 
 const props = defineProps({
@@ -86,6 +86,51 @@ const cardOptions = ref({
   },
 });
 
+// how to create two cannons: https://github.com/matteobruni/tsparticles/tree/main/presets/confetti
+const particlesOptions = {
+  preset: "confetti",
+  emitters: [
+    {
+      life: {
+        duration: 10,
+        count: 1,
+      },
+      position: {
+        x: 0,
+        y: 30,
+      },
+      particles: {
+        move: {
+          direction: "top-right",
+        },
+      },
+    },
+    {
+      life: {
+        duration: 10,
+        count: 1,
+      },
+      position: {
+        x: 100,
+        y: 30,
+      },
+      particles: {
+        move: {
+          direction: "top-left",
+        },
+      },
+    },
+  ],
+};
+
+// init function for confetti
+async function particlesInit(engine) {
+  await loadConfettiPreset(engine); // eslint-disable-line
+}
+
+//
+const showConfetti = ref(false);
+
 // load stripe
 onBeforeMount(async () => {
   const stripePromise = loadStripe(stripeKey.value);
@@ -139,8 +184,9 @@ const onClickPurchase = async () => {
       }
 
       // create booking
-      addBooking(bookingData);
+      await addBooking(bookingData);
     } catch (err) {
+      console.log(err);
       return err.response.data.errors.forEach((e) =>
         ElMessage({
           type: "error",
@@ -149,11 +195,18 @@ const onClickPurchase = async () => {
       );
     }
 
-    // show toast notification
-    ElMessage.success("Flight purchase successful!");
+    // show confetti
+    showConfetti.value = true;
 
-    // reset screen
-    props.resetProcessStage();
+    // show message
+    ElMessageBox.alert(
+      "Confirmation email with booking details and invoice will be sent shortly. Thank you for using Air Toronto!",
+      "Payment Successful",
+      {
+        confirmButtonText: "Continue",
+        callback: props.resetProcessStage,
+      }
+    );
   } else {
     ElMessage.error("Please provide valid card information.");
   }
@@ -161,6 +214,12 @@ const onClickPurchase = async () => {
 </script>
 
 <template>
+  <Particles
+    v-if="showConfetti"
+    id="confettiPreset"
+    :particlesInit="particlesInit"
+    :options="particlesOptions"
+  />
   <!-- Flight Details-->
   <div v-if="roundtrip" class="flight-details">
     <h3>
