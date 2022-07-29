@@ -13,7 +13,8 @@ function isLoggedIn(req, res, next) {
 
 router.post(
   "/testUserDBCreate",
-  asyncHandler(async({email, name, role}, res, next) => {
+  asyncHandler(async(req, res, next) => {
+    const {email, name, role} = req.body;
     const {firstName, middleName, LastName } = name;
     res.json(
       await user.insertUser(email, {firstName, middleName, LastName}, role)
