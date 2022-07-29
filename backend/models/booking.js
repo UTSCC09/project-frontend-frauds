@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { BookingSchema } from "../schemas/index.js";
 import constants from "../constants/index.js";
-import {BookingQueue, EventQueue} from "../queue/index.js";
+import { BookingQueue, EventQueue } from "../queue/index.js";
 
 const generateEventQueueJobs = (
   docFlight,

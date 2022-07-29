@@ -13,7 +13,7 @@ createBullBoard({
   queues: [
     new BullMQAdapter(EventQueue.queueInstance),
     new BullMQAdapter(WebhookQueue.queueInstance),
-    new BullMQAdapter(BookingQueue.queueInstance)
+    new BullMQAdapter(BookingQueue.queueInstance),
   ],
   serverAdapter: serverAdapter,
 });
