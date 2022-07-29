@@ -15,15 +15,16 @@ router.post(
   "/testUserDBCreate",
   asyncHandler(async(req, res, next) => {
     const {email, name, role} = req.body;
-    const {firstName, middleName, LastName } = name;
+    const {firstName, middleName, lastName } = name;
     res.json(
-      await user.insertUser(email, {firstName, middleName, LastName}, role)
+      await user.insertUser(email, {firstName, middleName, lastName}, role)
     );
   })
 );
 router.post(
   "/testUserDBUpdateRole",
-  asyncHandler(async({email, role}, res, next) => {
+  asyncHandler(async(req, res, next) => {
+    const {email, role} = req.body;
     res.json(
       await user.updateRole(email, role)
     );
