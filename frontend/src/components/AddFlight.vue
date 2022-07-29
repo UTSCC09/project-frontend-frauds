@@ -85,6 +85,30 @@ const rules = reactive({
   ],
 });
 
+// how to create two cannons: https://github.com/matteobruni/tsparticles/tree/main/presets/confetti
+const particlesOptions = {
+  preset: "confetti",
+  emitters: [
+    {
+      life: { duration: 2, count: 1 },
+      position: { x: 0, y: 30 },
+      particles: { move: { direction: "top-right" } },
+    },
+    {
+      life: { duration: 2, count: 1 },
+      position: { x: 100, y: 30 },
+      particles: { move: { direction: "top-left" } },
+    },
+  ],
+};
+// init function for confetti
+async function particlesInit(engine) {
+  await loadConfettiPreset(engine); // eslint-disable-line
+}
+
+// ref to control showing of confetti
+const showConfetti = ref(false);
+
 // submit handler
 const onSubmit = async (formElement) => {
   if (!formElement) return;
@@ -120,6 +144,9 @@ const onSubmit = async (formElement) => {
           })
         );
       }
+
+      // show confetti
+      showConfetti.value = true;
 
       // show message
       ElMessage({
@@ -209,6 +236,12 @@ const fetchRouteSuggestions = async (query, cb) => {
 </script>
 
 <template>
+  <Particles
+    v-if="showConfetti"
+    id="confettiPreset"
+    :particlesInit="particlesInit"
+    :options="particlesOptions"
+  />
   <el-form
     :model="form"
     :rules="rules"

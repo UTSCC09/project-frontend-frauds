@@ -91,34 +91,14 @@ const particlesOptions = {
   preset: "confetti",
   emitters: [
     {
-      life: {
-        duration: 10,
-        count: 1,
-      },
-      position: {
-        x: 0,
-        y: 30,
-      },
-      particles: {
-        move: {
-          direction: "top-right",
-        },
-      },
+      life: { duration: 10, count: 1 },
+      position: { x: 0, y: 30 },
+      particles: { move: { direction: "top-right" } },
     },
     {
-      life: {
-        duration: 10,
-        count: 1,
-      },
-      position: {
-        x: 100,
-        y: 30,
-      },
-      particles: {
-        move: {
-          direction: "top-left",
-        },
-      },
+      life: { duration: 10, count: 1 },
+      position: { x: 100, y: 30 },
+      particles: { move: { direction: "top-left" } },
     },
   ],
 };
@@ -128,7 +108,7 @@ async function particlesInit(engine) {
   await loadConfettiPreset(engine); // eslint-disable-line
 }
 
-//
+// ref to control showing of confetti
 const showConfetti = ref(false);
 
 // load stripe
