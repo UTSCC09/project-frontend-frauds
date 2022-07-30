@@ -6,7 +6,7 @@ import "element-plus/theme-chalk/dark/css-vars.css";
 import Particles from "vue3-particles";
 import router from "./router";
 import { createAuth0 } from "@auth0/auth0-vue";
-import { config } from "../config.js";
+import config from "../config.js";
 
 const app = createApp(App);
 
