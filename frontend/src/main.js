@@ -12,7 +12,8 @@ const app = createApp(App);
 app.use(Particles);
 app.use(ElementPlus);
 app.use(router);
-app.use( // IMPORTANT: This MUST not be moved above router init, or it will break authGuard.
+app.use(
+  // IMPORTANT: This MUST not be moved above router init, or it will break authGuard.
   createAuth0({
     domain: "dev-m4i2pdc6.us.auth0.com",
     client_id: "GjvQEnzCqamAmaYQYue0kFeFnpntOk0K",
