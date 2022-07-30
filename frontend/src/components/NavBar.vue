@@ -28,7 +28,7 @@ onMounted(() => {
     :default-active="activeIndex"
     class="app-nav-bar"
     mode="horizontal"
-    :ellipsis="false"
+    :ellipsis="true"
     router
   >
     <el-image :src="logo" />
