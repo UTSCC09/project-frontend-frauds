@@ -1,12 +1,13 @@
 import { PDFDocument } from "pdf-lib";
-import fs from "fs";
+import { readFile } from "fs/promises";
 import nodemailer from "nodemailer";
 import config from "../../config/index.js";
+import { logger } from "../../utils/index.js";
 
 // loading the receipt template pdf with data and emailing to user
 const loadBookingReceipt = async (docBooking, docUser) => {
   // reading the pdf template data
-  const pdfFormData = await fs.readFile(
+  const pdfFormData = await readFile(
     "../../assets/Travel Receipt Template.pdf"
   );
   const pdfDoc = await PDFDocument.load(pdfFormData);
@@ -42,8 +43,7 @@ const loadBookingReceipt = async (docBooking, docUser) => {
   taxField.setText((docBooking.cost * docBooking.taxRate).toString());
   grandTotalField.setText(docBooking.totalPaid.toString());
 
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  return await pdfDoc.save();
 };
 
 const loadFlightTicket = async (
@@ -52,7 +52,7 @@ const loadFlightTicket = async (
   docFlight,
   isDepartureFlight
 ) => {
-  const pdfFormData = await fs.readFile(
+  const pdfFormData = await readFile(
     "../../assets/plane-ticket-template-fillable.pdf"
   );
   const pdfDoc = await PDFDocument.load(pdfFormData);
@@ -80,9 +80,10 @@ const loadFlightTicket = async (
     docFlight.destAirportData.city + ", " + docFlight.destAirportData.country
   );
   dateField.setText(
-    Intl.DateTimeFormat("en", { month: "2-digit", day: "2-digit" }).format(
-      docFlight.departureTime * 1000
-    )
+    new Date(docFlight.departureTime * 1000).toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+    })
   );
   flightField.setText(docFlight.planeId);
   if (isDepartureFlight) {
@@ -99,8 +100,7 @@ const loadFlightTicket = async (
     );
   }
 
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  return await pdfDoc.save();
 };
 
 const sendBookingEmail = async (
@@ -110,7 +110,7 @@ const sendBookingEmail = async (
   returnFlightTicket
 ) => {
   // create transporter for email
-  let transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host: config.EMAIL_HOST,
     port: config.EMAIL_PORT,
     secure: true,
@@ -120,67 +120,65 @@ const sendBookingEmail = async (
     },
   });
 
-  /*transporter.verify(function (error, success) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log("Server is ready to send emails");
-        }
-    });*/
-
-  if (returnFlightTicket === null) {
-    let mailOptions = {
-      from: config.EMAIL_AUTH_USER,
-      to: email,
-      subject: "Your Air Toronto Flight Booking Receipt and Ticket",
-      text:
-        "Hi, thank you for booking a flight with Air Toronto! Attached are your receipt for the flight booking" +
-        " as well as your flight ticket, have a nice trip!",
-      attachments: [
-        {
-          filename: "receipt.pdf",
-          contentType: "application/pdf",
-          content: receipt,
-        },
-        {
-          filename: "flight ticket.pdf",
-          contentType: "application/pdf",
-          content: departureFlightTicket,
-        },
-      ],
-    };
-  } else {
-    let mailOptions = {
-      from: config.EMAIL_AUTH_USER,
-      to: email,
-      subject: "Your Air Toronto Flight Booking Receipt and Tickets",
-      text:
-        "Hi, thank you for booking your flights with Air Toronto! Attached are your receipt for the flight booking" +
-        "as well as your flight tickets, have a nice trip!",
-      attachments: [
-        {
-          filename: "receipt.pdf",
-          contentType: "application/pdf",
-          content: receipt,
-        },
-        {
-          filename: "departure flight ticket.pdf",
-          contentType: "application/pdf",
-          content: departureFlightTicket,
-        },
-        {
-          filename: "return flight ticket.pdf",
-          contentType: "application/pdf",
-          content: returnFlightTicket,
-        },
-      ],
-    };
+  try {
+    await transporter.verify();
+    logger.info("Server is ready to send emails");
+  } catch (err) {
+    logger.error("Error connecting to email server", err);
   }
 
-  // send email
-  let info = await transporter.sendMail(mailOptions);
+  let attachmentFiles, mailBody;
+  if (returnFlightTicket === null) {
+    attachmentFiles = [
+      {
+        filename: "receipt.pdf",
+        contentType: "application/pdf",
+        content: receipt,
+      },
+      {
+        filename: "flight ticket.pdf",
+        contentType: "application/pdf",
+        content: departureFlightTicket,
+      },
+    ];
+    mailBody =
+      "Hi, thank you for booking your flight with Air Toronto! Attached are your receipt for the flight " +
+      "booking as well as your ticket. Bon Voyage!";
+  } else {
+    attachmentFiles = [
+      {
+        filename: "receipt.pdf",
+        contentType: "application/pdf",
+        content: receipt,
+      },
+      {
+        filename: "departure flight ticket.pdf",
+        contentType: "application/pdf",
+        content: departureFlightTicket,
+      },
+      {
+        filename: "return flight ticket.pdf",
+        contentType: "application/pdf",
+        content: returnFlightTicket,
+      },
+    ];
+    mailBody =
+      "Hi, thank you for booking your flights with Air Toronto! Attached are your receipt for the flight " +
+      "booking as well as your departure and return tickets, have a nice trip!";
+  }
 
-  console.log("Email sent: %s", info);
+  const mailOptions = {
+    from: config.EMAIL_AUTH_USER,
+    to: email,
+    subject: "Your Air Toronto Booking Details",
+    text: mailBody,
+    attachments: attachmentFiles,
+  };
+
+  // send email
+  const info = await transporter.sendMail(mailOptions);
+
+  logger.info("Email sent: %s", info);
 };
 
 export { loadBookingReceipt, loadFlightTicket, sendBookingEmail };

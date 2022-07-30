@@ -2,7 +2,6 @@
 import { Queue, Worker } from "bullmq";
 import config from "../../config/index.js";
 import { logger } from "../../utils/index.js";
-import Booking from "../../models/booking.js";
 import User from "../../models/user.js";
 import Flight from "../../models/flight.js";
 import {
@@ -56,8 +55,7 @@ class BookingQueue {
     await job.log("Starting to process job");
 
     // get booking
-    const docBooking =
-      job.data; /*await Booking.findOne({ _id: job.data.bookingId });*/
+    const docBooking = job.data;
 
     await job.log("Retrieved data from mongoDB");
 
@@ -75,7 +73,7 @@ class BookingQueue {
     const docDepartureFlight = await Flight.findOne({
       _id: docBooking.departureFlight.flightId,
     });
-    const departureTicket = loadFlightTicket(
+    const departureTicket = await loadFlightTicket(
       docBooking,
       docUser,
       docDepartureFlight,
@@ -86,15 +84,20 @@ class BookingQueue {
       const docReturnFlight = await Flight.findOne({
         _id: docBooking.returnFlight.flightId,
       });
-      const returnTicket = loadFlightTicket(
+      const returnTicket = await loadFlightTicket(
         docBooking,
         docUser,
         docReturnFlight,
         false
       );
-      sendBookingEmail(docUser.email, receipt, departureTicket, returnTicket);
+      await sendBookingEmail(
+        docUser.email,
+        receipt,
+        departureTicket,
+        returnTicket
+      );
     } else {
-      sendBookingEmail(docUser.email, receipt, departureTicket, null);
+      await sendBookingEmail(docUser.email, receipt, departureTicket, null);
     }
 
     // finish task
