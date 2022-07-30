@@ -5,7 +5,6 @@ import {
   HomeFilled,
   DocumentAdd,
   Ticket,
-  InfoFilled,
   Watch,
 } from "@element-plus/icons-vue";
 
@@ -20,8 +19,6 @@ onMounted(() => {
     activeIndex.value = "3";
   } else if (currentUrl.endsWith("/bookings")) {
     activeIndex.value = "4";
-  } else if (currentUrl.endsWith("/credits")) {
-    activeIndex.value = "5";
   }
 });
 </script>
@@ -51,10 +48,6 @@ onMounted(() => {
     <el-menu-item index="4" route="/bookings">
       <el-icon><Ticket /></el-icon>
       My Bookings
-    </el-menu-item>
-    <el-menu-item index="5" route="/credits">
-      <el-icon><InfoFilled /></el-icon>
-      Credits
     </el-menu-item>
   </el-menu>
 </template>
