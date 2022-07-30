@@ -7,7 +7,7 @@ import {
   planeRoutes,
   routeRoutes,
   flightRoutes,
-  oauthRoutes,
+  userRoutes,
   bookingRoutes,
   webhookRoutes,
   bullBoardRoutes,
@@ -16,8 +16,6 @@ import {
 import bodyParser from "body-parser";
 import { logger } from "../utils/index.js";
 import cors from "cors";
-import session from "express-session";
-import passport from "passport";
 import config from "../config/index.js";
 import errorHandlerMiddleware from "./middlewares/errorHandlerMiddleware.js";
 
@@ -31,18 +29,6 @@ app.use(({ method, url, body }, _res, next) => {
   logger.info(`${method} ${url} ${JSON.stringify(body)}`);
   next();
 });
-app.use(
-  session({
-    secret: config.SECRET,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-
-// register oauth
-app.use("/auth", oauthRoutes);
 
 // register routes
 app.use("/api", rootRoutes);
@@ -53,6 +39,7 @@ app.use("/api/routes", routeRoutes);
 app.use("/api/flights", flightRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/webhooks", webhookRoutes);
+app.use("/api/user", userRoutes);
 app.use("/admin/queues", bullBoardRoutes);
 
 // ---------- THIS MUST BE LAST DO NOT TOUCH  ----------

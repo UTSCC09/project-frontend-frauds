@@ -1,5 +1,5 @@
 <script setup>
-import user from "../components/Profile.vue";
+import user from "../components/Bookings.vue";
 </script>
 
 <template>

@@ -31,8 +31,6 @@ onMounted(() => {
     activeIndex.value = "3";
   } else if (currentUrl.endsWith("/bookings")) {
     activeIndex.value = "4";
-  } else if (currentUrl.endsWith("/credits")) {
-    activeIndex.value = "5";
   }
 });
 </script>
@@ -63,14 +61,10 @@ onMounted(() => {
       <el-icon><Ticket /></el-icon>
       My Bookings
     </el-menu-item>
-    <el-menu-item index="5" route="/credits">
-      <el-icon><InfoFilled /></el-icon>
-      Credits
-    </el-menu-item>
-    <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect"
+    <el-menu-item v-if="!isAuthenticated" index="5" @click="loginWithRedirect"
       >log in</el-menu-item
     >
-    <el-menu-item v-if="isAuthenticated" index="7" @click="logoutWithRedirect"
+    <el-menu-item v-if="isAuthenticated" index="6" @click="logoutWithRedirect"
       >log out</el-menu-item
     >
   </el-menu>
@@ -86,7 +80,5 @@ onMounted(() => {
   width: 180px;
   height: 55px;
   margin-bottom: 10px;
-}
-.el-button {
 }
 </style>
