@@ -19,6 +19,13 @@ config.MONGO_DB_HOST = process.env.MONGO_DB_HOST;
 config.MONGO_DB_PORT = process.env.MONGO_DB_PORT;
 config.MONGO_DB_URI = `mongodb://${config.MONGO_DB_USER}:${config.MONGO_DB_PASSWORD}@${config.MONGO_DB_HOST}:${config.MONGO_DB_PORT}`;
 
+// GOOGLE AUTH CONFIGS
+config.CLIENT_ID = process.env.CLIENT_ID;
+config.CLIENT_SECRET = process.env.CLIENT_SECRET;
+
+// EXPRESS-SESSION SECRET CONFIGS
+config.SECRET = process.env.SECRET;
+
 // REDIS CONFIGS
 config.REDIS_HOST = process.env.REDIS_HOST;
 config.REDIS_PASSWORD = process.env.REDIS_PASSWORD;

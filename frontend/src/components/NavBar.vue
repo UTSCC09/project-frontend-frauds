@@ -8,6 +8,18 @@ import {
   Watch,
 } from "@element-plus/icons-vue";
 
+import { useAuth0 } from "@auth0/auth0-vue";
+
+const { loginWithRedirect: login, isAuthenticated, logout } = useAuth0();
+
+async function loginWithRedirect() {
+  await login();
+}
+
+function logoutWithRedirect() {
+  logout({ returnTo: window.location.origin });
+}
+
 const activeIndex = ref("1");
 
 onMounted(() => {
@@ -49,6 +61,12 @@ onMounted(() => {
       <el-icon><Ticket /></el-icon>
       My Bookings
     </el-menu-item>
+    <el-menu-item v-if="!isAuthenticated" index="5" @click="loginWithRedirect"
+      >log in</el-menu-item
+    >
+    <el-menu-item v-if="isAuthenticated" index="6" @click="logoutWithRedirect"
+      >log out</el-menu-item
+    >
   </el-menu>
 </template>
 
