@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import createError from "http-errors";
+import { logger } from "../utils/index.js";
 const { Schema } = mongoose;
 
 const User = new Schema(
@@ -13,7 +14,7 @@ const User = new Schema(
   {
     statics: {
       async insertUser(email, name, role) {
-        console.log(email, name, role);
+        logger.info(`${email} ${JSON.stringify(name)} ${role}`);
         const doc = await this.create({
           email: email,
           firstName: name.firstName,

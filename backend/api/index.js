@@ -31,15 +31,6 @@ app.use(({ method, url, body }, _res, next) => {
   logger.info(`${method} ${url} ${JSON.stringify(body)}`);
   next();
 });
-app.use(
-  session({
-    secret: config.SECRET,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
 
 // register oauth
 app.use("/auth", oauthRoutes);
