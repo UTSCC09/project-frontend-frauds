@@ -24,6 +24,11 @@ const router = createRouter({
       name: "Credits",
       component: () => import("../views/CreditsView.vue"),
     },
+    {
+      path: "/:catchAll(.*)", // 404 route handling: https://programmerah.com/solved-vue3-configuration-routing-error-catch-all-routes-must-now-be-defined-using-a-param-with-a-custom-regexp-32886/
+      name: "404",
+      component: () => import("../views/NotFoundView.vue"),
+    },
   ],
 });
 
