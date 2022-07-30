@@ -16,10 +16,10 @@ app.use(router);
 app.use(
   // IMPORTANT: This MUST not be moved above router init, or it will break authGuard.
   createAuth0({
-    domain: config.domain,
-    client_id: config.client_id,
+    domain: config.DOMAIN,
+    client_id: config.CLIENT_ID,
     redirect_uri: window.location.origin,
-    audience: config.audience,
+    audience: config.AUDIENCE,
   })
 );
 
