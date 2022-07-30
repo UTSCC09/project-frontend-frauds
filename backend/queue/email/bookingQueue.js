@@ -64,7 +64,8 @@ class BookingQueue {
       return "Failed";
     }
 
-    const docUser = await User.findOne({ _id: docBooking.userId });
+    // get user
+    const docUser = await User.findOne({ email: docBooking.userId });
 
     // get receipt
     const receipt = loadBookingReceipt(docBooking, docUser);
@@ -80,6 +81,8 @@ class BookingQueue {
       true
     );
 
+    // if booking includes roundtrip flight, generate return ticket
+    // send email with generated documents
     if (docBooking.roundtrip) {
       const docReturnFlight = await Flight.findOne({
         _id: docBooking.returnFlight.flightId,

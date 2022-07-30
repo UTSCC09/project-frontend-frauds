@@ -31,7 +31,7 @@ const loadBookingReceipt = async (docBooking, docUser) => {
   );
   emailField.setText(docUser.email);
   dateField.setText(
-    new Date(docBooking.createdAt).toLocaleDateString("en-us", {
+    new Date(docBooking.createdAt).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -120,6 +120,7 @@ const sendBookingEmail = async (
     },
   });
 
+  // verify email server connection
   try {
     await transporter.verify();
     logger.info("Server is ready to send emails");
@@ -127,6 +128,7 @@ const sendBookingEmail = async (
     logger.error("Error connecting to email server", err);
   }
 
+  // set email contents and attachments
   let attachmentFiles, mailBody;
   if (returnFlightTicket === null) {
     attachmentFiles = [
@@ -167,6 +169,7 @@ const sendBookingEmail = async (
       "booking as well as your departure and return tickets, have a nice trip!";
   }
 
+  // set email options
   const mailOptions = {
     from: config.EMAIL_AUTH_USER,
     to: email,
