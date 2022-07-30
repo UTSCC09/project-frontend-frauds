@@ -8,16 +8,16 @@ import {
   Watch,
 } from "@element-plus/icons-vue";
 
-import { useAuth0 } from '@auth0/auth0-vue';
+import { useAuth0 } from "@auth0/auth0-vue";
 
-const { loginWithRedirect:login, isAuthenticated, logout} = useAuth0();
+const { loginWithRedirect: login, isAuthenticated, logout } = useAuth0();
 
 async function loginWithRedirect() {
   await login();
 }
 
 function logoutWithRedirect() {
-  logout( {returnTo: window.location.origin} );
+  logout({ returnTo: window.location.origin });
 }
 
 const activeIndex = ref("1");
@@ -67,9 +67,12 @@ onMounted(() => {
       <el-icon><InfoFilled /></el-icon>
       Credits
     </el-menu-item>
-    <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect">log in</el-menu-item>
-    <el-menu-item v-if ="isAuthenticated" index="7" @click="logoutWithRedirect">log out</el-menu-item>
-
+    <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect"
+      >log in</el-menu-item
+    >
+    <el-menu-item v-if="isAuthenticated" index="7" @click="logoutWithRedirect"
+      >log out</el-menu-item
+    >
   </el-menu>
 </template>
 
@@ -85,6 +88,5 @@ onMounted(() => {
   margin-bottom: 10px;
 }
 .el-button {
-
 }
 </style>
