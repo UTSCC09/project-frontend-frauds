@@ -19,10 +19,10 @@ async function particlesInit(engine) {
   />
 
   <div class="text-container">
-    <h1>404 - You are Lost, May You Find the Light!</h1>
+    <h1><b>404</b> - You are Lost! 😱</h1>
     <h1>Why Are You Here? 🤐</h1>
-    <h1>This is the dark side! ☠️</h1>
-    <h1><a :href="config.FRONTEND_URL">Click me</a> to find the light.</h1>
+    <h1>This is the Dark Side! ☠️</h1>
+    <h1><a :href="config.FRONTEND_URL">Click Me</a> to Find the Light.</h1>
   </div>
 </template>
 
@@ -30,5 +30,6 @@ async function particlesInit(engine) {
 .text-container {
   text-align: center;
   margin-top: 35vh;
+  color: white;
 }
 </style>

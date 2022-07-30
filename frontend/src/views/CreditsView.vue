@@ -43,6 +43,22 @@
         >Source</a
       >)
     </li>
+    <li>
+      TsParticles Preset for Fire &nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://github.com/matteobruni/tsparticles/blob/main/presets/fire/README.md"
+        >Source</a
+      >)
+    </li>
+    <li>
+      TsParticles Preset for Confetti With 2 Side Canons &nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://github.com/matteobruni/tsparticles/tree/main/presets/confetti"
+        >Source</a
+      >)
+    </li>
   </ul>
 
   <!-- NodeJS -->
