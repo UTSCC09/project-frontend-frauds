@@ -4,7 +4,6 @@ import CountrySchema from "./countrySchema.js";
 import PlaneSchema from "./planeSchema.js";
 import RouteSchema from "./routeSchema.js";
 import FlightSchema from "./flightSchema.js";
-import UserSchema from "./userSchema.js";
 import BookingSchema from "./bookingSchema.js";
 
 export {
@@ -14,6 +13,5 @@ export {
   PlaneSchema,
   RouteSchema,
   FlightSchema,
-  UserSchema,
   BookingSchema,
 };

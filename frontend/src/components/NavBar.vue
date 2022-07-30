@@ -8,18 +8,6 @@ import {
   Watch,
 } from "@element-plus/icons-vue";
 
-import { useAuth0 } from "@auth0/auth0-vue";
-
-const { loginWithRedirect: login, isAuthenticated, logout } = useAuth0();
-
-async function loginWithRedirect() {
-  await login();
-}
-
-function logoutWithRedirect() {
-  logout({ returnTo: window.location.origin });
-}
-
 const activeIndex = ref("1");
 
 onMounted(() => {
@@ -31,8 +19,6 @@ onMounted(() => {
     activeIndex.value = "3";
   } else if (currentUrl.endsWith("/bookings")) {
     activeIndex.value = "4";
-  } else if (currentUrl.endsWith("/credits")) {
-    activeIndex.value = "5";
   }
 });
 </script>
@@ -63,16 +49,6 @@ onMounted(() => {
       <el-icon><Ticket /></el-icon>
       My Bookings
     </el-menu-item>
-    <el-menu-item index="5" route="/credits">
-      <el-icon><InfoFilled /></el-icon>
-      Credits
-    </el-menu-item>
-    <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect"
-      >log in</el-menu-item
-    >
-    <el-menu-item v-if="isAuthenticated" index="7" @click="logoutWithRedirect"
-      >log out</el-menu-item
-    >
   </el-menu>
 </template>
 
@@ -86,7 +62,5 @@ onMounted(() => {
   width: 180px;
   height: 55px;
   margin-bottom: 10px;
-}
-.el-button {
 }
 </style>
