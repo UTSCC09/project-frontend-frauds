@@ -7,7 +7,7 @@ import {
   planeRoutes,
   routeRoutes,
   flightRoutes,
-  oauthRoutes,
+  userRoutes,
   bookingRoutes,
   webhookRoutes,
   bullBoardRoutes,
@@ -32,9 +32,6 @@ app.use(({ method, url, body }, _res, next) => {
   next();
 });
 
-// register oauth
-app.use("/auth", oauthRoutes);
-
 // register routes
 app.use("/api", rootRoutes);
 app.use("/api/planes", planeRoutes);
@@ -45,6 +42,7 @@ app.use("/api/flights", flightRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/webhooks", webhookRoutes);
 app.use("/admin/queues", bullBoardRoutes);
+app.use("/api/user", userRoutes);
 
 // ---------- THIS MUST BE LAST DO NOT TOUCH  ----------
 app.use(errorHandlerMiddleware);
