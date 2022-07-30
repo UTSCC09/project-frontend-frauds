@@ -8,32 +8,13 @@ import {
   InfoFilled,
   Watch,
 } from "@element-plus/icons-vue";
-import config from "../../config";
 
 import { useAuth0 } from '@auth0/auth0-vue';
-import axios from "axios";
 
-const { loginWithRedirect:login, user, isAuthenticated, getAccessTokenSilently, logout} = useAuth0();
+const { loginWithRedirect:login, isAuthenticated, logout} = useAuth0();
 
 async function loginWithRedirect() {
   await login();
-  const token = await getAccessTokenSilently();
-  /*
-  * This function will check the backend for the user. If the user is already
-  * registered it will skip ahead and log the user in. Otherwise
-  * It will redirect the user again to select their role.
-  *
-   */
-  // TODO: WRITE THIS AS A SERVICE
-  const response = await axios.post(`${config.BACKEND_URL}/auth/testUserDBGetUserByEmail`, {
-    email: user.value.email
-  } ,{
-    headers: {
-      Authorization: 'Bearer ' + token
-    }
-  });
-  const data = await response.json();
-  console.log(data);
 }
 
 function logoutWithRedirect() {

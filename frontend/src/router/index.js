@@ -16,7 +16,6 @@ const router = createRouter({
       name: "Add Flight",
       component: () => import("../views/AddFlightView.vue"),
       beforeEnter:authGuard,
-
     },
     {
       path: "/bookings",
@@ -36,12 +35,6 @@ const router = createRouter({
       path: "/credits",
       name: "Credits",
       component: () => import("../views/CreditsView.vue"),
-      beforeEnter:authGuard,
-    },
-    {
-      path: "/success",
-      name: "success",
-      component: () => import("../views/ProfileView.vue"),
       beforeEnter:authGuard,
     }
   ],
