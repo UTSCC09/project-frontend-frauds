@@ -101,6 +101,7 @@ const onClickPurchase = () => {
         >Purchase</el-button
       >
     </el-col>
+    <!-- seat map legend -->
     <el-col :span="4">
       <div class="seat first-class"></div>
       First Class
@@ -114,6 +115,7 @@ const onClickPurchase = () => {
       Economy Class
     </el-col>
   </el-row>
+  <!-- seat map -->
   <div class="seats-container">
     <el-row v-for="(row, x) in flight.equipmentListData.seats" :key="x">
       <el-col class="flex-1" v-for="(seat, y) in row" :key="y" :span="2">
