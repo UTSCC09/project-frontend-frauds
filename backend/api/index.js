@@ -7,6 +7,7 @@ import {
   planeRoutes,
   routeRoutes,
   flightRoutes,
+  oauthRoutes,
   bookingRoutes,
   webhookRoutes,
   bullBoardRoutes,
@@ -15,6 +16,9 @@ import {
 import bodyParser from "body-parser";
 import { logger } from "../utils/index.js";
 import cors from "cors";
+import session from "express-session";
+import passport from "passport";
+import config from "../config/index.js";
 import errorHandlerMiddleware from "./middlewares/errorHandlerMiddleware.js";
 
 const app = express();
@@ -27,6 +31,18 @@ app.use(({ method, url, body }, _res, next) => {
   logger.info(`${method} ${url} ${JSON.stringify(body)}`);
   next();
 });
+app.use(
+  session({
+    secret: config.SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// register oauth
+app.use("/auth", oauthRoutes);
 
 // register routes
 app.use("/api", rootRoutes);
