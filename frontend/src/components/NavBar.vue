@@ -5,7 +5,6 @@ import {
   HomeFilled,
   DocumentAdd,
   Ticket,
-  InfoFilled,
   Watch,
 } from "@element-plus/icons-vue";
 
@@ -34,10 +33,6 @@ onMounted(() => {
     activeIndex.value = "4";
   } else if (currentUrl.endsWith("/credits")) {
     activeIndex.value = "5";
-  } else if (currentUrl.endsWith("/signin")) {
-    activeIndex.value = "6";
-  } else if (currentUrl.endsWith("/signout")) {
-    activeIndex.value = "7";
   }
 });
 </script>
@@ -47,7 +42,7 @@ onMounted(() => {
     :default-active="activeIndex"
     class="app-nav-bar"
     mode="horizontal"
-    :ellipsis="false"
+    :ellipsis="true"
     router
   >
     <el-image :src="logo" />
