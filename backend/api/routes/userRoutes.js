@@ -5,7 +5,7 @@ import User from "../../models/user.js";
 const router = express.Router();
 
 router.post(
-  "/create",
+  "/",
   asyncHandler(async (req, res, next) => {
     const { email, name, role } = req.body;
     const { firstName, middleName, lastName } = name;
@@ -14,8 +14,8 @@ router.post(
     );
   })
 );
-router.post(
-  "/update/roles",
+router.patch(
+  "/",
   asyncHandler(async (req, res, next) => {
     const { email, role } = req.body;
     res.json(await User.updateRole(email, role));
