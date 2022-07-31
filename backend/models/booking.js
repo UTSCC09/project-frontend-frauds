@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { BookingSchema } from "../schemas/index.js";
 import constants from "../constants/index.js";
-import { EventQueue } from "../queue/index.js";
+import { BookingQueue, EventQueue } from "../queue/index.js";
 
 const generateEventQueueJobs = (
   docFlight,
@@ -88,6 +88,9 @@ const scheduleEventQueueJobs = async (doc) => {
 BookingSchema.post("save", async (doc) => {
   // add event queue jobs
   await scheduleEventQueueJobs(doc);
+
+  // add booking queue jobs
+  await BookingQueue.add(doc);
 });
 
 export default mongoose.model("Booking", BookingSchema);

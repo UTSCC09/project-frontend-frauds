@@ -34,6 +34,14 @@ config.REDIS_PORT = Number.parseInt(process.env.REDIS_PORT);
 // QUEUE WORKER CONFIGS
 config.EVENT_WORKERS = Number.parseInt(process.env.EVENT_WORKERS);
 config.WEBHOOK_WORKERS = Number.parseInt(process.env.WEBHOOK_WORKERS);
+config.BOOKING_WORKERS = Number.parseInt(process.env.BOOKING_WORKERS);
+config.REGISTRATION_WORKERS = Number.parseInt(process.env.REGISTRATION_WORKERS);
+
+// EMAIL CONFIGS
+config.EMAIL_HOST = process.env.EMAIL_HOST;
+config.EMAIL_PORT = Number.parseInt(process.env.EMAIL_PORT);
+config.EMAIL_AUTH_USER = process.env.EMAIL_AUTH_USER;
+config.EMAIL_AUTH_PASSWORD = process.env.EMAIL_AUTH_PASSWORD;
 
 // export app config
 export default config;
