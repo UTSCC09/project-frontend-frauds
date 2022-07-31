@@ -8,10 +8,10 @@ import { logger } from "../../utils/index.js";
 const loadBookingReceipt = async (docBooking, docUser) => {
   // reading the pdf template data
   const pdfFormData = await readFile(
-    "../../assets/Travel Receipt Template.pdf"
+    "/usr/src/app/assets/Travel Receipt Template.pdf"
   );
   const pdfDoc = await PDFDocument.load(pdfFormData);
-  const form = await pdfDoc.getForm();
+  const form = pdfDoc.getForm();
 
   // get form fields in the pdf
   const bookingNumberField = form.getTextField("Booking Number");
@@ -51,10 +51,10 @@ const loadFlightTicket = async (
   isDepartureFlight
 ) => {
   const pdfFormData = await readFile(
-    "../../assets/plane-ticket-template-fillable.pdf"
+    "/usr/src/app/assets/plane-ticket-template-fillable.pdf"
   );
   const pdfDoc = await PDFDocument.load(pdfFormData);
-  const form = await pdfDoc.getForm();
+  const form = pdfDoc.getForm();
 
   const airlineField = form.getTextField("Airline Name");
   const passengerNameField = form.getTextField("Name of Passenger");
