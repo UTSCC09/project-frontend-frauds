@@ -31,7 +31,7 @@ const User = new Schema(
         const userDoc = await this.findOneAndUpdate(
           { email: email },
           { role: newRole },
-          { new: true },
+          { new: true }
         );
         if (!userDoc) {
           throw createError(400, "user missing from DB");
