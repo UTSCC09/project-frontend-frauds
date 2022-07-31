@@ -35,7 +35,7 @@ const loadBookingReceipt = async (docBooking, docUser) => {
       day: "numeric",
     })
   );
-  if (docBooking.roundTrip) roundTripField.check();
+  if (docBooking.roundtrip) roundTripField.check();
   currencyField.setText(docBooking.currency);
   subTotalField.setText(docBooking.cost.toString());
   taxField.setText((docBooking.cost * docBooking.taxRate).toString());
