@@ -16,7 +16,7 @@ const User = new Schema(
       async insertUser(email, name, role) {
         logger.info(`${email} ${JSON.stringify(name)} ${role}`);
         const check = await this.findOne({ email: email });
-        if (check) {
+        if (check !== null) {
           return check;
         }
         return await this.create({
