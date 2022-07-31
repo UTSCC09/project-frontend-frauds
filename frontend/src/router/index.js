@@ -36,6 +36,12 @@ const router = createRouter({
       beforeEnter: authGuard,
     },
     {
+      path: "/user-profile",
+      name: "User Profile",
+      component: () => import("../components/UserProfile.vue"),
+      beforeEnter: authGuard,
+    },
+    {
       path: "/:catchAll(.*)", // 404 route handling: https://programmerah.com/solved-vue3-configuration-routing-error-catch-all-routes-must-now-be-defined-using-a-param-with-a-custom-regexp-32886/
       name: "404",
       component: () => import("../views/NotFoundView.vue"),
