@@ -39,6 +39,7 @@ class RegistrationQueue {
     const worker = new Worker(this.#queueName, this.#processor, {
       connection: { ...this.#connection },
       concurrency: 1,
+      lockDuration: 60000,
     });
 
     // register error handler
@@ -50,19 +51,23 @@ class RegistrationQueue {
 
   // job processor
   async #processor(job) {
-    await job.log("Starting to process job");
+    try {
+      await job.log("Starting to process job");
 
-    // get user
-    const docUser = job.data;
+      // get user
+      const docUser = job.data;
 
-    await job.log("Retrieved data from mongoDB");
+      await job.log("Retrieved data from mongoDB");
 
-    if (docUser === null) {
-      await job.moveToFailed("User not found");
-      return "Failed";
+      if (docUser === null) {
+        await job.moveToFailed("User not found");
+        return "Failed";
+      }
+
+      await sendRegistrationEmail(docUser);
+    } catch (err) {
+      return err.toString();
     }
-
-    await sendRegistrationEmail(docUser);
 
     // finish task
     return "Registration Queue Class Finished Task";
