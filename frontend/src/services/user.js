@@ -2,11 +2,11 @@ import config from "../../config";
 import axios from "axios";
 import { getAccessToken } from "./auth";
 
-export async function getUserInfo() {
+export async function getUserInfo(email) {
   const token = await getAccessToken();
   const result = await axios.post(
     `${config.BACKEND_URL}/api/user/search`,
-    { email: "lingfengsu0309@gmail.com" },
+    { email: email },
     {
       headers: {
         Authorization: `Bearer ${token}`,

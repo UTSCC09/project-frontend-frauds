@@ -21,7 +21,7 @@ let userInfo = ref({});
 const loading = ref(true);
 
 onBeforeMount(async () => {
-  userInfo.value = await getUserInfo();
+  userInfo.value = await getUserInfo(user.value.email);
   loading.value = false;
 });
 </script>

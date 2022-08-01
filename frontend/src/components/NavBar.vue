@@ -13,7 +13,7 @@ import {
 import { useAuth0 } from "@auth0/auth0-vue";
 import { getUserInfo } from "../services/user";
 
-const { loginWithRedirect: login, isAuthenticated, logout } = useAuth0();
+const { loginWithRedirect: login, user, isAuthenticated, logout } = useAuth0();
 
 async function loginWithRedirect() {
   await login();
@@ -41,7 +41,7 @@ onMounted(async () => {
   } else if (currentUrl.endsWith("/user-profile")) {
     activeIndex.value = "5";
   }
-  userInfo.value = await getUserInfo();
+  userInfo.value = await getUserInfo(user.value.email);
   adminPriv.value = ["user", "admin"].every((val) =>
     userInfo.value.role.includes(val)
   );
