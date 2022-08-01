@@ -1,6 +1,7 @@
 import express from "express";
 import asyncHandler from "express-async-handler";
 import User from "../../models/user.js";
+import {authorizeAccessToken, authorizeRole} from "../middlewares/validateTokenMiddleware.js";
 
 const router = express.Router();
 
@@ -23,6 +24,8 @@ router.patch(
 );
 router.post(
   "/search",
+  authorizeAccessToken,
+  authorizeRole(["user"]),
   asyncHandler(async (req, res, next) => {
     const { email } = req.body;
     res.json(await User.findUser(email));
