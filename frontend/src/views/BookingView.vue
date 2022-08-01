@@ -5,7 +5,7 @@ import PageTitle from "../components/PageTitle.vue";
 
 <template>
   <main>
-    <PageTitle title="My Bookings"/>
+    <PageTitle title="My Bookings" />
     <Booking />
   </main>
 </template>

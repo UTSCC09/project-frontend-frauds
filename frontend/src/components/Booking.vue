@@ -5,47 +5,38 @@
       <h2>No Data Found</h2>
     </div>
     <ul v-else>
-      <li class="booking-result" v-for="booking in userBookings" :key="booking._id">
+      <li
+        class="booking-result"
+        v-for="booking in userBookings"
+        :key="booking._id"
+      >
         <el-row>
           <el-col :span="8">
-            <span class="text-bold">
-              Flight ID:
-            </span>
-            {{booking._id}}
+            <span class="text-bold"> Flight ID: </span>
+            {{ booking._id }}
           </el-col>
           <el-col :span="8">
-            <span class="text-bold">
-              Round Trip:
-            </span>
-            {{booking.roundtrip}}
+            <span class="text-bold"> Round Trip: </span>
+            {{ booking.roundtrip }}
           </el-col>
           <el-col :span="8">
-            <span class="text-bold">
-              Currency:
-            </span>
-            {{booking.currency}}
+            <span class="text-bold"> Currency: </span>
+            {{ booking.currency }}
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <span class="text-bold">
-              Cost: $
-            </span>
-            {{booking.cost}}
+            <span class="text-bold"> Cost: $ </span>
+            {{ booking.cost }}
           </el-col>
           <el-col :span="8">
-            <span class="text-bold">
-              Tax Rate:
-            </span>
-            {{booking.taxRate}}
+            <span class="text-bold"> Tax Rate: </span>
+            {{ booking.taxRate }}
           </el-col>
           <el-col :span="8">
-            <span class="text-bold">
-              Total Paid: $
-            </span>
-            {{booking.totalPaid}}
+            <span class="text-bold"> Total Paid: $ </span>
+            {{ booking.totalPaid }}
           </el-col>
-
         </el-row>
       </li>
     </ul>
