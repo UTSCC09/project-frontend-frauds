@@ -15,7 +15,7 @@ class BookingQueue {
   #queue = undefined;
 
   // name of queue
-  #queueName = "booookingsQueue";
+  #queueName = "bokkingQueue";
 
   // connection obj
   #connection = {
