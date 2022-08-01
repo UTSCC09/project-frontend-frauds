@@ -1,6 +1,8 @@
 <script setup>
 import { useAuth0 } from "@auth0/auth0-vue";
 import PageTitle from "./PageTitle.vue";
+import { ElMessageBox, ElMessage } from 'element-plus';
+import {upgradeUser} from "../services/user";
 
 const { user } = useAuth0();
 
@@ -13,6 +15,20 @@ const particlesOptions = {
 async function particlesInit(engine) {
   await loadFireflyPreset(engine); // eslint-disable-line
 }
+
+const onClickUpgrade = () => {
+  ElMessageBox.alert('You hereby declare that you are an airline agent and your account will be terminated if caught for perjury! You have to log out and log back in for changes to be effective.', 'Upgrade User Role', {
+    confirmButtonText: 'OK',
+    callback: async () => {
+      await upgradeUser(user.value.email);
+      ElMessage({
+        type: 'success',
+        message: "User Upgraded",
+      })
+    },
+  })
+}
+
 </script>
 
 <template>
@@ -46,9 +62,14 @@ async function particlesInit(engine) {
       </el-tag>
     </el-col>
   </el-row>
-  <el-row>
+  <el-row class="mb-10">
     <el-col>
       <h3>Email: {{ user.email }}</h3>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col>
+      <el-button type="primary" @click="onClickUpgrade">Upgrade to Admin</el-button>
     </el-col>
   </el-row>
 </template>

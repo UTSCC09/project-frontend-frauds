@@ -15,3 +15,17 @@ export async function getUserInfo(email) {
   );
   return result.data;
 }
+
+export async function upgradeUser(email) {
+  const token = await getAccessToken();
+  const result = await axios.patch(
+    `${config.BACKEND_URL}/api/users/`,
+    { email, role: ["user", "admin"] },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return result.data;
+}
