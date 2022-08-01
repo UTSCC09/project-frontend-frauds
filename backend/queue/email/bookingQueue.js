@@ -1,5 +1,5 @@
 // jshint ignore: start
-import { Queue, Worker } from "bullmq";
+import { Queue, Worker, QueueScheduler } from "bullmq";
 import config from "../../config/index.js";
 import { logger } from "../../utils/index.js";
 import User from "../../models/user.js";
@@ -15,7 +15,7 @@ class BookingQueue {
   #queue = undefined;
 
   // name of queue
-  #queueName = "boookingsQueue";
+  #queueName = "booookingsQueue";
 
   // connection obj
   #connection = {
@@ -27,6 +27,10 @@ class BookingQueue {
   constructor() {
     // singleton instance of queue
     if (this.#queue === undefined) {
+      new QueueScheduler(this.#queueName, {
+        connection: this.#connection,
+      });
+
       this.#queue = new Queue(this.#queueName, {
         connection: this.#connection,
       });
