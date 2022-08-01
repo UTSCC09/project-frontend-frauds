@@ -41,13 +41,14 @@ class BookingQueue {
     const worker = new Worker(this.#queueName, this.#processor, {
       connection: { ...this.#connection },
       concurrency: 1,
-      lockDuration: 60000, // 3 minutes
+      lockDuration: 600000, // 10 minutes
     });
 
     // register error handler
     worker.on("error", (err) => {
       // log the error
       console.error(err);
+      return err.toString();
     });
   }
 
@@ -59,8 +60,6 @@ class BookingQueue {
       // get booking
       const docBooking = job.data;
 
-      await job.log("Retrieved data from mongoDB");
-
       if (docBooking === null) {
         await job.moveToFailed("Booking record is not valid");
         return "Failed";
@@ -68,6 +67,8 @@ class BookingQueue {
 
       // get user
       const docUser = await User.findOne({ email: docBooking.userId });
+
+      await job.log("Retrieved user data from database");
 
       if (docUser === null) {
         await job.moveToFailed("User not found");
@@ -77,10 +78,14 @@ class BookingQueue {
       // get receipt
       const receipt = await loadBookingReceipt(docBooking, docUser);
 
+      await job.log("Retrieved booking receipt");
+
       // get departure flight and retrieve ticket
       const docDepartureFlight = await Flight.findOne({
         _id: docBooking.departureFlight.flightId,
       });
+
+      await job.log("Retrieved departure flight from mongoDB");
 
       if (docDepartureFlight === null) {
         await job.moveToFailed("Flight not found");
