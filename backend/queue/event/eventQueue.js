@@ -48,44 +48,48 @@ class EventQueue {
 
   // job processor
   async #processor(job) {
-    await job.log("Starting to process job");
+    try {
+      await job.log("Starting to process job");
 
-    // extract data
-    const { flightId, bookingId, event, createdAt, isDeparture } = job.data;
+      // extract data
+      const { flightId, bookingId, event, createdAt, isDeparture } = job.data;
 
-    // get  departure flight
-    const docFlight = await Flight.findOne({ _id: flightId });
+      // get  departure flight
+      const docFlight = await Flight.findOne({ _id: flightId });
 
-    // get booking
-    const docBooking = await Booking.findOne({ _id: bookingId });
+      // get booking
+      const docBooking = await Booking.findOne({ _id: bookingId });
 
-    await job.log("Retrieve MongoDB data");
+      await job.log("Retrieve MongoDB data");
 
-    if (docFlight === null || docBooking === null)
-      return "No Webhooks to Process";
+      if (docFlight === null || docBooking === null)
+        return "No Webhooks to Process";
 
-    // extract data
-    const { _webhooks } = docFlight;
-    const { departureFlight, returnFlight } = docBooking;
+      // extract data
+      const { _webhooks } = docFlight;
+      const { departureFlight, returnFlight } = docBooking;
 
-    // retrieve relevant webhooks
-    const filteredWebhooks = _webhooks.filter((x) => x.event === event);
+      // retrieve relevant webhooks
+      const filteredWebhooks = _webhooks.filter((x) => x.event === event);
 
-    // create jobs
-    const jobs = filteredWebhooks.map(({ callbackURL }) => {
-      return {
-        name: "webhookJob",
-        data: {
-          ...(isDeparture ? departureFlight : returnFlight),
-          callbackURL,
-          event,
-          createdAt,
-        },
-      };
-    });
+      // create jobs
+      const jobs = filteredWebhooks.map(({ callbackURL }) => {
+        return {
+          name: "webhookJob",
+          data: {
+            ...(isDeparture ? departureFlight : returnFlight),
+            callbackURL,
+            event,
+            createdAt,
+          },
+        };
+      });
 
-    // add jobs to queue
-    await WebhookQueue.addBulk(jobs);
+      // add jobs to queue
+      await WebhookQueue.addBulk(jobs);
+    } catch (err) {
+      return err.toString();
+    }
 
     return "Event Queue Class Finished Task";
   }
