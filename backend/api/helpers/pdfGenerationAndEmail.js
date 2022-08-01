@@ -180,4 +180,46 @@ const sendBookingEmail = async (
   logger.info("Email sent: %s", info);
 };
 
-export { loadBookingReceipt, loadFlightTicket, sendBookingEmail };
+const sendRegistrationEmail = async (docUser) => {
+  // create transporter for email
+  const transporter = nodemailer.createTransport({
+    host: config.EMAIL_HOST,
+    port: config.EMAIL_PORT,
+    secure: true,
+    auth: {
+      user: config.EMAIL_AUTH_USER,
+      pass: config.EMAIL_AUTH_PASSWORD,
+    },
+  });
+
+  // verify email server connection
+  try {
+    await transporter.verify();
+    logger.info("Server is ready to send emails");
+  } catch (err) {
+    logger.error("Error connecting to email server", err);
+  }
+
+  // set email options
+  const mailOptions = {
+    from: config.EMAIL_AUTH_USER,
+    to: docUser.email,
+    subject:
+      "Welcome to Air Toronto, " + docUser.firstName + " " + docUser.lastName,
+    html:
+      "<h3>Hi ${docUser.firstName} ${docUser.lastName}!</h3>" +
+      "<p>Thank you for signing up with Air Toronto!</p>",
+  };
+
+  // send email
+  const info = await transporter.sendMail(mailOptions);
+
+  logger.info("Email sent: %s", info);
+};
+
+export {
+  loadBookingReceipt,
+  loadFlightTicket,
+  sendBookingEmail,
+  sendRegistrationEmail,
+};
