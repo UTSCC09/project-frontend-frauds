@@ -47,15 +47,19 @@ class WebhookQueue {
 
   // job processor
   async #processor(job) {
-    await job.log("Starting to process job");
+    try {
+      await job.log("Starting to process job");
 
-    // extract fields
-    const { callbackURL, ...body } = job.data;
+      // extract fields
+      const { callbackURL, ...body } = job.data;
 
-    // broadcast webhook
-    await axios.post(callbackURL, body);
+      // broadcast webhook
+      await axios.post(callbackURL, body);
 
-    await job.log("Callback Sent");
+      await job.log("Callback Sent");
+    } catch (err) {
+      return err.toString();
+    }
 
     // finish task
     return "Webhook Queue Class Finished Task";
