@@ -204,8 +204,7 @@ const sendRegistrationEmail = async (docUser) => {
   const mailOptions = {
     from: config.EMAIL_AUTH_USER,
     to: docUser.email,
-    subject:
-      "Welcome to Air Toronto, " + docUser.firstName + " " + docUser.lastName,
+    subject: "Registration Confirmation",
     html:
       "<h3>Hi ${docUser.firstName} ${docUser.lastName}!</h3>" +
       "<p>Thank you for signing up with Air Toronto!</p>",
