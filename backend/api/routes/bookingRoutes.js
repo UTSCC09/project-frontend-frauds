@@ -8,6 +8,7 @@ import {
   authorizeAccessToken,
   authorizeRole,
 } from "../middlewares/validateTokenMiddleware.js";
+import createError from "http-errors";
 
 const router = express.Router();
 
@@ -46,6 +47,22 @@ router.post(
     res.json({
       message: "Booking successfully completed",
     });
+  })
+);
+
+// GET: Get booking
+router.get(
+  "/",
+  authorizeAccessToken,
+  authorizeRole(["user"]),
+  asyncHandler(async (req, res, next) => {
+    if (req.auth.email !== null) {
+      console.log(req.auth.email);
+      const bookings = await Booking.getBooking(req.auth.email);
+      res.json(bookings);
+    } else {
+      return next(createError(400, "No email in token"));
+    }
   })
 );
 
