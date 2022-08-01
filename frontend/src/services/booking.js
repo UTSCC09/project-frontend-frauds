@@ -10,3 +10,12 @@ export async function addBooking(body) {
     },
   });
 }
+
+export async function getBooking() {
+  const token = await getAccessToken();
+  return axios.get(`${config.BACKEND_URL}/api/bookings`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
