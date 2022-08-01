@@ -1,16 +1,17 @@
 import axios from "axios";
 import config from "../../config";
-import {getAccessToken} from "./auth";
+import { getAccessToken } from "./auth";
 
 // subscribes to webhook event
 export async function subscribe(body, flightId) {
   const token = await getAccessToken();
   return axios.post(
     `${config.BACKEND_URL}/api/webhooks/flights/${flightId}`,
-    body, {
+    body,
+    {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
 }
@@ -20,6 +21,6 @@ export async function unsubscribe(body, flightId) {
   const token = await getAccessToken();
   return axios.delete(
     `${config.BACKEND_URL}/api/webhooks/flights/${flightId}`,
-    { data: body , headers: {Authorization: `Bearer ${token}`}}
+    { data: body, headers: { Authorization: `Bearer ${token}` } }
   );
 }

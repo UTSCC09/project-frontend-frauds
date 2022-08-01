@@ -1,4 +1,4 @@
-import {createAuth0} from "@auth0/auth0-vue";
+import { createAuth0 } from "@auth0/auth0-vue";
 import config from "../../config";
 
 /*
@@ -11,6 +11,6 @@ export const auth0 = createAuth0({
   audience: config.AUDIENCE,
 });
 
-export async function getAccessToken(){
+export async function getAccessToken() {
   return await auth0.getAccessTokenSilently();
 }

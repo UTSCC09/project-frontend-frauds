@@ -7,7 +7,10 @@ import {
 } from "../validators/index.js";
 import validateSchema from "../middlewares/validateSchemaMiddleware.js";
 import asyncHandler from "express-async-handler";
-import {authorizeAccessToken, authorizeRole} from "../middlewares/validateTokenMiddleware.js";
+import {
+  authorizeAccessToken,
+  authorizeRole,
+} from "../middlewares/validateTokenMiddleware.js";
 
 const router = express.Router();
 

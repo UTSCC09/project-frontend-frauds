@@ -5,7 +5,7 @@ import "element-plus/dist/index.css";
 import "element-plus/theme-chalk/dark/css-vars.css";
 import Particles from "vue3-particles";
 import router from "./router";
-import {auth0} from "./services/auth";
+import { auth0 } from "./services/auth";
 
 const app = createApp(App);
 

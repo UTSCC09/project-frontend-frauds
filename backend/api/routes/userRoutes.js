@@ -1,7 +1,10 @@
 import express from "express";
 import asyncHandler from "express-async-handler";
 import User from "../../models/user.js";
-import {authorizeAccessToken, authorizeRole} from "../middlewares/validateTokenMiddleware.js";
+import {
+  authorizeAccessToken,
+  authorizeRole,
+} from "../middlewares/validateTokenMiddleware.js";
 
 const router = express.Router();
 

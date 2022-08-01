@@ -1,14 +1,14 @@
 import axios from "axios";
 import config from "../../config";
-import {getAccessToken} from "./auth";
+import { getAccessToken } from "./auth";
 
 // add flight
 export async function addFlight(body) {
   const token = await getAccessToken();
   return axios.post(`${config.BACKEND_URL}/api/flights`, body, {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 }
 
@@ -30,7 +30,7 @@ export async function findOneWayFlights(
       limit,
     },
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 }
