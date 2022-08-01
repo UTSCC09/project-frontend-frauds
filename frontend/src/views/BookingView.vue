@@ -1,11 +1,12 @@
 <script setup>
-import user from "../components/Booking.vue";
+import Booking from "../components/Booking.vue";
+import PageTitle from "../components/PageTitle.vue";
 </script>
 
 <template>
   <main>
-    <h2 class="page-title">Profile</h2>
-    <user />
+    <PageTitle title="My Bookings" />
+    <Booking />
   </main>
 </template>
 

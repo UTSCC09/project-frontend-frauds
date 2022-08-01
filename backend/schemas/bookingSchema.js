@@ -79,6 +79,9 @@ const BookingSchema = new Schema(
     // mongoose use UNIX timestamps: https://masteringjs.io/tutorials/mongoose/timestamps
     timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
     statics: {
+      async getBooking(email) {
+        return await this.find({ userId: email });
+      },
       async paginate(page = 0, limit = 10) {
         const total = await this.estimatedDocumentCount({});
         const docs = await this.find({})
