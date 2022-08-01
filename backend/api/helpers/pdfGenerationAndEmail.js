@@ -206,8 +206,8 @@ const sendRegistrationEmail = async (docUser) => {
     to: docUser.email,
     subject: "Registration Confirmation",
     html:
-      "<h3>Hi ${docUser.firstName} ${docUser.lastName}!</h3>" +
-      "<p>Thank you for signing up with Air Toronto!</p>",
+      `<h3>Hi ${docUser.firstName} ${docUser.lastName}!</h3>` +
+      `<p>Thank you for signing up with Air Toronto!</p>`,
   };
 
   // send email
