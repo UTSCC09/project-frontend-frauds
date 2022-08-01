@@ -1,5 +1,4 @@
 import { PDFDocument } from "pdf-lib";
-import { readFile } from "fs/promises";
 import nodemailer from "nodemailer";
 import config from "../../config/index.js";
 import { logger } from "../../utils/index.js";
@@ -185,4 +184,48 @@ const sendBookingEmail = async (
   logger.info("Email sent: %s", info);
 };
 
-export { loadBookingReceipt, loadFlightTicket, sendBookingEmail };
+const sendRegistrationEmail = async (docUser) => {
+  const htmlTemplateData = await axios.get(
+    "https://airtoronto-assets.nyc3.digitaloceanspaces.com/registration-template/index.html",
+    { responseType: "text" }
+  );
+
+  // create transporter for email
+  const transporter = nodemailer.createTransport({
+    host: config.EMAIL_HOST,
+    port: config.EMAIL_PORT,
+    secure: true,
+    auth: {
+      user: config.EMAIL_AUTH_USER,
+      pass: config.EMAIL_AUTH_PASSWORD,
+    },
+  });
+
+  // verify email server connection
+  try {
+    await transporter.verify();
+    logger.info("Server is ready to send emails");
+  } catch (err) {
+    logger.error("Error connecting to email server", err);
+  }
+
+  // set email options
+  const mailOptions = {
+    from: config.EMAIL_AUTH_USER,
+    to: docUser.email,
+    subject: "Registration Confirmation",
+    html: htmlTemplateData.data,
+  };
+
+  // send email
+  const info = await transporter.sendMail(mailOptions);
+
+  logger.info("Email sent: %s", info);
+};
+
+export {
+  loadBookingReceipt,
+  loadFlightTicket,
+  sendBookingEmail,
+  sendRegistrationEmail,
+};
