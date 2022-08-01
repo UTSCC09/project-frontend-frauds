@@ -41,6 +41,7 @@ class BookingQueue {
     const worker = new Worker(this.#queueName, this.#processor, {
       connection: { ...this.#connection },
       concurrency: 1,
+      lockDuration: 60000, // 3 minutes
     });
 
     // register error handler
