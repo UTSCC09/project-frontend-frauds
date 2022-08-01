@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post(
   "/",
+  authorizeAccessToken,
   asyncHandler(async (req, res, next) => {
     const { email, name, role } = req.body;
     const { firstName, middleName, lastName } = name;
@@ -17,6 +18,8 @@ router.post(
 );
 router.patch(
   "/",
+  authorizeAccessToken,
+  authorizeRole(["user"]),
   asyncHandler(async (req, res, next) => {
     const { email, role } = req.body;
     res.json(await User.updateRole(email, role));

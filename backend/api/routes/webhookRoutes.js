@@ -4,12 +4,15 @@ import { checkSchema } from "express-validator";
 import { webhookValidator } from "../validators/index.js";
 import validateSchema from "../middlewares/validateSchemaMiddleware.js";
 import asyncHandler from "express-async-handler";
+import {authorizeAccessToken, authorizeRole} from "../middlewares/validateTokenMiddleware.js";
 
 const router = express.Router();
 
 // POST: Subscribe to webhook
 router.post(
   "/flights/:id",
+  authorizeAccessToken,
+  authorizeRole(["user"]),
   checkSchema(webhookValidator),
   validateSchema,
   asyncHandler(async ({ body, params }, res) => {
@@ -27,6 +30,8 @@ router.post(
 // DELETE: Subscribe to webhook
 router.delete(
   "/flights/:id",
+  authorizeAccessToken,
+  authorizeRole(["user"]),
   checkSchema(webhookValidator),
   validateSchema,
   asyncHandler(async ({ body, params }, res) => {

@@ -2,6 +2,8 @@ import {expressjwt} from "express-jwt";
 import jwksRsa from "jwks-rsa";
 import config from "../../config/index.js";
 import User from "../../models/user.js";
+import createError from "http-errors";
+import {logger} from "../../utils/index.js";
 
 const authorizeAccessToken = expressjwt({
   secret: jwksRsa.expressJwtSecret({
@@ -20,25 +22,23 @@ const authorizeRole = (roles) => {
     // logic
     // notice u have access to roles object here
     if (req.auth.email !== null){
-      console.log(req.auth.email);
-      console.log(roles);
       const user = await User.findUser(req.auth.email);
-      console.log(user);
+      logger.info(`Query user: ${req.auth.email}, Role Required: ${roles}, User: ${JSON.stringify(user)}`);
       if (user?.role !== null) {
         const result = roles.every(val => user.role.includes(val));
         if (result) {
           next();
         }
         else {
-          res.sendStatus(401);
+          return next(createError(401, "You do not have permission"));
         }
       }
       else {
-        res.sendStatus(401);
+        return next(createError(400, "User does not exist"));
       }
     }
     else {
-      res.sendStatus(401);
+      return next(createError(400, "No email in token"));
     }
   };
 };

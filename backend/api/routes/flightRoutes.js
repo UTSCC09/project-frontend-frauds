@@ -7,12 +7,15 @@ import {
 } from "../validators/index.js";
 import validateSchema from "../middlewares/validateSchemaMiddleware.js";
 import asyncHandler from "express-async-handler";
+import {authorizeAccessToken, authorizeRole} from "../middlewares/validateTokenMiddleware.js";
 
 const router = express.Router();
 
 // POST: add flight to system
 router.post(
   "/",
+  authorizeAccessToken,
+  authorizeRole(["user", "admin"]),
   checkSchema(addFlightValidator),
   validateSchema,
   asyncHandler(async ({ body }, res) => {
@@ -34,6 +37,8 @@ router.post(
 // GET: flights
 router.get(
   "/oneway",
+  authorizeAccessToken,
+  authorizeRole(["user"]),
   checkSchema(retrieveFlightsValidator),
   validateSchema,
   asyncHandler(async ({ query }, res) => {
