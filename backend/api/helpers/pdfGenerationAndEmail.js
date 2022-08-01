@@ -3,14 +3,17 @@ import { readFile } from "fs/promises";
 import nodemailer from "nodemailer";
 import config from "../../config/index.js";
 import { logger } from "../../utils/index.js";
+import axios from "axios";
 
 // loading the receipt template pdf with data and emailing to user
 const loadBookingReceipt = async (docBooking, docUser) => {
   // reading the pdf template data
-  const pdfFormData = await readFile(
-    "/usr/src/app/assets/Travel Receipt Template.pdf"
+  const pdfFormData = await axios.get(
+    "https://airtoronto-assets.nyc3.digitaloceanspaces.com/invoice.pdf",
+    { responseType: "arraybuffer" }
   );
-  const pdfDoc = await PDFDocument.load(pdfFormData);
+
+  const pdfDoc = await PDFDocument.load(pdfFormData.data);
   const form = pdfDoc.getForm();
 
   // get form fields in the pdf
@@ -50,10 +53,12 @@ const loadFlightTicket = async (
   docFlight,
   isDepartureFlight
 ) => {
-  const pdfFormData = await readFile(
-    "/usr/src/app/assets/plane-ticket-template-fillable.pdf"
+  const pdfFormData = await axios.get(
+    "https://airtoronto-assets.nyc3.digitaloceanspaces.com/ticket.pdf",
+    { responseType: "arraybuffer" }
   );
-  const pdfDoc = await PDFDocument.load(pdfFormData);
+
+  const pdfDoc = await PDFDocument.load(pdfFormData.data);
   const form = pdfDoc.getForm();
 
   const airlineField = form.getTextField("Airline Name");
