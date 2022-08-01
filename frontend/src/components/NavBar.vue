@@ -1,16 +1,25 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import logo from "@/assets/logo.png";
 import {
   HomeFilled,
   DocumentAdd,
   Ticket,
   Watch,
+  User,
+  Operation,
 } from "@element-plus/icons-vue";
 
 import { useAuth0 } from "@auth0/auth0-vue";
+import { getUserInfo } from "../services/user";
 
-const { loginWithRedirect: login, isAuthenticated, logout } = useAuth0();
+const {
+  loginWithRedirect: login,
+  user,
+  isAuthenticated,
+  logout,
+  isLoading,
+} = useAuth0();
 
 async function loginWithRedirect() {
   await login();
@@ -22,7 +31,20 @@ function logoutWithRedirect() {
 
 const activeIndex = ref("1");
 
-onMounted(() => {
+const adminPriv = ref(false);
+const userInfo = ref({});
+const loading = ref(true);
+
+watch(user, async (loadingNew) => {
+  // I don't understand why user.email returns undefined but this works.
+  userInfo.value = await getUserInfo(loadingNew.email);
+  adminPriv.value = ["user", "admin"].every((val) =>
+    userInfo.value.role.includes(val)
+  );
+  loading.value = false;
+});
+
+onMounted(async () => {
   const currentUrl = window.location.href;
 
   if (currentUrl.endsWith("/add-flight")) {
@@ -31,6 +53,8 @@ onMounted(() => {
     activeIndex.value = "3";
   } else if (currentUrl.endsWith("/bookings")) {
     activeIndex.value = "4";
+  } else if (currentUrl.endsWith("/user-profile")) {
+    activeIndex.value = "5";
   }
 });
 </script>
@@ -49,7 +73,7 @@ onMounted(() => {
       <el-icon><HomeFilled /></el-icon>
       Home
     </el-menu-item>
-    <el-menu-item index="2" route="/add-flight">
+    <el-menu-item v-if="!loading && adminPriv" index="2" route="/add-flight">
       <el-icon><DocumentAdd /></el-icon>
       Add Flight
     </el-menu-item>
@@ -61,11 +85,15 @@ onMounted(() => {
       <el-icon><Ticket /></el-icon>
       My Bookings
     </el-menu-item>
-    <el-menu-item v-if="!isAuthenticated" index="5" @click="loginWithRedirect"
-      >log in</el-menu-item
+    <el-menu-item index="5" route="/user-profile">
+      <el-icon><User /></el-icon>
+      User Profile
+    </el-menu-item>
+    <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect"
+      ><el-icon><Operation /></el-icon>log in</el-menu-item
     >
-    <el-menu-item v-if="isAuthenticated" index="6" @click="logoutWithRedirect"
-      >log out</el-menu-item
+    <el-menu-item v-if="isAuthenticated" index="7" @click="logoutWithRedirect"
+      ><el-icon><Operation /></el-icon>log out</el-menu-item
     >
   </el-menu>
 </template>

@@ -133,7 +133,7 @@ const onClickPurchase = async () => {
     try {
       // booking data to add
       const bookingData = {
-        userId: "Payam",
+        userId: "payamyek@gmail.com",
         roundtrip: props.roundtrip,
         cost: props.flightPrice,
         taxRate: props.taxRate,

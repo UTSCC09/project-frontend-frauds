@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: "/bookings",
       name: "bookings",
-      component: () => import("../views/BookingsView.vue"),
+      component: () => import("../views/BookingView.vue"),
       beforeEnter: authGuard,
     },
     {
@@ -33,6 +33,12 @@ const router = createRouter({
       path: "/credits",
       name: "Credits",
       component: () => import("../views/CreditsView.vue"),
+      beforeEnter: authGuard,
+    },
+    {
+      path: "/user-profile",
+      name: "User Profile",
+      component: () => import("../components/UserProfile.vue"),
       beforeEnter: authGuard,
     },
     {

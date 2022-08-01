@@ -1,18 +1,17 @@
-import axios from "axios";
 import config from "../../config";
+import axios from "axios";
 import { getAccessToken } from "./auth";
 
-export async function searchRoutes(query) {
+export async function getUserInfo(email) {
   const token = await getAccessToken();
-  return axios.post(
-    `${config.BACKEND_URL}/api/routes/search`,
-    {
-      query,
-    },
+  const result = await axios.post(
+    `${config.BACKEND_URL}/api/users/search`,
+    { email: email },
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
+  return result.data;
 }

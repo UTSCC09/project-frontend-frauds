@@ -15,20 +15,23 @@ const User = new Schema(
     statics: {
       async insertUser(email, name, role) {
         logger.info(`${email} ${JSON.stringify(name)} ${role}`);
-        const doc = await this.create({
+        const check = await this.findOne({ email: email });
+        if (check !== null) {
+          return check;
+        }
+        return await this.create({
           email: email,
           firstName: name.firstName,
           middleName: name.middleName,
           lastName: name.lastName,
           role: role,
         });
-
-        return doc;
       },
       async updateRole(email, newRole) {
         const userDoc = await this.findOneAndUpdate(
           { email: email },
-          { role: newRole }
+          { role: newRole },
+          { new: true }
         );
         if (!userDoc) {
           throw createError(400, "user missing from DB");
