@@ -11,7 +11,7 @@ import {
 } from "@element-plus/icons-vue";
 
 import { useAuth0 } from "@auth0/auth0-vue";
-import {getUserInfo} from "../services/user";
+import { getUserInfo } from "../services/user";
 
 const { loginWithRedirect: login, isAuthenticated, logout } = useAuth0();
 
@@ -26,7 +26,7 @@ function logoutWithRedirect() {
 const activeIndex = ref("1");
 
 const adminPriv = ref(false);
-const userInfo = ref({})
+const userInfo = ref({});
 const loading = ref(true);
 
 onMounted(async () => {
@@ -42,7 +42,9 @@ onMounted(async () => {
     activeIndex.value = "5";
   }
   userInfo.value = await getUserInfo();
-  adminPriv.value = ["user", "admin"].every((val) => userInfo.value.role.includes(val));
+  adminPriv.value = ["user", "admin"].every((val) =>
+    userInfo.value.role.includes(val)
+  );
   loading.value = false;
 });
 </script>

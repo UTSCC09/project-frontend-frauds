@@ -1,18 +1,19 @@
 <script setup>
 import AddFlight from "../components/AddFlight.vue";
 import PageTitle from "../components/PageTitle.vue";
-import {onMounted, ref} from "vue";
-import {getUserInfo} from "../services/user";
+import { onMounted, ref } from "vue";
+import { getUserInfo } from "../services/user";
 
 const adminPriv = ref(false);
-const userInfo = ref({})
+const userInfo = ref({});
 const loading = ref(true);
 onMounted(async () => {
   userInfo.value = await getUserInfo();
-  adminPriv.value = ["user", "admin"].every((val) => userInfo.value.role.includes(val));
+  adminPriv.value = ["user", "admin"].every((val) =>
+    userInfo.value.role.includes(val)
+  );
   loading.value = false;
 });
-
 </script>
 
 <template>
