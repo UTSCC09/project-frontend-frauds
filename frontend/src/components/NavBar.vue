@@ -7,6 +7,7 @@ import {
   Ticket,
   Watch,
   User,
+  Operation,
 } from "@element-plus/icons-vue";
 
 import { useAuth0 } from "@auth0/auth0-vue";
@@ -69,10 +70,10 @@ onMounted(() => {
       User Profile
     </el-menu-item>
     <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect"
-      >log in</el-menu-item
+      ><el-icon><Operation /></el-icon>log in</el-menu-item
     >
     <el-menu-item v-if="isAuthenticated" index="7" @click="logoutWithRedirect"
-      >log out</el-menu-item
+      ><el-icon><Operation /></el-icon>log out</el-menu-item
     >
   </el-menu>
 </template>
