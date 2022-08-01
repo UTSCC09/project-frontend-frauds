@@ -1,29 +1,43 @@
 <template>
   <div>
     <h2>User Profile</h2>
-    <h3 v-if="!isAuthenticated">
-      User is not logged in, please Log in to see profile
-    </h3>
-    <el-button v-if="!isAuthenticated" @click="login">Log in</el-button>
-    <pre v-if="isAuthenticated">
-        <code>{{ user }}</code>
-      </pre>
+    <pre>
+      <code>{{ user }}</code>
+    </pre>
+    <pre v-if="loading === false">
+      <code>{{userInfo}}</code>
+    </pre>
+
   </div>
 </template>
-<script>
-import { useAuth0 } from "@auth0/auth0-vue";
+<script setup>
+  import { useAuth0 } from "@auth0/auth0-vue";
+  import axios from "axios";
+  import config from "../../config";
+  import {ref, onBeforeMount} from "vue"
+  const { user, getAccessTokenSilently } = useAuth0();
 
-export default {
-  setup() {
-    const { loginWithRedirect, user, isAuthenticated } = useAuth0();
+  let userInfo = ref({});
 
-    return {
-      login: () => {
-        loginWithRedirect();
-      },
-      user,
-      isAuthenticated,
-    };
-  },
-};
+  const loading = ref(true);
+
+  async function getUserInfo() {
+    const token = await getAccessTokenSilently();
+
+    console.log(`${config.BACKEND_URL}/user/search`);
+    const result = await axios.post(`${config.BACKEND_URL}/api/user/search`, {"email":"lingfengsu0309@gmail.com"},{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return result.data;
+  }
+
+
+  onBeforeMount(async () => {
+    userInfo.value = await getUserInfo();
+    loading.value = false;
+  })
+
+
 </script>
