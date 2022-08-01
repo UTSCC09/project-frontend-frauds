@@ -5,7 +5,7 @@ import { getAccessToken } from "./auth";
 export async function getUserInfo(email) {
   const token = await getAccessToken();
   const result = await axios.post(
-    `${config.BACKEND_URL}/api/user/search`,
+    `${config.BACKEND_URL}/api/users/search`,
     { email: email },
     {
       headers: {
