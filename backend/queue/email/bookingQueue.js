@@ -15,7 +15,7 @@ class BookingQueue {
   #queue = undefined;
 
   // name of queue
-  #queueName = "boookingQueue";
+  #queueName = "boookingsQueue";
 
   // connection obj
   #connection = {
@@ -74,6 +74,8 @@ class BookingQueue {
         await job.moveToFailed("User not found");
         return "Failed";
       }
+
+      await job.log("Retrieving booking receipt");
 
       // get receipt
       const receipt = await loadBookingReceipt(docBooking, docUser);
