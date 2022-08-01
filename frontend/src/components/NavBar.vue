@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import logo from "@/assets/logo.png";
 import {
   HomeFilled,
@@ -13,7 +13,7 @@ import {
 import { useAuth0 } from "@auth0/auth0-vue";
 import { getUserInfo } from "../services/user";
 
-const { loginWithRedirect: login, user, isAuthenticated, logout } = useAuth0();
+const { loginWithRedirect: login, user, isAuthenticated, logout, isLoading } = useAuth0();
 
 async function loginWithRedirect() {
   await login();
@@ -29,6 +29,15 @@ const adminPriv = ref(false);
 const userInfo = ref({});
 const loading = ref(true);
 
+watch(user, async (loadingNew) =>  { // I don't understand why user.email returns undefined but this works.
+  userInfo.value = await getUserInfo(loadingNew.email);
+  adminPriv.value = ["user", "admin"].every((val) =>
+      userInfo.value.role.includes(val)
+  );
+  loading.value = false;
+
+});
+
 onMounted(async () => {
   const currentUrl = window.location.href;
 
@@ -41,11 +50,7 @@ onMounted(async () => {
   } else if (currentUrl.endsWith("/user-profile")) {
     activeIndex.value = "5";
   }
-  userInfo.value = await getUserInfo(user.value.email);
-  adminPriv.value = ["user", "admin"].every((val) =>
-    userInfo.value.role.includes(val)
-  );
-  loading.value = false;
+
 });
 </script>
 
