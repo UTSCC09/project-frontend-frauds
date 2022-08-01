@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: "/bookings",
       name: "bookings",
-      component: () => import("../views/BookingsView.vue"),
+      component: () => import("../views/BookingView.vue"),
       beforeEnter: authGuard,
     },
     {

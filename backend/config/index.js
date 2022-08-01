@@ -23,6 +23,12 @@ config.MONGO_DB_URI = `mongodb://${config.MONGO_DB_USER}:${config.MONGO_DB_PASSW
 config.CLIENT_ID = process.env.CLIENT_ID;
 config.CLIENT_SECRET = process.env.CLIENT_SECRET;
 
+// AUTH0 AUTH CONFIGS
+config.AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
+config.AUTH0_CLIENTID = process.env.AUTH0_CLIENT_ID;
+config.AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET;
+config.AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
+
 // EXPRESS-SESSION SECRET CONFIGS
 config.SECRET = process.env.SECRET;
 
