@@ -42,6 +42,7 @@ class WebhookQueue {
     worker.on("error", (err) => {
       // log the error
       console.error(err);
+      return err.toString();
     });
   }
 
