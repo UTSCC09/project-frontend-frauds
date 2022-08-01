@@ -11,29 +11,29 @@
         :key="booking._id"
       >
         <el-row>
-          <el-col :span="8">
+          <el-col :span="10">
             <span class="text-bold"> Flight ID: </span>
             {{ booking._id }}
           </el-col>
-          <el-col :span="8">
+          <el-col :span="7">
             <span class="text-bold"> Round Trip: </span>
             {{ booking.roundtrip }}
           </el-col>
-          <el-col :span="8">
+          <el-col :span="7">
             <span class="text-bold"> Currency: </span>
             {{ booking.currency }}
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="10">
             <span class="text-bold"> Cost: $ </span>
             {{ booking.cost }}
           </el-col>
-          <el-col :span="8">
+          <el-col :span="7">
             <span class="text-bold"> Tax Rate: </span>
             {{ booking.taxRate }}
           </el-col>
-          <el-col :span="8">
+          <el-col :span="7">
             <span class="text-bold"> Total Paid: $ </span>
             {{ booking.totalPaid }}
           </el-col>
