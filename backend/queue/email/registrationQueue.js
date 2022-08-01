@@ -38,7 +38,7 @@ class RegistrationQueue {
     const worker = new Worker(this.#queueName, this.#processor, {
       connection: { ...this.#connection },
       concurrency: 1,
-      lockDuration: 60000,
+      lockDuration: 600000,
     });
 
     // register error handler
