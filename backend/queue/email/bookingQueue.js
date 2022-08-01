@@ -76,7 +76,7 @@ class BookingQueue {
       }
 
       await job.log("Retrieving booking receipt");
-      
+
       // get receipt
       const receipt = await loadBookingReceipt(docBooking, docUser);
 
