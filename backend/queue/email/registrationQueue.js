@@ -2,7 +2,6 @@
 import { Queue, Worker, QueueScheduler } from "bullmq";
 import config from "../../config/index.js";
 import { logger } from "../../utils/index.js";
-import User from "../../models/user.js";
 import { sendRegistrationEmail } from "../../api/helpers/pdfGenerationAndEmail.js";
 
 class RegistrationQueue {
@@ -80,7 +79,7 @@ class RegistrationQueue {
 
   // adds job to queue
   async add(doc) {
-    await this.#queue.add("registrationJob", doc, { delay: 300000 });
+    await this.#queue.add("registrationJob", doc, { delay: 60000 });
 
     // log number of workers
     logger.info(

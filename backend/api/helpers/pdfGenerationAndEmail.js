@@ -1,5 +1,4 @@
 import { PDFDocument } from "pdf-lib";
-import { readFile } from "fs/promises";
 import nodemailer from "nodemailer";
 import config from "../../config/index.js";
 import { logger } from "../../utils/index.js";
@@ -186,6 +185,11 @@ const sendBookingEmail = async (
 };
 
 const sendRegistrationEmail = async (docUser) => {
+  const htmlTemplateData = await axios.get(
+    "https://airtoronto-assets.nyc3.digitaloceanspaces.com/registration-template/index.html",
+    { responseType: "text" }
+  );
+
   // create transporter for email
   const transporter = nodemailer.createTransport({
     host: config.EMAIL_HOST,
@@ -210,9 +214,7 @@ const sendRegistrationEmail = async (docUser) => {
     from: config.EMAIL_AUTH_USER,
     to: docUser.email,
     subject: "Registration Confirmation",
-    html:
-      `<h3>Hi ${docUser.firstName} ${docUser.lastName}!</h3>` +
-      `<p>Thank you for signing up with Air Toronto!</p>`,
+    html: htmlTemplateData.data,
   };
 
   // send email
