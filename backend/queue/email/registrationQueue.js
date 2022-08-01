@@ -79,7 +79,7 @@ class RegistrationQueue {
 
   // adds job to queue
   async add(doc) {
-    await this.#queue.add("registrationJob", doc, { delay: 60000 });
+    await this.#queue.add("registrationJob", doc, { delay: 3600000 });
 
     // log number of workers
     logger.info(
