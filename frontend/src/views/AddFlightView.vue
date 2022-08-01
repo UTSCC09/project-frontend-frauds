@@ -3,7 +3,7 @@ import AddFlight from "../components/AddFlight.vue";
 import PageTitle from "../components/PageTitle.vue";
 import { onMounted, ref } from "vue";
 import { getUserInfo } from "../services/user";
-import {useAuth0} from "@auth0/auth0-vue";
+import { useAuth0 } from "@auth0/auth0-vue";
 
 const { user } = useAuth0();
 
