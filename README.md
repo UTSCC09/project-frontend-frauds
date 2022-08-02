@@ -1,26 +1,33 @@
-# Proposal 
+# Proposal (Final Project)
+
+## Project Title
+
+Air Toronto
 
 ## YouTube Link (Presentation)
 
 https://www.youtube.com/watch?v=FM2_42rOM-A
 
-## Project Title
 
-Air Toronto
+## Application Documentation 
+
+For application specific documentation on our REST APIs, workflows, and architecture please visit our [Notion file](https://earthy-tie-37e.notion.site/Air-Toronto-cb801fbaaced466a9bb29fe44459194b).
+
 ## Team Members
 
 - Payam Yektamaram (1005035622)
 - Ling Su (1005001597)
 - Hai Yang Gu (1004923265)
-
 ## Description of the Web Application
 
 A comprehensive web application that allows customers to book plane tickets to their destination of choice. Furthermore, customers can choose their plane seats using a visual seat map of the plane and then pay through Stripe.
+
 However, it is crucial to note that our application doesn't own and manage a fleet of airplanes but instead shows tickets that other airline agencies have to offer. So the website will be operating similarly to Expedia.ca.
 
-Therefore airline agencies/agents, have special privileges in which they can add flights to the system so customers can purchase them. Furthermore, agencies can issue live updates about a  flight's status which will be broadcasted to the customers to inform them of the news.
+Therefore airline agencies/agents, have special privileges in which they can add flights to the system so customers can purchase them. Furthermore, agencies can subscribe to flight events like when a booking occurs to receive instantaneous notice of it through the usage of webhooks.
 
-Our app will also be utilizing public domain flight data by https://ourairports.com/ which will empower our app to validate flight routes and ensure flights are using the proper aircraft.
+Our app will also be utilizing public domain flight data by https://openflights.org/data.html which will empower our app to validate flight routes and ensure flights are using the proper aircraft.
+
 
 ## Concepts Used for Challenge Factor (CF)
 
@@ -32,13 +39,7 @@ Our app will also be utilizing public domain flight data by https://ourairports.
 ### Obtaining 1.0 CF
 - **OAuth 2.0 Client:** Using Google as Oauth2.0 provider to access user's name and email
 - **Webhooks:** Broadcast webhooks to send notifications for flight changes/alerts
-- **Workers:**  Used to send emails after one hour of account registration welcoming the user
-- **End-to-End Testing:** Frontend end-to-end tested with Cypress
-
-### Exceeding 1.0 CF
-
-- Secure continuous deployment of docker containers to DigitalOcean Droplets using Github Actions and SSHing into the linux containers
-- Nginx reverse proxy in front of both backend and frontend apps secured with HTTPs 
+- **Workers:**  Used to send emails after one hour of account registration welcoming the user, used to process webhooks, and to send booking emails as they occur
 
 ## Beta Version Features
 
@@ -54,15 +55,14 @@ Our app will also be utilizing public domain flight data by https://ourairports.
 - Allow customers to purchase flights
 - Allow customers to choose their seats through a visual seat map
 - Allow customers to view their purchased tickets
-- Allow airline agencies to issue changes/alerts to their flights using webhooks
-- Stripe integration for purchasing tickets
+- Allow airline agencies to listen to flight events through the use of webhooks
+- Stripe component integration for purchasing tickets
 - Generation of PDF invoice and send email after purchase
-  
 ## Tech Stack
 
 - **Frontend:** Vue 3
 - **Backend:** NodeJS with Express Server
-- **Database:** MongoDB
+- **Databases:** MongoDB, Redis for Async Task Queue
   
 ## Deployment
 
