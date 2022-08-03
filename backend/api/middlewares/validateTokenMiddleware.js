@@ -21,14 +21,14 @@ const authorizeRole = (roles) => {
   return async (req, res, next) => {
     // logic
     // notice u have access to roles object here
-    if (req?.auth?.email !== null) {
+    if (req?.auth?.email !== undefined) {
       const user = await User.findUser(req.auth.email);
       logger.info(
         `Query user: ${
           req.auth.email
         }, Role Required: ${roles}, User: ${JSON.stringify(user)}`
       );
-      if (user?.role !== null) {
+      if (user?.role !== undefined) {
         const result = roles.every((val) => user.role.includes(val));
         if (result) {
           next();
