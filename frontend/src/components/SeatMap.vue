@@ -91,20 +91,35 @@ const onClickPurchase = () => {
 
 <template>
   <el-row>
-    <!-- chosen seat -->
-    <h3 v-if="seat.x === -1 && seat.y === -1">Please Select a Seat</h3>
-    <h3 v-else>Selected Seat: ({{ seat.x }}, {{ seat.y }})</h3>
-    <el-button
-      :disabled="seat.x === -1 && seat.y === -1"
-      @click="onClickPurchase"
-      >Purchase</el-button
-    >
+    <el-col :span="12">
+      <!-- chosen seat -->
+      <h3 v-if="seat.x === -1 && seat.y === -1">Please Select a Seat</h3>
+      <h3 v-else>Selected Seat: ({{ seat.x }}, {{ seat.y }})</h3>
+      <el-button
+        :disabled="seat.x === -1 && seat.y === -1"
+        @click="onClickPurchase"
+        >Purchase</el-button
+      >
+    </el-col>
+    <!-- seat map legend -->
+    <el-col :span="4">
+      <div class="seat first-class"></div>
+      First Class
+    </el-col>
+    <el-col :span="4">
+      <div class="seat business-class"></div>
+      Business Class
+    </el-col>
+    <el-col :span="4">
+      <div class="seat economy-class"></div>
+      Economy Class
+    </el-col>
   </el-row>
+  <!-- seat map -->
   <div class="seats-container">
     <el-row v-for="(row, x) in flight.equipmentListData.seats" :key="x">
       <el-col class="flex-1" v-for="(seat, y) in row" :key="y" :span="2">
         <div
-          class="seat-wrapper"
           @click="(e) => onClickSeat(e, x, y)"
           :class="{
             seat: seat !== -1,

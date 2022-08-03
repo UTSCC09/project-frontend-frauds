@@ -2,7 +2,7 @@ import winston from "winston";
 
 // source: https://levelup.gitconnected.com/better-logs-for-expressjs-using-winston-and-morgan-with-typescript-1c31c1ab9342
 
-const logger = winston.createLogger({
+export default winston.createLogger({
   level: "info",
   format: winston.format.combine(
     winston.format.timestamp({
@@ -17,5 +17,3 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: "combined.log" }),
   ],
 });
-
-export default logger;

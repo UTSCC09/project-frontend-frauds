@@ -3,6 +3,31 @@ import mongoose from "mongoose";
 import { Flight } from "../models/index.js";
 const { Schema, Types } = mongoose;
 
+// validates flight seats
+const validateSeatHelper = async (flight) => {
+  // locate departure flight
+  const doc = await Flight.findOne({
+    _id: Types.ObjectId(flight.flightId),
+  });
+
+  // invalid departure flight
+  if (doc === null) throw createError(400, "Departure flight doesn't exist");
+
+  // get seat map
+  const seatMap = [...doc.equipmentListData.seats];
+  const seatValue = seatMap[flight.seat.x][flight.seat.y];
+
+  // cannot reserve barrier seat
+  if (seatValue === -1)
+    throw createError(400, "Chosen seat is not a valid seat");
+  else if (seatValue === 0) throw createError(400, "Seat already reserved");
+
+  // update seats for departure flight as booked
+  seatMap[flight.seat.x][flight.seat.y] = 0;
+
+  return { seats: seatMap, doc };
+};
+
 const BookingSchema = new Schema(
   {
     userId: String,
@@ -47,9 +72,16 @@ const BookingSchema = new Schema(
       enum: ["CAD"],
       default: "CAD",
     },
+    createdAt: Number,
+    updatedAt: Number,
   },
   {
+    // mongoose use UNIX timestamps: https://masteringjs.io/tutorials/mongoose/timestamps
+    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
     statics: {
+      async getBooking(email) {
+        return await this.find({ userId: email });
+      },
       async paginate(page = 0, limit = 10) {
         const total = await this.estimatedDocumentCount({});
         const docs = await this.find({})
@@ -68,34 +100,24 @@ const BookingSchema = new Schema(
         currency,
         returnFlight = null
       ) {
-        // locate departure flight
-        const docDeparture = await Flight.findOne({
-          _id: Types.ObjectId(departureFlight.flightId),
-        });
+        // validate seats for these flights
+        const depData = await validateSeatHelper(departureFlight);
 
-        // invalid departure flight
-        if (docDeparture === null)
-          throw createError(400, "Departure flight doesn't exist");
+        let returnData;
+        if (roundtrip) returnData = await validateSeatHelper(returnFlight);
 
-        // get seat map
-        const seatMap = [...docDeparture.equipmentListData.seats];
-        const seatValue =
-          seatMap[departureFlight.seat.x][departureFlight.seat.y];
-
-        // cannot reserve barrier seat
-        if (seatValue === -1)
-          throw createError(400, "Chosen seat is not a valid seat");
-        else if (seatValue === 0)
-          throw createError(400, "Seat already reserved");
-
-        // update seats for departure flight as booked
-        seatMap[departureFlight.seat.x][departureFlight.seat.y] = 0;
-
-        // update flights seats data
+        // reserve departure seats
         await Flight.updateOne(
-          { _id: Types.ObjectId(docDeparture._id) },
-          { $set: { "equipmentListData.seats": seatMap } }
+          { _id: Types.ObjectId(depData.doc._id) },
+          { $set: { "equipmentListData.seats": depData.seats } }
         );
+
+        // reserve return seats
+        if (roundtrip)
+          await Flight.updateOne(
+            { _id: Types.ObjectId(returnData.doc._id) },
+            { $set: { "equipmentListData.seats": returnData.seats } }
+          );
 
         // create booking
         await this.create({
