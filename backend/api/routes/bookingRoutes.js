@@ -19,9 +19,9 @@ router.post(
   authorizeRole(["user"]),
   checkSchema(addBookingValidator),
   validateSchema,
-  asyncHandler(async ({ body }, res) => {
+  asyncHandler(async (req, res) => {
+    const userId = req.auth.email;
     const {
-      userId,
       departureFlight,
       returnFlight,
       roundtrip,
@@ -29,7 +29,7 @@ router.post(
       taxRate,
       totalPaid,
       currency,
-    } = body;
+    } = req.body;
 
     // add booking
     await Booking.addBooking(
