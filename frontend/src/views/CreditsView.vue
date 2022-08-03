@@ -189,6 +189,14 @@
         >Source</a
       >)
     </li>
+    <li>
+      How to secure NGINX with HTTPS using Lets Encrypt&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04"
+        >Source</a
+      >)
+    </li>
   </ul>
 </template>
 
