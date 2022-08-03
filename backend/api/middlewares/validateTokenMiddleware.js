@@ -21,7 +21,7 @@ const authorizeRole = (roles) => {
   return async (req, res, next) => {
     // logic
     // notice u have access to roles object here
-    if (req.auth.email !== null) {
+    if (req?.auth?.email !== null) {
       const user = await User.findUser(req.auth.email);
       logger.info(
         `Query user: ${
