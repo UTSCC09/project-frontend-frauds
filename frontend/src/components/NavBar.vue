@@ -90,10 +90,10 @@ onMounted(async () => {
       User Profile
     </el-menu-item>
     <el-menu-item v-if="!isAuthenticated" index="6" @click="loginWithRedirect"
-      ><el-icon><Operation /></el-icon>log in</el-menu-item
+      ><el-icon><Operation /></el-icon>Log In</el-menu-item
     >
     <el-menu-item v-if="isAuthenticated" index="7" @click="logoutWithRedirect"
-      ><el-icon><Operation /></el-icon>log out</el-menu-item
+      ><el-icon><Operation /></el-icon>Log Out</el-menu-item
     >
   </el-menu>
 </template>
