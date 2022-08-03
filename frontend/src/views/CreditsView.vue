@@ -144,6 +144,51 @@
         >Source</a
       >)
     </li>
+    <li>
+      How to retrieve and fill pdf forms using pdf-lib&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://github.com/Hopding/pdf-lib#readme"
+        >Source</a
+      >)
+    </li>
+    <li>
+      How to configure and send emails using Nodemailer&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://nodemailer.com/"
+        >Source</a
+      >)
+    </li>
+    <li>
+      PDF editor used to create and modify pdf files&nbsp;(<a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.pdfescape.com/"
+        >Source</a
+      >)
+    </li>
+    <li>
+      Sources for pdf and email templates
+      <ul>
+        <li>
+          Flight ticket template(<a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://templatearchive.com/wp-content/uploads/2021/02/plane-ticket-template-04.jpg"
+            >Source</a
+          >)
+        </li>
+        <li>
+          Registration email template(<a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://unlayer.com/templates/registration-confirmation"
+            >Source</a
+          >)
+        </li>
+      </ul>
+    </li>
   </ul>
 
   <!-- Docker -->
