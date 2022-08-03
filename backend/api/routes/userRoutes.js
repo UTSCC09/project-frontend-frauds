@@ -5,6 +5,7 @@ import {
   authorizeAccessToken,
   authorizeRole,
 } from "../middlewares/validateTokenMiddleware.js";
+import createError from "http-errors";
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.patch(
   authorizeRole(["user"]),
   asyncHandler(async (req, res, next) => {
     const { email, role } = req.body;
-    res.json(await User.updateRole(email, role));
+    res.json(await User.updateRole(req.auth.email, role));
   })
 );
 router.post(
