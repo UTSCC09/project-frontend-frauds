@@ -24,6 +24,7 @@ const form = reactive({
   economyClassPrice: 0,
 });
 
+// form rules
 const rules = reactive({
   route: [
     {
@@ -84,12 +85,42 @@ const rules = reactive({
   ],
 });
 
+// how to create two cannons: https://github.com/matteobruni/tsparticles/tree/main/presets/confetti
+const particlesOptions = {
+  preset: "confetti",
+  emitters: [
+    {
+      life: { duration: 2, count: 1 },
+      position: { x: 0, y: 30 },
+      particles: { move: { direction: "top-right" } },
+    },
+    {
+      life: { duration: 2, count: 1 },
+      position: { x: 100, y: 30 },
+      particles: { move: { direction: "top-left" } },
+    },
+  ],
+};
+
+// init function for confetti
+async function particlesInit(engine) {
+  await loadConfettiPreset(engine); // eslint-disable-line
+}
+
+// ref to control showing of confetti
+const showConfetti = ref(false);
+
 // submit handler
 const onSubmit = async (formElement) => {
   if (!formElement) return;
 
+  // validate form
   await formElement.validate(async (valid) => {
+    let resp;
+
+    // check if form is valid
     if (valid) {
+      // body of add flight request
       const body = {
         routeId: form.routeId,
         planeId: form.planeId,
@@ -104,17 +135,23 @@ const onSubmit = async (formElement) => {
       };
 
       try {
-        await addFlight(body); // add flight
+        // add flight
+        resp = await addFlight(body);
       } catch (err) {
-        return ElMessage({
-          type: "error",
-          message: err.response.data.message,
-        });
+        return err.response.data.errors.forEach((e) =>
+          ElMessage({
+            type: "error",
+            message: e.msg,
+          })
+        );
       }
+
+      // show confetti
+      showConfetti.value = true;
 
       // show message
       ElMessage({
-        message: "Flight successfully added to system.",
+        message: resp.data.message,
         type: "success",
       });
 
@@ -124,12 +161,6 @@ const onSubmit = async (formElement) => {
       form.arrivalAirport = "";
       form.departureAirport = "";
       form.dateRange = [];
-    } else {
-      // show message
-      ElMessage({
-        message: "Error adding flight to system.",
-        type: "error",
-      });
     }
   });
 };
@@ -171,22 +202,26 @@ const handlePlaneSelect = (e) => {
   form.planeId = e.substring(7, e.indexOf("]")).trim();
 };
 
+// fetch route suggestions
 const fetchRouteSuggestions = async (query, cb) => {
   let resp;
 
   try {
     resp = await searchRoutes(query);
   } catch (err) {
-    return ElMessage({
-      type: "error",
-      message: err.response.data.message,
-    });
+    return err.response.data.errors.forEach((e) =>
+      ElMessage({
+        type: "error",
+        message: e.msg,
+      })
+    );
   }
 
+  // generate search results
   const results = resp.data.data.map(
     ({ routeId, sourceAirport, destAirport, airline, ...rest }) => {
       return {
-        value: `[ROUTE ${routeId}] ${sourceAirport} → ${destAirport} via ${airline} `,
+        value: `[ROUTE ${routeId}] ${sourceAirport} → ${destAirport} via ${airline}`,
         routeId,
         sourceAirport,
         destAirport,
@@ -195,11 +230,19 @@ const fetchRouteSuggestions = async (query, cb) => {
       };
     }
   );
+
+  // update search results
   cb(results);
 };
 </script>
 
 <template>
+  <Particles
+    v-if="showConfetti"
+    id="confettiPreset"
+    :particlesInit="particlesInit"
+    :options="particlesOptions"
+  />
   <el-form
     :model="form"
     :rules="rules"
@@ -252,6 +295,7 @@ const fetchRouteSuggestions = async (query, cb) => {
     <!-- Plane Select -->
     <el-form-item label="Airplane" prop="airplane">
       <el-select
+        :disabled="form.route.includes('[') === false"
         v-model="form.airplane"
         placeholder="Select Airplane"
         @change="handlePlaneSelect"

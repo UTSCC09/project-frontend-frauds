@@ -1,11 +1,13 @@
-<script lang="ts" setup>
-import { reactive, ref } from "vue";
+<script setup>
+import { onMounted, reactive, ref } from "vue";
 import { searchAirports } from "../services/airport.js";
 import { disablePastDates } from "../utils";
 import { ElMessage } from "element-plus";
 
+// reference to form
 const formRef = ref(null);
 
+// component propsÏ
 const props = defineProps({
   incrementProcessStage: {
     type: Function,
@@ -23,9 +25,17 @@ const props = defineProps({
     type: Function,
     default: () => {},
   },
+  setReturnDate: {
+    type: Function,
+    default: () => {},
+  },
+  setRoundtrip: {
+    type: Function,
+    default: () => {},
+  },
 });
 
-// do not use same name with ref
+// form fields
 const form = reactive({
   departureAirport: "",
   arrivalAirport: "",
@@ -34,6 +44,7 @@ const form = reactive({
   roundTrip: true,
 });
 
+// form rules
 const rules = reactive({
   departureAirport: [
     {
@@ -65,42 +76,70 @@ const rules = reactive({
   ],
 });
 
+// set roundtrip true by default
+onMounted(() => {
+  props.setRoundtrip(true);
+});
+
+// form submit handler
 const onSubmit = async (formElement) => {
   if (!formElement) return;
-  await formElement.validate((valid, fields) => {
+
+  // validate form
+  await formElement.validate((valid) => {
     if (valid) {
-      // set parent refs
-      props.setDepartureDate(form.departureDate);
+      // set dates based on flight type
+      if (form.roundTrip) {
+        props.setDepartureDate(form.dateRange[0]);
+        props.setReturnDate(form.dateRange[1]);
+      } else {
+        props.setDepartureDate(form.departureDate);
+      }
+
+      // set source airport
       props.setSourceAirport(form.departureAirport.split("-")[0].trim());
+
+      // set departing airport
       props.setDestAirport(form.arrivalAirport.split("-")[0].trim());
 
       // show search results
       props.incrementProcessStage();
 
+      // clear form
       formElement.resetFields();
-    } else console.log("error submit!", fields);
+    }
   });
 };
 
+// fetch airport suggestions from backend
 const fetchSuggestions = async (query, cb) => {
   let resp;
 
   try {
+    // free text search airports
     resp = await searchAirports(query);
   } catch (err) {
-    return ElMessage({
-      type: "error",
-      message: err.response.data.message,
-    });
+    return err.response.data.errors.forEach((e) =>
+      ElMessage({
+        type: "error",
+        message: e.msg,
+      })
+    );
   }
 
+  // structure suggestions
   const results = resp.data.data.map(({ name, iata, city, country }) => {
     return {
       value: `${iata} - ${name} (${city.toUpperCase()}, ${country.toUpperCase()})`,
     };
   });
+
+  // set suggestions
   cb(results);
 };
+
+// handle changes to toggle switch
+const onClickSwitch = (state) => props.setRoundtrip(state);
 </script>
 
 <template>
@@ -115,6 +154,7 @@ const fetchSuggestions = async (query, cb) => {
     <el-form-item>
       <el-switch
         v-model="form.roundTrip"
+        @change="onClickSwitch"
         class="mb-2"
         active-text="Round Trip"
         inactive-text="One Way"

@@ -3,10 +3,11 @@ import config from "../../config";
 import { ref, onBeforeMount } from "vue";
 import { StripeElements, StripeElement } from "vue-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { addBooking } from "../services/booking.js";
 
 const props = defineProps({
+  // first flight
   flightClass: {
     type: String,
     required: true,
@@ -21,6 +22,27 @@ const props = defineProps({
   },
   flightId: {
     type: String,
+    required: true,
+  },
+  // return flight
+  returnFlightClass: {
+    type: String,
+    default: "",
+  },
+  returnFlightPrice: {
+    type: Number,
+    default: 0,
+  },
+  returnFlightSeat: {
+    type: Object,
+    default: null,
+  },
+  returnFlightId: {
+    type: String,
+    default: "",
+  },
+  roundtrip: {
+    type: Boolean,
     required: true,
   },
   taxRate: {
@@ -64,6 +86,31 @@ const cardOptions = ref({
   },
 });
 
+// how to create two cannons: https://github.com/matteobruni/tsparticles/tree/main/presets/confetti
+const particlesOptions = {
+  preset: "confetti",
+  emitters: [
+    {
+      life: { duration: 10, count: 1 },
+      position: { x: 0, y: 30 },
+      particles: { move: { direction: "top-right" } },
+    },
+    {
+      life: { duration: 10, count: 1 },
+      position: { x: 100, y: 30 },
+      particles: { move: { direction: "top-left" } },
+    },
+  ],
+};
+
+// init function for confetti
+async function particlesInit(engine) {
+  await loadConfettiPreset(engine); // eslint-disable-line
+}
+
+// ref to control showing of confetti
+const showConfetti = ref(false);
+
 // load stripe
 onBeforeMount(async () => {
   const stripePromise = loadStripe(stripeKey.value);
@@ -84,10 +131,10 @@ const onClickPurchase = async () => {
   // check if card data is valid
   if (cardValid) {
     try {
-      // add booking
-      await addBooking({
-        userId: "Payam",
-        roundtrip: false,
+      // booking data to add
+      const bookingData = {
+        userId: "payamyek@gmail.com",
+        roundtrip: props.roundtrip,
         cost: props.flightPrice,
         taxRate: props.taxRate,
         totalPaid: (props.flightPrice * (1 + props.taxRate)).toFixed(2),
@@ -101,19 +148,45 @@ const onClickPurchase = async () => {
             y: props.flightSeat.y,
           },
         },
-      });
+      };
+
+      // add return trip information
+      if (props.roundtrip) {
+        bookingData.returnFlight = {
+          flightId: props.returnFlightId,
+          class: className[props.returnFlightClass],
+          classDescription: props.returnFlightClass,
+          seat: {
+            x: props.returnFlightSeat.x,
+            y: props.returnFlightSeat.y,
+          },
+        };
+      }
+
+      // create booking
+      await addBooking(bookingData);
     } catch (err) {
-      return ElMessage({
-        type: "error",
-        message: err.response.data.message,
-      });
+      console.log(err);
+      return err.response.data.errors.forEach((e) =>
+        ElMessage({
+          type: "error",
+          message: e.msg,
+        })
+      );
     }
 
-    // show toast notification
-    ElMessage.success("Flight purchase successful!");
+    // show confetti
+    showConfetti.value = true;
 
-    // reset screen
-    props.resetProcessStage();
+    // show message
+    ElMessageBox.alert(
+      "Confirmation email with booking details and invoice will be sent shortly. Thank you for using Air Toronto!",
+      "Payment Successful",
+      {
+        confirmButtonText: "Continue",
+        callback: props.resetProcessStage,
+      }
+    );
   } else {
     ElMessage.error("Please provide valid card information.");
   }
@@ -121,8 +194,63 @@ const onClickPurchase = async () => {
 </script>
 
 <template>
+  <Particles
+    v-if="showConfetti"
+    id="confettiPreset"
+    :particlesInit="particlesInit"
+    :options="particlesOptions"
+  />
   <!-- Flight Details-->
-  <div class="flight-details">
+  <div v-if="roundtrip" class="flight-details">
+    <h3>
+      <span class="text-bold"> Departure Flight Seat Location:</span>
+      <span class="float-right">({{ flightSeat.x }}, {{ flightSeat.y }})</span>
+    </h3>
+    <h3>
+      <span class="text-bold">Departure Flight Seat Class:</span>
+      <span class="float-right">{{ flightClass }}</span>
+    </h3>
+    <h3>
+      <span class="text-bold">Departure Flight Cost:</span>
+      <span class="float-right">${{ flightPrice }} CAD</span>
+    </h3>
+    <hr />
+    <h3>
+      <span class="text-bold"> Return Flight Seat Location:</span>
+      <span class="float-right"
+        >({{ returnFlightSeat.x }}, {{ returnFlightSeat.y }})</span
+      >
+    </h3>
+    <h3>
+      <span class="text-bold">Return Flight Seat Class:</span>
+      <span class="float-right">{{ returnFlightClass }}</span>
+    </h3>
+    <h3>
+      <span class="text-bold">Return Flight Cost:</span>
+      <span class="float-right">${{ returnFlightPrice }} CAD</span>
+    </h3>
+    <hr />
+    <hr />
+    <h3>
+      <span class="text-bold">Taxes ({{ taxRate * 100 }}%): </span>
+      <span class="float-right"
+        >${{
+          ((returnFlightPrice + flightPrice) * taxRate).toFixed(2)
+        }}
+        CAD</span
+      >
+    </h3>
+    <h3>
+      <span class="text-bold">Total Due:</span>
+      <span class="float-right"
+        >${{
+          ((flightPrice + returnFlightPrice) * (1 + taxRate)).toFixed(2)
+        }}
+        CAD</span
+      >
+    </h3>
+  </div>
+  <div v-else class="flight-details">
     <h3>
       <span class="text-bold">Seat Location:</span>
       <span class="float-right">({{ flightSeat.x }}, {{ flightSeat.y }})</span>

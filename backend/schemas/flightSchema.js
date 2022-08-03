@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
-const { Schema } = mongoose;
+const { Schema, Types } = mongoose;
 import { Route } from "../models/index.js";
 import { AirlineSchema, PlaneSchema, AirportSchema } from "./index.js";
 import {
+  generatePaginationLinks,
   timestampGetEndOfDay,
   timestampGetStartOfDay,
 } from "../utils/index.js";
 import createError from "http-errors";
+import config from "../config/index.js";
 
 const Flight = new Schema(
   {
@@ -24,8 +26,20 @@ const Flight = new Schema(
     sourceAirportData: AirportSchema,
     destAirportData: AirportSchema,
     equipmentListData: PlaneSchema,
+    createdAt: Number,
+    updatedAt: Number,
+    _webhooks: [
+      {
+        event: String,
+        callbackURL: String,
+        userId: String,
+        _id: false,
+      },
+    ],
   },
   {
+    // mongoose use UNIX timestamps: https://masteringjs.io/tutorials/mongoose/timestamps
+    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
     statics: {
       async paginate(page = 0, limit = 10) {
         const total = await this.estimatedDocumentCount({});
@@ -34,6 +48,62 @@ const Flight = new Schema(
           .skip(page * limit)
           .limit(limit);
         return { total, docs, count: docs.length };
+      },
+      async subscribeWebhook(event, callbackURL, userId, flightId) {
+        // create object to add to webhooks array
+        const webhookObject = { event, callbackURL, userId };
+
+        // check if subscriber exists
+        const doc = await this.findOne({ _id: Types.ObjectId(flightId) });
+
+        // compare two webhook object for equality
+        const webhookObjectCompare = (x) =>
+          x.event === event &&
+          x.callbackURL === callbackURL &&
+          x.userId === userId;
+
+        // subscriber exists
+        if (doc === null)
+          throw createError(409, `Flight ${flightId} does not exist`);
+        else if (doc._webhooks.some(webhookObjectCompare))
+          throw createError(409, `Already subscribed to webhook`);
+
+        // search for flight
+        const { modifiedCount } = await this.updateOne(
+          { _id: Types.ObjectId(flightId) },
+          { $addToSet: { _webhooks: webhookObject } }
+        );
+
+        if (modifiedCount !== 1)
+          throw createError(400, `Failed to register webhook`);
+      },
+      async unsubscribeWebhook(event, callbackURL, userId, flightId) {
+        // create object to remove from webhooks array
+        const webhookObject = { event, callbackURL, userId };
+
+        // check if subscriber exists
+        const doc = await this.findOne({ _id: Types.ObjectId(flightId) });
+
+        // compare two webhook object for equality
+        const webhookObjectCompare = (x) =>
+          x.event === event &&
+          x.callbackURL === callbackURL &&
+          x.userId === userId;
+
+        // subscriber exists
+        if (doc === null)
+          throw createError(409, `Flight ${flightId} does not exist`);
+        else if (!doc._webhooks.some(webhookObjectCompare))
+          throw createError(409, `Not subscribed to webhook`);
+
+        // search for flight
+        const { modifiedCount } = await this.updateOne(
+          { _id: Types.ObjectId(flightId) },
+          { $pull: { _webhooks: webhookObject } }
+        );
+
+        if (modifiedCount !== 1)
+          throw createError(400, `Failed to register webhook`);
       },
       async addFlight(
         routeId,
@@ -82,7 +152,7 @@ const Flight = new Schema(
           );
 
         // create flight
-        await this.create({
+        return await this.create({
           routeId,
           planeId,
           departureTime,
@@ -95,8 +165,15 @@ const Flight = new Schema(
           equipmentListData: equipmentListData[0],
         });
       },
-      async findOneWayFlights(sourceAirport, destAirport, departureTime) {
-        return await this.aggregate([
+      async findOneWayFlights(
+        sourceAirport,
+        destAirport,
+        departureTime,
+        page = 0,
+        limit = 10
+      ) {
+        // find flights using aggregation pipeline
+        const docs = await this.aggregate([
           {
             $match: {
               "sourceAirportData.iata": sourceAirport,
@@ -116,12 +193,56 @@ const Flight = new Schema(
                   },
                 },
                 {
-                  departureTime: { $lte: timestampGetEndOfDay(departureTime) },
+                  departureTime: {
+                    $lte: timestampGetEndOfDay(departureTime),
+                  },
                 },
               ],
             },
           },
+          {
+            $facet: {
+              data: [
+                {
+                  $skip: page * limit,
+                },
+                {
+                  $limit: limit,
+                },
+              ],
+              metadata: [{ $count: "total" }, { $addFields: { page, limit } }],
+            },
+          },
         ]);
+
+        // construct url
+        const backendUrl = new URL(
+          `${config.AIRTORONTO_BACKEND_URL}/api/flights/oneway`
+        );
+
+        // url params
+        backendUrl.searchParams.append("sourceAirport", sourceAirport);
+        backendUrl.searchParams.append("destAirport", destAirport);
+        backendUrl.searchParams.append("departureDate", departureTime);
+
+        // pagination links
+        let links;
+        if (docs[0].metadata[0] !== undefined)
+          links = generatePaginationLinks(
+            backendUrl.toString(),
+            page,
+            limit,
+            docs[0].metadata[0].total
+          );
+
+        return {
+          data: docs[0].data,
+          metadata: {
+            ...docs[0].metadata[0],
+            count: docs[0].data.length,
+          },
+          links,
+        };
       },
     },
   }
