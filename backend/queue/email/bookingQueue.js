@@ -70,7 +70,7 @@ class BookingQueue {
       }
 
       // get user
-      const docUser = await User.findOne({ email: docBooking.userId });
+      const docUser = await User.findUser(docBooking.userId);
 
       await job.log("Retrieved user data from database");
 
