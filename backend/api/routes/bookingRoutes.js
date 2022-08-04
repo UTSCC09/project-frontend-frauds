@@ -3,7 +3,7 @@ import { Booking } from "../../models/index.js";
 import { checkSchema } from "express-validator";
 import { addBookingValidator } from "../validators/index.js";
 import validateSchema from "../middlewares/validateSchemaMiddleware.js";
-import { loadBookingReceipt } from "../api/helpers/pdfGenerationAndEmail.js";
+import { loadBookingReceipt } from "../helpers/pdfGenerationAndEmail.js";
 import asyncHandler from "express-async-handler";
 import {
   authorizeAccessToken,
