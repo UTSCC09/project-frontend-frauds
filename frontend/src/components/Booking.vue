@@ -41,7 +41,7 @@
         <el-row>
           <el-col>
             <span class="text-bold"> Receipt: </span>
-              <a @click=downloadBookingReceipt(booking._id)>Download</a>
+            <a @click="downloadBookingReceipt(booking._id)">Download</a>
           </el-col>
         </el-row>
       </li>
