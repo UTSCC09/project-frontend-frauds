@@ -38,12 +38,6 @@
             {{ booking.totalPaid }}
           </el-col>
         </el-row>
-        <el-row>
-          <el-col>
-            <span class="text-bold"> Receipt: </span>
-            <a @click="downloadBookingReceipt(booking._id)">Download</a>
-          </el-col>
-        </el-row>
       </li>
     </ul>
   </div>
@@ -52,7 +46,7 @@
 import { useAuth0 } from "@auth0/auth0-vue";
 import { ref, onBeforeMount } from "vue";
 import { getUserInfo } from "../services/user";
-import { getBooking, downloadBookingReceipt } from "../services/booking";
+import { getBooking } from "../services/booking";
 
 const { user } = useAuth0();
 
