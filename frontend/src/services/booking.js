@@ -19,3 +19,12 @@ export async function getBooking() {
     },
   });
 }
+
+export async function downloadBookingReceipt(id) {
+  const token = await getAccessToken();
+  return axios.get(`${config.BACKEND_URL}/api/bookings/` + id + "/receipt/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
